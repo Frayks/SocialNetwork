@@ -13,3 +13,7 @@ node_modules
 
 ### Angular directory ###
 .angular
+
+### Generated css files ###
+*.css
+*.css.map
