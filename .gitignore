@@ -1,0 +1,15 @@
+### IntelliJ and WebStorm IDEA directory ###
+.idea
+
+### Maven Wrapper directory ###
+.mvn
+
+### Maven target directory ###
+target
+
+### Node modules directory ###
+node_modules
+
+
+### Angular directory ###
+.angular
