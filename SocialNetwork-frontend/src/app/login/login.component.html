@@ -1,0 +1,28 @@
+<div class="container custom-container w-30 mt-5">
+  <form>
+    <div class="py-4 text-center">
+      <h5>Вхід у Social Network</h5>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="w-75">
+        <div class="py-2">
+          <input type="text" class="form-control" placeholder="Username" required>
+        </div>
+        <div class="py-2">
+          <input type="password" class="form-control" placeholder="Пароль" required>
+        </div>
+        <div class="py-2 row">
+          <div class="col-5 d-grid">
+            <input type="submit" class="btn btn-def" value="Увійти">
+          </div>
+          <div class="col-7 d-grid">
+            <input type="button" class="btn btn-reg" (click)="onRegClick()" value="Реєстрація">
+          </div>
+        </div>
+        <div class="pb-3 pt-1">
+          <a class="custom-link" [routerLink]="['/restore']">Забули пароль?</a>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

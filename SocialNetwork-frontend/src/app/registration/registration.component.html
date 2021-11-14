@@ -1,0 +1,144 @@
+<div class="container custom-container w-40 mt-5">
+  <form>
+    <div class="py-4 text-center">
+      <h5>Реєстрація</h5>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="w-80">
+        <div class="row py-2">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Ім'я" required>
+          </div>
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Прізвище" required>
+          </div>
+        </div>
+        <div class="py-2">
+          <input type="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="row py-2">
+          <div class="col">
+            <input type="text" class="form-control" placeholder="Username" required>
+          </div>
+          <div class="col">
+            <input type="password" class="form-control" placeholder="Пароль" required>
+          </div>
+        </div>
+        <div class="py-2">
+          <p class="form-label">Дата народження</p>
+          <div class="row">
+            <div class="col">
+              <select class="form-select">
+                <option selected value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+              </select>
+            </div>
+            <div class="col">
+              <select class="form-select">
+                <option selected value="1">січень</option>
+                <option value="2">лютий</option>
+                <option value="3">березень</option>
+                <option value="4">квітень</option>
+                <option value="5">травень</option>
+                <option value="6">червень</option>
+                <option value="7">липень</option>
+                <option value="8">серпень</option>
+                <option value="9">вересень</option>
+                <option value="10">жовтень</option>
+                <option value="11">листопад</option>
+                <option value="12">грудень</option>
+              </select>
+            </div>
+            <div class="col">
+              <select class="form-select">
+                <option selected value="2021">2021</option>
+                <option value="2020">2020</option>
+                <option value="2019">2019</option>
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+                <option value="2016">2016</option>
+                <option value="2015">2015</option>
+                <option value="2014">2014</option>
+                <option value="2013">2013</option>
+                <option value="2012">2012</option>
+                <option value="2011">2011</option>
+                <option value="2010">2010</option>
+                <option value="2009">2009</option>
+                <option value="2008">2008</option>
+                <option value="2007">2007</option>
+                <option value="2006">2006</option>
+                <option value="2005">2005</option>
+                <option value="2004">2004</option>
+                <option value="2003">2003</option>
+                <option value="2002">2002</option>
+                <option value="2001">2001</option>
+                <option value="2000">2000</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="py-2">
+          <p class="form-label">Ваша стать</p>
+          <div class="row">
+            <div class="col">
+              <div class="custom-form-check">
+                <div class="row">
+                  <label class="form-check-label col-10" for="inlineFormCheckMale">чоловік</label>
+                  <div class="col-2">
+                    <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckMale">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <div class="custom-form-check">
+                <div class="row">
+                  <label class="form-check-label col-10" for="inlineFormCheckFemale">жінка</label>
+                  <div class="col-2">
+                    <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckFemale">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="py-4 text-center">
+          <button class="btn btn-def me-4" type="button" (click)="onBackClick()">
+            <span class="material-icons custom-material-icons align-middle">arrow_back_ios_new</span>
+            На сторінку входу
+          </button>
+          <input type="submit" class="btn btn-reg" value="Зареєструватися">
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
