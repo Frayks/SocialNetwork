@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-user',
@@ -7,9 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UserComponent implements OnInit {
 
-  constructor() { }
+  showAdditionalInfo = false;
+  showPosts = true;
+  myProfile = true;
+
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
 
+  toggleShowAdditionalInfo() {
+    this.showAdditionalInfo = !this.showAdditionalInfo;
+  }
+
+  toggleShowPosts() {
+    this.showPosts = !this.showPosts;
+  }
 }

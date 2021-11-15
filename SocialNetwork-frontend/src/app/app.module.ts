@@ -11,6 +11,7 @@ import {RestoreComponent} from './restore/restore.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { RestoreMessageComponent } from './restore-message/restore-message.component';
 import { HeaderComponent } from './header/header.component';
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [

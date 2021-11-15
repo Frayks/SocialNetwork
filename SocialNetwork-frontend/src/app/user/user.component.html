@@ -1,46 +1,170 @@
 <app-header></app-header>
-<app-menu></app-menu>
 
 <div class="info-block">
   <div class="row">
-    <div class="col-5">
-      <div class="custom-container p-2 mb-3">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?</p>
+    <app-menu class="col-23p default-padding"></app-menu>
+    <div class="col-27p default-padding">
+      <div class="default-container p-3 mb-3 me-3">
+        <div class="mb-3">
+          <img src="../../assets/my.jpg" class="icon">
+        </div>
+        <div *ngIf="myProfile; else another_profile">
+          <div class="text-center">
+            <input type="button" class="btn-def-form btn-edit-info w-100" value="Редагувати інформацію">
+          </div>
+        </div>
+        <ng-template #another_profile>
+          <div class="text-center">
+            <input type="button" class="btn-def-form btn-def mb-2 w-100" value="Повідомлення">
+          </div>
+          <div class="text-center">
+            <input type="button" class="btn-def-form btn-def w-100" value="Долучити до друзів">
+          </div>
+        </ng-template>
       </div>
-      <div class="custom-container p-2">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?</p>
+      <div class="default-container p-3 me-3">
+        <div>
+          <p class="form-label">Друзі <span class="custom-text-info">2</span></p>
+        </div>
+        <div class="row">
+          <div class="small-people-box">
+            <a href="#" class="custom-link">
+              <div>
+                <img src="../../assets/my.jpg" class="small-circle-icon">
+              </div>
+              <div class="text-center">
+                <p class="form-label">Андрій</p>
+              </div>
+            </a>
+          </div>
+          <div class="small-people-box">
+            <a href="#" class="custom-link">
+              <div>
+                <img src="../../assets/my.jpg" class="small-circle-icon">
+              </div>
+              <div class="text-center">
+                <p class="form-label">Андрій</p>
+              </div>
+            </a>
+          </div>
+          <div class="small-people-box">
+            <a href="#" class="custom-link">
+              <div>
+                <img src="../../assets/my.jpg" class="small-circle-icon">
+              </div>
+              <div class="text-center">
+                <p class="form-label">Андрій</p>
+              </div>
+            </a>
+          </div>
+          <div class="small-people-box">
+            <a href="#" class="custom-link">
+              <div>
+                <img src="../../assets/my.jpg" class="small-circle-icon">
+              </div>
+              <div class="text-center">
+                <p class="form-label">Андрій</p>
+              </div>
+            </a>
+          </div>
+          <div class="small-people-box">
+            <a href="#" class="custom-link">
+              <div>
+                <img src="../../assets/my.jpg" class="small-circle-icon">
+              </div>
+              <div class="text-center">
+                <p class="form-label">Андрій</p>
+              </div>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="col-7">
-      <div class="custom-container p-2 mb-3">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?</p>
+    <div class="col-50p default-padding">
+      <div class="default-container p-3 mb-3">
+        <div>
+          <p class="text-title">Андрій Дребот</p>
+        </div>
+        <hr class="default-hr">
+        <div class="info-panel mb-1">
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, cupiditate dignissimos dolore, eligendi hic
+            incidunt inventore ipsam magni nesciunt perferendis quia, quos sapiente tenetur! Culpa eum natus pariatur
+            possimus saepe!</span>
+        </div>
+        <div class="text-center">
+          <input type="button" class="btn-def-form btn-hidden w-100" (click)="toggleShowAdditionalInfo()"
+                 [value]="showAdditionalInfo ? 'Приховати детальну інформацію' : 'Детальніше'">
+        </div>
+        <div class="info-panel mt-1" *ngIf="showAdditionalInfo">
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, cupiditate dignissimos dolore, eligendi hic
+            incidunt inventore ipsam magni nesciunt perferendis quia, quos sapiente tenetur! Culpa eum natus pariatur
+            possimus saepe!</span>
+        </div>
       </div>
-      <div class="custom-container p-2">
-        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ab accusamus accusantium alias aperiam atque
-          consectetur culpa dignissimos distinctio dolor, doloribus eius eligendi, esse explicabo in, iusto molestiae
-          mollitia nobis ratione saepe sit! Accusamus asperiores atque dolores et, excepturi exercitationem fugit
-          inventore laborum magnam maxime molestiae nihil officia porro reprehenderit tenetur?</p>
+      <div class="default-container p-3 mb-3">
+        <div>
+          <p class="form-label">Фотографії <span class="custom-text-info">2</span></p>
+        </div>
+        <div class="row photos-list">
+          <div class="photo-box">
+            <a href="#">
+              <img src="../../assets/my.jpg" class="photo">
+            </a>
+          </div>
+          <div class="photo-box">
+            <a href="#">
+              <img src="../../assets/my.jpg" class="photo">
+            </a>
+          </div>
+          <div class="photo-box">
+            <a href="#">
+              <img src="../../assets/my.jpg" class="photo">
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="default-container p-3 mb-3">
+        <div class="row">
+          <div class="col">
+            <span class="form-label">Пости <span class="custom-text-info">2</span></span>
+          </div>
+          <div class="col">
+            <button class="btn-small-form btn-light-blue float-end" type="button" (click)="toggleShowPosts()">
+              <span class="material-icons align-middle">{{showPosts ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="showPosts">
+        <div class="default-container p-3 mb-3">
+          <div class="post-photo-box mb-2">
+            <img src="../../assets/my.jpg" class="post-photo">
+          </div>
+          <div class="post-text">
+          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus doloremque dolores doloribus, labore
+            nisi quasi sequi sint ut voluptatem voluptates?</span>
+          </div>
+          <div>
+            <hr class="default-hr">
+          </div>
+          <div>
+            <div class="row">
+              <div class="col">
+                <div>
+                  <button class="btn-small-form btn-like" type="button">
+                    <span class="material-icons align-middle">favorite</span>
+                  </button>
+                </div>
+              </div>
+              <div class="col">
+                <div class="float-end">
+                  <span class="material-icons align-middle color-red">favorite</span>
+                  <span class="ms-1 me-2">2</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

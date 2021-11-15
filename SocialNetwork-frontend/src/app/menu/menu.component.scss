@@ -1,9 +1,6 @@
-.sidebar {
+.menu-container {
   position: fixed;
-  top: 4.5rem;
-  z-index: 0;
-  width: 13%;
-  margin-left: 12%;
+  width: 12.7rem;
 
   .links {
     margin: 1rem 0;
@@ -32,7 +29,7 @@
         }
 
         .link-box:hover {
-          background-color: #f6f6f6;
+          background-color: #f8f8f8;
         }
 
       }

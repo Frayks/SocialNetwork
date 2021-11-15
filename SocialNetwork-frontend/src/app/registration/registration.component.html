@@ -1,4 +1,4 @@
-<div class="container custom-container w-40 mt-5">
+<div class="container default-container registration-container">
   <form>
     <div class="py-4 text-center">
       <h5>Реєстрація</h5>
@@ -112,7 +112,9 @@
             <div class="col">
               <div class="custom-form-check">
                 <div class="row">
-                  <label class="form-check-label col-10" for="inlineFormCheckMale">чоловік</label>
+                  <div class="col-10">
+                    <label class="form-check-label" for="inlineFormCheckMale">чоловік</label>
+                  </div>
                   <div class="col-2">
                     <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckMale">
                   </div>
@@ -122,7 +124,9 @@
             <div class="col">
               <div class="custom-form-check">
                 <div class="row">
-                  <label class="form-check-label col-10" for="inlineFormCheckFemale">жінка</label>
+                  <div class="col-10">
+                    <label class="form-check-label" for="inlineFormCheckFemale">жінка</label>
+                  </div>
                   <div class="col-2">
                     <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckFemale">
                   </div>
@@ -132,11 +136,11 @@
           </div>
         </div>
         <div class="py-4 text-center">
-          <button class="btn btn-def me-4" type="button" (click)="onBackClick()">
+          <button class="btn-def-form btn-def me-4" type="button" (click)="onBackClick()">
             <span class="material-icons custom-material-icons align-middle">arrow_back_ios_new</span>
             На сторінку входу
           </button>
-          <input type="submit" class="btn btn-reg" value="Зареєструватися">
+          <input type="submit" class="btn-def-form btn-reg" value="Зареєструватися">
         </div>
       </div>
     </div>

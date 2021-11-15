@@ -1,9 +1,19 @@
 
-.header {
+.header-container {
   position: fixed;
   top: 0;
-  z-index: 1;
   background-color: white;
   height: 3.5rem;
   width: 100%;
+
+  .main-box {
+    width: 58rem;
+    margin-inline: auto;
+
+    .brand-title {
+      font-size: 2rem;
+    }
+
+  }
+
 }
