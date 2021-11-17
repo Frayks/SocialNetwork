@@ -1,167 +1,184 @@
 <app-header></app-header>
 
-<div class="info-block">
+<div class="block-main">
   <div class="row">
-    <app-menu class="col-23p default-padding"></app-menu>
-    <div class="col-27p default-padding">
-      <div class="default-container p-3 mb-3 me-3">
-        <div class="mb-3">
+    <div class="col-22pr px-def">
+      <div class="container-def block-side-panel overflow-hidden">
+        <div class="p-3">
           <img src="../../assets/my.jpg" class="icon">
         </div>
-        <div *ngIf="myProfile; else another_profile">
-          <div class="text-center">
-            <input type="button" class="btn-def-form btn-edit-info w-100" value="Редагувати інформацію">
-          </div>
+        <div class="text-center">
+          <span>Андрій Дребот</span>
         </div>
-        <ng-template #another_profile>
-          <div class="text-center">
-            <input type="button" class="btn-def-form btn-def mb-2 w-100" value="Повідомлення">
-          </div>
-          <div class="text-center">
-            <input type="button" class="btn-def-form btn-def w-100" value="Долучити до друзів">
-          </div>
-        </ng-template>
-      </div>
-      <div class="default-container p-3 me-3">
-        <div>
-          <p class="form-label">Друзі <span class="custom-text-info">2</span></p>
+        <hr class="hr-def">
+        <div class="block-info px-3">
+          <p>День народження: 7 травня</p>
+          <p>Рiдне мiсто: Трускавець</p>
         </div>
-        <div class="row">
-          <div class="small-people-box">
-            <a href="#" class="custom-link">
-              <div>
-                <img src="../../assets/my.jpg" class="small-circle-icon">
-              </div>
-              <div class="text-center">
-                <p class="form-label">Андрій</p>
-              </div>
-            </a>
-          </div>
-          <div class="small-people-box">
-            <a href="#" class="custom-link">
-              <div>
-                <img src="../../assets/my.jpg" class="small-circle-icon">
-              </div>
-              <div class="text-center">
-                <p class="form-label">Андрій</p>
-              </div>
-            </a>
-          </div>
-          <div class="small-people-box">
-            <a href="#" class="custom-link">
-              <div>
-                <img src="../../assets/my.jpg" class="small-circle-icon">
-              </div>
-              <div class="text-center">
-                <p class="form-label">Андрій</p>
-              </div>
-            </a>
-          </div>
-          <div class="small-people-box">
-            <a href="#" class="custom-link">
-              <div>
-                <img src="../../assets/my.jpg" class="small-circle-icon">
-              </div>
-              <div class="text-center">
-                <p class="form-label">Андрій</p>
-              </div>
-            </a>
-          </div>
-          <div class="small-people-box">
-            <a href="#" class="custom-link">
-              <div>
-                <img src="../../assets/my.jpg" class="small-circle-icon">
-              </div>
-              <div class="text-center">
-                <p class="form-label">Андрій</p>
-              </div>
-            </a>
-          </div>
+        <div class="block-info px-3" *ngIf="showAdditionalInfo">
+          <p>Школа: Школа №2</p>
+        </div>
+        <div class="text-center">
+          <button type="button" class="inp-def-form btn-hidden btn-info-cst" (click)="toggleShowAdditionalInfo()">
+            <span
+              class="material-icons align-middle">{{showAdditionalInfo ? 'keyboard_double_arrow_up' : 'keyboard_double_arrow_down' }}</span>
+          </button>
         </div>
       </div>
     </div>
-    <div class="col-50p default-padding">
-      <div class="default-container p-3 mb-3">
+    <div class="col-56pr px-def">
+      <div class="container-def p-3 mb-3">
         <div>
-          <p class="text-title">Андрій Дребот</p>
+          <p class="form-label">Фотографії <span class="text-gray-1">2</span></p>
         </div>
-        <hr class="default-hr">
-        <div class="info-panel mb-1">
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, cupiditate dignissimos dolore, eligendi hic
-            incidunt inventore ipsam magni nesciunt perferendis quia, quos sapiente tenetur! Culpa eum natus pariatur
-            possimus saepe!</span>
-        </div>
-        <div class="text-center">
-          <input type="button" class="btn-def-form btn-hidden w-100" (click)="toggleShowAdditionalInfo()"
-                 [value]="showAdditionalInfo ? 'Приховати детальну інформацію' : 'Детальніше'">
-        </div>
-        <div class="info-panel mt-1" *ngIf="showAdditionalInfo">
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad, cupiditate dignissimos dolore, eligendi hic
-            incidunt inventore ipsam magni nesciunt perferendis quia, quos sapiente tenetur! Culpa eum natus pariatur
-            possimus saepe!</span>
-        </div>
-      </div>
-      <div class="default-container p-3 mb-3">
-        <div>
-          <p class="form-label">Фотографії <span class="custom-text-info">2</span></p>
-        </div>
-        <div class="row photos-list">
-          <div class="photo-box">
-            <a href="#">
-              <img src="../../assets/my.jpg" class="photo">
-            </a>
+        <div class="images-list">
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
           </div>
-          <div class="photo-box">
-            <a href="#">
-              <img src="../../assets/my.jpg" class="photo">
-            </a>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
           </div>
-          <div class="photo-box">
-            <a href="#">
-              <img src="../../assets/my.jpg" class="photo">
-            </a>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
+          </div>
+          <div class="image-item">
+            <img src="../../assets/my.jpg" class="image">
           </div>
         </div>
       </div>
-      <div class="default-container p-3 mb-3">
+      <div class="container-def p-3 mb-3">
         <div class="row">
           <div class="col">
-            <span class="form-label">Пости <span class="custom-text-info">2</span></span>
+            <span class="form-label">Пости <span class="text-gray-1">2</span></span>
           </div>
           <div class="col">
-            <button class="btn-small-form btn-light-blue float-end" type="button" (click)="toggleShowPosts()">
+            <button class="inp-small-form btn-hidden float-end" type="button" (click)="toggleShowPosts()">
               <span class="material-icons align-middle">{{showPosts ? 'visibility_off' : 'visibility' }}</span>
             </button>
           </div>
         </div>
       </div>
       <div *ngIf="showPosts">
-        <div class="default-container p-3 mb-3">
-          <div class="post-photo-box mb-2">
-            <img src="../../assets/my.jpg" class="post-photo">
-          </div>
-          <div class="post-text">
-          <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus doloremque dolores doloribus, labore
-            nisi quasi sequi sint ut voluptatem voluptates?</span>
+        <div class="container-def p-3 mb-3">
+          <div class="mb-2">
+            <img src="../../assets/my.jpg" class="image-post">
           </div>
           <div>
-            <hr class="default-hr">
+            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus doloremque dolores doloribus, laborenisi quasi sequi sint ut voluptatem voluptates?</span>
+          </div>
+          <div>
+            <hr class="hr-def">
           </div>
           <div>
             <div class="row">
               <div class="col">
                 <div>
-                  <button class="btn-small-form btn-like" type="button">
+                  <button class="inp-small-form btn-like-cst" type="button">
                     <span class="material-icons align-middle">favorite</span>
                   </button>
                 </div>
               </div>
               <div class="col">
                 <div class="float-end">
-                  <span class="material-icons align-middle color-red">favorite</span>
+                  <span class="material-icons align-middle text-red-1">favorite</span>
                   <span class="ms-1 me-2">2</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-22pr px-def">
+      <div class="block-side-panel">
+        <div class="mb-3">
+          <app-menu></app-menu>
+        </div>
+        <div class="container-def p-3">
+          <div>
+            <p class="form-label">Друзі <span class="text-gray-1">2</span></p>
+          </div>
+          <div class="row">
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
+            </div>
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
+            </div>
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
+            </div>
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
+            </div>
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
+            </div>
+            <div class="icon-small-box">
+              <a href="#" class="link-def">
+                <div>
+                  <img src="../../assets/my.jpg" class="icon-small">
+                </div>
+                <div class="text-center">
+                  <p class="form-label">Андрій</p>
+                </div>
+              </a>
             </div>
           </div>
         </div>
