@@ -45,4 +45,5 @@ public class RoleServiceImpl implements RoleService {
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
     }
+    
 }

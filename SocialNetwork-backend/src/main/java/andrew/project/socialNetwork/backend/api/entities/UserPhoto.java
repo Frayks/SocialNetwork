@@ -1,6 +1,5 @@
 package andrew.project.socialNetwork.backend.api.entities;
 
-import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,14 +12,17 @@ import javax.persistence.*;
 @ToString
 @NoArgsConstructor
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "users_photos")
+public class UserPhoto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private RoleName roleName;
+    private Long userId;
+    @Column(nullable = false)
+    private String photoUrl;
+    @Column(nullable = false, columnDefinition = "integer default 0")
+    private Integer numOfLikes;
 
 }

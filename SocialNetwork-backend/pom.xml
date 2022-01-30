@@ -19,6 +19,7 @@
 		<java.version>1.8</java.version>
 		<version.com.auth0.java-jwt>3.18.2</version.com.auth0.java-jwt>
 		<version.commons-io.commons-io>2.11.0</version.commons-io.commons-io>
+		<version.org.projectlombok.lombok>1.18.22</version.org.projectlombok.lombok>
 	</properties>
 
 	<dependencies>
@@ -76,6 +77,14 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>${version.commons-io.commons-io}</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${version.org.projectlombok.lombok}</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>

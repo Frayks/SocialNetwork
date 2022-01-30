@@ -3,8 +3,12 @@ package andrew.project.socialNetwork.backend.libraries;
 import andrew.project.socialNetwork.backend.api.constants.TokenType;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
 import andrew.project.socialNetwork.backend.api.entities.User;
+import andrew.project.socialNetwork.backend.api.entities.UserPhoto;
+import andrew.project.socialNetwork.backend.api.entities.UserPost;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
 import andrew.project.socialNetwork.backend.api.mappers.UserMapper;
+import andrew.project.socialNetwork.backend.api.services.UserPhotoService;
+import andrew.project.socialNetwork.backend.api.services.UserPostService;
 import andrew.project.socialNetwork.backend.api.services.UserService;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -28,6 +32,8 @@ public class MainLibImpl implements MainLib {
     private static final Logger LOGGER = LogManager.getLogger(MainLibImpl.class);
 
     private UserService userService;
+    private UserPhotoService userPhotoService;
+    private UserPostService userPostService;
     private JwtProvider jwtProvider;
 
     @Override
@@ -60,7 +66,9 @@ public class MainLibImpl implements MainLib {
     public UserProfileInfoDto getUserProfileInfo(String username) {
         User user = userService.findByUsername(username);
         if (user != null) {
-            return UserMapper.mapUserToUserProfileInfoDto(user);
+            List<UserPhoto> userPhotoList = userPhotoService.findByUserId(user.getId());
+            List<UserPost> userPostList = userPostService.findByUserId(user.getId());
+            return UserMapper.mapToUserProfileInfoDto(user, userPhotoList, userPostList);
         }
         return null;
     }
@@ -80,7 +88,18 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
+    public void setUserPhotoService(UserPhotoService userPhotoService) {
+        this.userPhotoService = userPhotoService;
+    }
+
+    @Autowired
+    public void setUserPostService(UserPostService userPostService) {
+        this.userPostService = userPostService;
+    }
+
+    @Autowired
     public void setJwtProvider(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
     }
+
 }

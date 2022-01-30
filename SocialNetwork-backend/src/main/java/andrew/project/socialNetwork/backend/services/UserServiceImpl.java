@@ -85,4 +85,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+    
 }
