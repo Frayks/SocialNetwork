@@ -8,10 +8,13 @@ import {LoginComponent} from './login/login.component';
 import {UserComponent} from './user/user.component';
 import {MenuComponent} from './menu/menu.component';
 import {RestoreComponent} from './restore/restore.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
-import { RestoreMessageComponent } from './restore-message/restore-message.component';
-import { HeaderComponent } from './header/header.component';
-import {CommonModule} from "@angular/common";
+import {ResetPasswordComponent} from './reset-password/reset-password.component';
+import {RestoreMessageComponent} from './restore-message/restore-message.component';
+import {HeaderComponent} from './header/header.component';
+import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
+import {FormsModule} from '@angular/forms';
+import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
+import {JWT_OPTIONS, JwtHelperService, JwtModule} from "@auth0/angular-jwt";
 
 @NgModule({
   declarations: [
@@ -27,9 +30,16 @@ import {CommonModule} from "@angular/common";
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    HttpClientModule,
+    JwtModule
   ],
-  providers: [],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    {provide: JWT_OPTIONS, useValue: JWT_OPTIONS},
+    JwtHelperService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -5,18 +5,22 @@
     <div class="col-22pr px-def">
       <div class="container-def block-side-panel overflow-hidden">
         <div class="p-3">
-          <img src="../../assets/my.jpg" class="icon">
+          <img [src]="userProfileInfo.avatarUrl" class="icon">
         </div>
         <div class="text-center">
-          <span>Андрій Дребот</span>
+          <span>{{userProfileInfo.firstName}} {{userProfileInfo.lastName}}</span>
         </div>
         <hr class="hr-def">
         <div class="block-info px-3">
-          <p>День народження: 7 травня</p>
-          <p>Рiдне мiсто: Трускавець</p>
+          <p *ngIf="userProfileInfo.aboutYourself">Про себе: <span class="info-label">{{userProfileInfo.aboutYourself}}</span></p>
+          <p *ngIf="userProfileInfo.dateOfBirth">Вік: <span class="info-label">{{calcAge()}}</span></p>
+          <p *ngIf="userProfileInfo.city">Місто: <span class="info-label">{{userProfileInfo.city}}</span></p>
         </div>
         <div class="block-info px-3" *ngIf="showAdditionalInfo">
-          <p>Школа: Школа №2</p>
+          <hr class="hr-def">
+          <p *ngIf="userProfileInfo.dateOfBirth">Дата народження: <span class="info-label">{{userProfileInfo.dateOfBirth | date: 'dd.MM.yyyy'}}</span></p>
+          <p *ngIf="userProfileInfo.school">Школа: <span class="info-label">{{userProfileInfo.school}}</span></p>
+          <p *ngIf="userProfileInfo.university">Університет: <span class="info-label">{{userProfileInfo.university}}</span></p>
         </div>
         <div class="text-center">
           <button type="button" class="inp-def-form btn-hidden btn-info-cst" (click)="toggleShowAdditionalInfo()">

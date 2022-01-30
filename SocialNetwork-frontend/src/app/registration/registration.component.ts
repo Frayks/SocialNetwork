@@ -8,13 +8,16 @@ import {Router} from "@angular/router";
 })
 export class RegistrationComponent implements OnInit {
 
-  private router: Router
+  passwordVisibility = false
 
-  constructor(router: Router) {
-    this.router = router
+  constructor(private router: Router) {
   }
 
   ngOnInit(): void {
+  }
+
+  togglePasswordVisibility() {
+    this.passwordVisibility = !this.passwordVisibility;
   }
 
   onBackClick() {

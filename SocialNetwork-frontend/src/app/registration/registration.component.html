@@ -21,7 +21,12 @@
             <input type="text" class="form-control" placeholder="Username" required>
           </div>
           <div class="col">
-            <input type="password" class="form-control" placeholder="Пароль" required>
+            <div class="input-group">
+            <input [type]="passwordVisibility ? 'text' : 'password'" class="form-control" placeholder="Пароль" required>
+            <button class="inp-def-form btn-gray" type="button" (click)="togglePasswordVisibility()">
+              <span class="material-icons align-middle">{{passwordVisibility ? 'visibility_off' : 'visibility' }}</span>
+            </button>
+            </div>
           </div>
         </div>
         <div class="py-2">

@@ -109,6 +109,7 @@ body {
   width: 70rem;
   margin-top: 4.5rem;
   margin-inline: auto;
+  word-break: break-word;
 }
 
 .block-side-panel {
@@ -274,6 +275,10 @@ body {
   border-top: 2px solid $color-gray-3;
   background-color: transparent;
   margin: 1rem 0;
+}
+
+.info-label {
+  color: $color-def-2;
 }
 
 /* --- CST --- */
