@@ -31,6 +31,18 @@ public class MainController {
         return ResponseEntity.ok().body(userProfileInfoDto);
     }
 
+    @GetMapping("/deletePhoto")
+    public void deletePhoto(@RequestParam Long photoId) {
+        LOGGER.debug("Method deletePhoto called!");
+        mainLib.deletePhoto(photoId);
+    }
+
+    @GetMapping("/deletePost")
+    public void deletePost(@RequestParam Long postId) {
+        LOGGER.debug("Method deletePost called!");
+        mainLib.deletePost(postId);
+    }
+
     @GetMapping("/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         LOGGER.debug("Method refreshToken called!");

@@ -45,8 +45,10 @@ public class UserMapper {
 
     public static UserPhotoDto mapToPhotoDto(UserPhoto userPhoto) {
         UserPhotoDto userPhotoDto = new UserPhotoDto();
+        userPhotoDto.setId(userPhoto.getId());
         userPhotoDto.setPhotoUrl(userPhoto.getPhotoUrl());
         userPhotoDto.setNumOfLikes(userPhoto.getNumOfLikes());
+        userPhotoDto.setLoadTime(userPhoto.getLoadTime());
         return userPhotoDto;
     }
 
@@ -60,9 +62,11 @@ public class UserMapper {
 
     public static UserPostDto mapToPostDto(UserPost userPost) {
         UserPostDto userPostDto = new UserPostDto();
+        userPostDto.setId(userPost.getId());
         userPostDto.setPhotoUrl(userPost.getPhotoUrl());
         userPostDto.setText(userPost.getText());
         userPostDto.setNumOfLikes(userPost.getNumOfLikes());
+        userPostDto.setCreationTime(userPost.getCreationTime());
         return userPostDto;
     }
 

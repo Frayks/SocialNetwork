@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -24,5 +25,7 @@ public class UserPost {
     private String text;
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer numOfLikes;
+    @Column(nullable = false)
+    private Timestamp creationTime;
 
 }

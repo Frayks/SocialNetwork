@@ -14,4 +14,6 @@ public interface UserPostService {
     UserPost save(UserPost userPost);
 
     void delete(UserPost userPhoto);
+
+    void deleteByIdAndUserId(Long id, Long userId);
 }

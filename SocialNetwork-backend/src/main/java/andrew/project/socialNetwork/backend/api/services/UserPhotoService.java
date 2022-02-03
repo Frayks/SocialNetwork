@@ -14,4 +14,6 @@ public interface UserPhotoService {
     UserPhoto save(UserPhoto userPhoto);
 
     void delete(UserPhoto userPhoto);
+
+    void deleteByIdAndUserId(Long id, Long userId);
 }

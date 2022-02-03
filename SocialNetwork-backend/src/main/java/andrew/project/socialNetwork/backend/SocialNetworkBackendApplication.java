@@ -75,29 +75,47 @@ public class SocialNetworkBackendApplication {
             user2 = userService.save(user2);
 
             UserPhoto userPhoto1 = new UserPhoto();
-            userPhoto1.setPhotoUrl("1..");
+            userPhoto1.setPhotoUrl("https://img.freepik.com/free-photo/landscape-of-morning-fog-and-mountains-with-hot-air-balloons-at-sunrise_335224-794.jpg?size=626&ext=jpg");
             userPhoto1.setNumOfLikes(0);
             userPhoto1.setUserId(user1.getId());
+            userPhoto1.setLoadTime(new Timestamp(System.currentTimeMillis()));
 
             UserPhoto userPhoto2 = new UserPhoto();
-            userPhoto2.setPhotoUrl("2..");
+            userPhoto2.setPhotoUrl("https://st2.depositphotos.com/3651191/6922/i/600/depositphotos_69225679-stock-photo-mountains-with-pink-flowers.jpg");
             userPhoto2.setNumOfLikes(0);
             userPhoto2.setUserId(user1.getId());
+            userPhoto2.setLoadTime(new Timestamp(System.currentTimeMillis()));
+
+            UserPhoto userPhoto3 = new UserPhoto();
+            userPhoto3.setPhotoUrl("https://img.freepik.com/free-photo/landscape-of-morning-fog-and-mountains-with-hot-air-balloons-at-sunrise_335224-794.jpg?size=626&ext=jpg");
+            userPhoto3.setNumOfLikes(0);
+            userPhoto3.setUserId(user1.getId());
+            userPhoto3.setLoadTime(new Timestamp(System.currentTimeMillis()));
+
+            UserPhoto userPhoto4 = new UserPhoto();
+            userPhoto4.setPhotoUrl("https://st2.depositphotos.com/3651191/6922/i/600/depositphotos_69225679-stock-photo-mountains-with-pink-flowers.jpg");
+            userPhoto4.setNumOfLikes(0);
+            userPhoto4.setUserId(user1.getId());
+            userPhoto4.setLoadTime(new Timestamp(System.currentTimeMillis()));
 
             userPhotoService.save(userPhoto1);
             userPhotoService.save(userPhoto2);
+            userPhotoService.save(userPhoto3);
+            userPhotoService.save(userPhoto4);
 
             UserPost userPost1 = new UserPost();
-            userPost1.setPhotoUrl("1..");
+            userPost1.setPhotoUrl("https://img.freepik.com/free-photo/landscape-of-morning-fog-and-mountains-with-hot-air-balloons-at-sunrise_335224-794.jpg?size=626&ext=jpg");
             userPost1.setText("Пост1");
             userPost1.setNumOfLikes(0);
             userPost1.setUserId(user1.getId());
+            userPost1.setCreationTime(new Timestamp(System.currentTimeMillis()));
 
             UserPost userPost2 = new UserPost();
-            userPost2.setPhotoUrl("2..");
+            userPost2.setPhotoUrl("https://img.freepik.com/free-photo/landscape-of-morning-fog-and-mountains-with-hot-air-balloons-at-sunrise_335224-794.jpg?size=626&ext=jpg");
             userPost2.setText("Пост2");
             userPost2.setNumOfLikes(0);
             userPost2.setUserId(user1.getId());
+            userPost2.setCreationTime(new Timestamp(System.currentTimeMillis()));
 
             userPostService.save(userPost1);
             userPostService.save(userPost2);

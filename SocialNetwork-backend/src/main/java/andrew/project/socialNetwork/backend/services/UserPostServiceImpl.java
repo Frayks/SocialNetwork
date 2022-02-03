@@ -40,6 +40,11 @@ public class UserPostServiceImpl implements UserPostService {
         userPostRepository.delete(userPhoto);
     }
 
+    @Override
+    public void deleteByIdAndUserId(Long id, Long userId) {
+        userPostRepository.deleteByIdAndUserId(id, userId);
+    }
+
     @Autowired
     public void setUserPostRepository(UserPostRepository userPostRepository) {
         this.userPostRepository = userPostRepository;

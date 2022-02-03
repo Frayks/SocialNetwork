@@ -14,4 +14,7 @@ public interface MainLib {
 
     UserProfileInfoDto getUserProfileInfo(String username);
 
+    void deletePhoto(Long photoId);
+
+    void deletePost(Long postId);
 }

@@ -10,5 +10,6 @@ import java.util.List;
 public interface UserPhotoRepository extends JpaRepository<UserPhoto, Long> {
 
     List<UserPhoto> findByUserId(Long userId);
+    void deleteByIdAndUserId(Long id, Long userId);
 
 }

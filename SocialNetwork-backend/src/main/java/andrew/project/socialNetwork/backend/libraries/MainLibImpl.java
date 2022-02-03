@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -71,6 +72,20 @@ public class MainLibImpl implements MainLib {
             return UserMapper.mapToUserProfileInfoDto(user, userPhotoList, userPostList);
         }
         return null;
+    }
+
+    @Override
+    public void deletePhoto(Long photoId) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
+    }
+
+    @Override
+    public void deletePost(Long postId) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        userPostService.deleteByIdAndUserId(postId, userDbi.getId());
     }
 
     @Override
