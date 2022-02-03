@@ -12,15 +12,18 @@
         </div>
         <hr class="hr-def">
         <div class="block-info px-3">
-          <p *ngIf="userProfileInfo.aboutYourself">Про себе: <span class="info-label">{{userProfileInfo.aboutYourself}}</span></p>
+          <p *ngIf="userProfileInfo.aboutYourself">Про себе: <span
+            class="info-label">{{userProfileInfo.aboutYourself}}</span></p>
           <p *ngIf="userProfileInfo.dateOfBirth">Вік: <span class="info-label">{{calcAge()}}</span></p>
           <p *ngIf="userProfileInfo.city">Місто: <span class="info-label">{{userProfileInfo.city}}</span></p>
         </div>
         <div class="block-info px-3" *ngIf="showAdditionalInfo">
           <hr class="hr-def">
-          <p *ngIf="userProfileInfo.dateOfBirth">Дата народження: <span class="info-label">{{userProfileInfo.dateOfBirth | date: 'dd.MM.yyyy'}}</span></p>
+          <p *ngIf="userProfileInfo.dateOfBirth">Дата народження: <span
+            class="info-label">{{userProfileInfo.dateOfBirth | date: 'dd.MM.yyyy'}}</span></p>
           <p *ngIf="userProfileInfo.school">Школа: <span class="info-label">{{userProfileInfo.school}}</span></p>
-          <p *ngIf="userProfileInfo.university">Університет: <span class="info-label">{{userProfileInfo.university}}</span></p>
+          <p *ngIf="userProfileInfo.university">Університет: <span
+            class="info-label">{{userProfileInfo.university}}</span></p>
         </div>
         <div class="text-center">
           <button type="button" class="inp-def-form btn-hidden btn-info-cst" (click)="toggleShowAdditionalInfo()">
@@ -33,50 +36,46 @@
     <div class="col-56pr px-def">
       <div class="container-def p-3 mb-3">
         <div>
-          <p class="form-label">Фотографії <span class="text-gray-1">2</span></p>
+          <div class="row">
+            <div class="col">
+              <p class="mb-0">Фотографії <span
+                class="text-gray-1">{{(userProfileInfo.userPhotoList) ? userProfileInfo.userPhotoList.length : 0}}</span>
+              </p>
+            </div>
+            <div class="col">
+              <div *ngIf="myProfile">
+                <input type="file" #photoFile class="d-none" accept="image/gif, image/jpeg, image/png"
+                       (change)="addPhoto($event.target)">
+                <button class="inp-small-form btn-hidden float-end" type="button" (click)="photoFile.click()">
+                  <span class="material-icons align-middle">add</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="images-list">
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
-          </div>
-          <div class="image-item">
-            <img src="../../assets/my.jpg" class="image">
+          <div class="image-item mt-2" *ngFor="let photo of userProfileInfo.userPhotoList">
+            <input type="image" [src]="photo.photoUrl" class="image" (click)="viewPhoto(photo)">
+            <div *ngIf="myProfile">
+              <button class="btn-on-photo" type="button" (click)="deletePhoto(photo.id)">
+                <span class="material-icons align-middle">clear</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
       <div class="container-def p-3 mb-3">
         <div class="row">
           <div class="col">
-            <span class="form-label">Пости <span class="text-gray-1">2</span></span>
+            <span class="mb-0">Пости <span
+              class="text-gray-1">{{(userProfileInfo.userPostList) ? userProfileInfo.userPostList.length : 0}}</span></span>
           </div>
           <div class="col">
+            <div *ngIf="myProfile">
+              <button class="inp-small-form btn-hidden float-end" type="button" (click)="createPost()">
+                <span class="material-icons align-middle">add</span>
+              </button>
+            </div>
             <button class="inp-small-form btn-hidden float-end" type="button" (click)="toggleShowPosts()">
               <span class="material-icons align-middle">{{showPosts ? 'visibility_off' : 'visibility' }}</span>
             </button>
@@ -84,30 +83,33 @@
         </div>
       </div>
       <div *ngIf="showPosts">
-        <div class="container-def p-3 mb-3">
-          <div class="mb-2">
-            <img src="../../assets/my.jpg" class="image-post">
+        <div class="container-def p-3 mb-3" *ngFor="let post of userProfileInfo.userPostList">
+          <div class="post-image-item mb-2">
+            <div class="text-center">
+              <input type="image" [src]="post.photoUrl" class="image-post" (click)="viewPostPhoto(post)">
+            </div>
+            <div *ngIf="myProfile">
+              <button class="btn-on-post" type="button" (click)="deletePost(post.id)">
+                <span class="material-icons align-middle">clear</span>
+              </button>
+            </div>
+          </div>
+          <div class="px-2">
+            <span>{{post.text}}</span>
           </div>
           <div>
-            <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusamus doloremque dolores doloribus, laborenisi quasi sequi sint ut voluptatem voluptates?</span>
-          </div>
-          <div>
-            <hr class="hr-def">
+            <hr class="hr-def mt-2">
           </div>
           <div>
             <div class="row">
               <div class="col">
-                <div>
-                  <button class="inp-small-form btn-like-cst" type="button">
-                    <span class="material-icons align-middle">favorite</span>
-                  </button>
-                </div>
+                <span class="ms-2">{{post.creationTime | date: 'dd.MM.yyyy'}}</span>
               </div>
               <div class="col">
-                <div class="float-end">
+                <button class="inp-small-form btn-hidden float-end me-2" type="button">
                   <span class="material-icons align-middle text-red-1">favorite</span>
-                  <span class="ms-1 me-2">2</span>
-                </div>
+                  <span class="ms-1">{{post.numOfLikes}}</span>
+                </button>
               </div>
             </div>
           </div>

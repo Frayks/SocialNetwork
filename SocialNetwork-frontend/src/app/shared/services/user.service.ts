@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpParams} from "@angular/common/http";
+import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {EndpointConstants} from "../constants/endpoint-constants";
 import {UserProfileInfo} from "../models/UserProfileInfo";
@@ -20,5 +20,24 @@ export class UserService {
     })
   }
 
+  createPost(payload: FormData) {
+    return this.httpClient.post(environment.server_url + EndpointConstants.CREATE_POST_ENDPOINT, payload);
+  }
+
+  deletePhoto(photoId: number) {
+    let params = new HttpParams()
+      .set('photoId', photoId);
+    return this.httpClient.get(environment.server_url + EndpointConstants.DELETE_PHOTO_ENDPOINT, {
+      params: params
+    })
+  }
+
+  deletePost(postId: number) {
+    let params = new HttpParams()
+      .set('postId', postId);
+    return this.httpClient.get(environment.server_url + EndpointConstants.DELETE_POST_ENDPOINT, {
+      params: params
+    })
+  }
 
 }

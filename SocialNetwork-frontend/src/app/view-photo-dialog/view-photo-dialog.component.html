@@ -1,0 +1,18 @@
+<div class="container-def container-view-photo p-3">
+  <img [src]="photo.photoUrl" class="view-photo-item pb-3">
+  <div>
+    <div class="row">
+      <div class="col">
+        <span class="ms-2">{{photo.loadTime | date: 'dd.MM.yyyy'}}</span>
+      </div>
+      <div class="col">
+        <button class="inp-small-form btn-hidden float-end me-2" type="button">
+          <span class="material-icons align-middle text-red-1">favorite</span>
+          <span class="ms-1">{{photo.numOfLikes}}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+

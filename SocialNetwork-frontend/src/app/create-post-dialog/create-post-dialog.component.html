@@ -1,0 +1,35 @@
+<div class="container-def p-3">
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+    <div class="pb-3">
+      <input #photoFile name="photo" ngModel type="file" class="d-none" accept="image/gif, image/jpeg, image/png"
+             (change)="photoSelected($event.target)">
+      <button type="button" class="btn-add-photo" *ngIf="!photoURL" (click)="photoFile.click()">
+        <span class="material-icons align-middle btn-add-photo-icon">add</span>
+      </button>
+      <div class="text-center" *ngIf="photoURL">
+        <div class="photo-preview-item">
+          <img class="photo-preview" [src]="photoURL" (click)="photoFile.click()">
+          <button class="btn-on-photo-preview" type="button" (click)="clearSelectedPhoto()">
+            <span class="material-icons align-middle">clear</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+    <div class="pb-2">
+      <textarea name="text" ngModel class="textarea-def"></textarea>
+    </div>
+    <div class="text-center">
+      <button class="inp-def-form btn-def me-4" type="button" (click)="cancelCreate()">
+        <span class="material-icons custom-material-icons align-middle">clear</span>
+        Скасувати
+      </button>
+      <button type="submit" class="inp-def-form btn-def">
+        <span class="material-icons custom-material-icons align-middle">add</span>
+        Створити
+      </button>
+    </div>
+  </form>
+</div>
+
+

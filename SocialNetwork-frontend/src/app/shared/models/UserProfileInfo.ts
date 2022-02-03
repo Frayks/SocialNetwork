@@ -1,3 +1,6 @@
+import {UserPhoto} from "./UserPhoto";
+import {UserPost} from "./UserPost";
+
 export class UserProfileInfo {
   username!: string
   firstName!: string
@@ -9,4 +12,7 @@ export class UserProfileInfo {
   school!: string
   university!: string
   aboutYourself!: string
+  userPhotoList!: UserPhoto[]
+  userPostList!: UserPost[]
+
 }

@@ -15,6 +15,11 @@ import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormsModule} from '@angular/forms';
 import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
 import {JWT_OPTIONS, JwtHelperService, JwtModule} from "@auth0/angular-jwt";
+import {MatDialogModule} from "@angular/material/dialog";
+import { CreatePostDialogComponent } from './create-post-dialog/create-post-dialog.component';
+import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import { ViewPhotoDialogComponent } from './view-photo-dialog/view-photo-dialog.component';
+import { ViewPostPhotoDialogComponent } from './view-post-photo-dialog/view-post-photo-dialog.component';
 
 @NgModule({
   declarations: [
@@ -26,14 +31,19 @@ import {JWT_OPTIONS, JwtHelperService, JwtModule} from "@auth0/angular-jwt";
     RestoreComponent,
     ResetPasswordComponent,
     RestoreMessageComponent,
-    HeaderComponent
+    HeaderComponent,
+    CreatePostDialogComponent,
+    ViewPhotoDialogComponent,
+    ViewPostPhotoDialogComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    JwtModule
+    JwtModule,
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
