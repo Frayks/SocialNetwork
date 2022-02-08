@@ -13,11 +13,12 @@ $color-gray-3: #6c757d;
 $color-gray-4: #565656;
 $color-gray-5: #f5f5f5;
 $color-transparent-black-0: rgba(0,0,0,0.3);
-$color-def-0: #5081c4;
-$color-def-1: #2a5885;
-$color-def-2: #314872;
-$color-def-3: #283b5d;
-$color-def-4: #203049;
+$color-def-0: #85a2cc;
+$color-def-1: #5081c4;
+$color-def-2: #2a5885;
+$color-def-3: #314872;
+$color-def-4: #283b5d;
+$color-def-5: #203049;
 $color-red-0: #ff3333;
 
 
@@ -25,6 +26,7 @@ $color-red-0: #ff3333;
 
 * {
   font-family: Roboto, sans-serif;
+  font-size: 14px;
 }
 
 
@@ -143,7 +145,7 @@ body {
   overflow: hidden;
   object-fit: cover;
   width: 100%;
-  height: 200px;
+  height: 100%;
   border-radius: 50%;
 }
 
@@ -227,13 +229,23 @@ body {
 /* --- Buttons --- */
 
 .btn-def {
+  background-color: $color-def-1;
+  border-color: $color-def-1;
+  color: white;
+}
+
+.btn-def:hover {
+  color: $color-def-4;
+}
+
+.btn-used {
   background-color: $color-def-0;
   border-color: $color-def-0;
   color: white;
 }
 
-.btn-def:hover {
-  color: $color-def-3;
+.btn-used:hover {
+  color: $color-def-4;
 }
 
 .btn-gray {
@@ -324,12 +336,12 @@ body {
 
 .link-def {
   text-decoration: none;
-  color: $color-def-1;
+  color: $color-def-2;
 }
 
 .link-def:hover {
   text-decoration: underline;
-  color: $color-def-1;
+  color: $color-def-2;
 }
 
 /* --- Texts --- */
@@ -359,7 +371,7 @@ body {
 }
 
 .info-label {
-  color: $color-def-2;
+  color: $color-def-3;
 }
 
 .textarea-def {

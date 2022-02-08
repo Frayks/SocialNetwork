@@ -34,6 +34,7 @@ export class UserComponent implements OnInit {
       this.userService.loadUserProfileInfo(params['username']).subscribe({
         next: data => {
           this.userProfileInfo = data
+          console.dir(data)
           this.myProfile = data.username === this.authService.getUsername()
         },
         error: error => {

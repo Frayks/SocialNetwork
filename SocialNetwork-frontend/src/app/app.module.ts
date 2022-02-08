@@ -20,6 +20,7 @@ import { CreatePostDialogComponent } from './create-post-dialog/create-post-dial
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { ViewPhotoDialogComponent } from './view-photo-dialog/view-photo-dialog.component';
 import { ViewPostPhotoDialogComponent } from './view-post-photo-dialog/view-post-photo-dialog.component';
+import { FriendsComponent } from './friends/friends.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ViewPostPhotoDialogComponent } from './view-post-photo-dialog/view-post
     CreatePostDialogComponent,
     ViewPhotoDialogComponent,
     ViewPostPhotoDialogComponent,
+    FriendsComponent,
   ],
   imports: [
     BrowserModule,

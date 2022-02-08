@@ -6,6 +6,7 @@ import {RestoreComponent} from "./restore/restore.component";
 import {RestoreMessageComponent} from "./restore-message/restore-message.component";
 import {ResetPasswordComponent} from "./reset-password/reset-password.component";
 import {UserComponent} from "./user/user.component";
+import {FriendsComponent} from "./friends/friends.component";
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path: 'restore', component: RestoreComponent},
   {path: 'restoreMessage', component: RestoreMessageComponent},
   {path: 'resetPassword', component: ResetPasswordComponent},
-  {path: 'users/:username', component: UserComponent}
+  {path: 'users/:username', component: UserComponent},
+  {path: 'friends', component: FriendsComponent}
 ];
 
 @NgModule({

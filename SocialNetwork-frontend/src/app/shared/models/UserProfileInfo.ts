@@ -1,5 +1,6 @@
 import {UserPhoto} from "./UserPhoto";
 import {UserPost} from "./UserPost";
+import {UserFriend} from "./UserFriend";
 
 export class UserProfileInfo {
   username!: string
@@ -14,5 +15,7 @@ export class UserProfileInfo {
   aboutYourself!: string
   userPhotoList!: UserPhoto[]
   userPostList!: UserPost[]
-
+  userFriendList!: UserFriend[]
+  friend!: boolean
+  requestToFriends!: boolean
 }

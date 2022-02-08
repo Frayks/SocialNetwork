@@ -19,4 +19,7 @@ export class MenuComponent implements OnInit {
     this.router.navigate([`users/${this.authService.getUsername()}`])
   }
 
+  goToFriends() {
+    this.router.navigate(["friends"])
+  }
 }

@@ -11,19 +11,39 @@
           <span>{{userProfileInfo.firstName}} {{userProfileInfo.lastName}}</span>
         </div>
         <hr class="hr-def">
+        <div *ngIf="!myProfile" class="pb-3 px-3">
+          <input type="submit" class="w-100 inp-def-form btn-def" value="Повідомлення">
+          <div *ngIf="!userProfileInfo.friend" class="pt-2">
+            <div *ngIf="!userProfileInfo.requestToFriends; else sendRequestToFriends">
+              <input type="submit" class="w-100 inp-def-form btn-def" value="Долучити до друзів">
+            </div>
+            <ng-template #sendRequestToFriends>
+              <input type="submit" class="w-100 inp-def-form btn-used" value="Запит надіслано">
+            </ng-template>
+          </div>
+        </div>
         <div class="block-info px-3">
-          <p *ngIf="userProfileInfo.aboutYourself">Про себе: <span
-            class="info-label">{{userProfileInfo.aboutYourself}}</span></p>
-          <p *ngIf="userProfileInfo.dateOfBirth">Вік: <span class="info-label">{{calcAge()}}</span></p>
-          <p *ngIf="userProfileInfo.city">Місто: <span class="info-label">{{userProfileInfo.city}}</span></p>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.aboutYourself">Про себе: <span class="info-label">{{userProfileInfo.aboutYourself}}</span></span>
+          </div>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.dateOfBirth">Вік: <span class="info-label">{{calcAge()}}</span></span>
+          </div>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.city">Місто: <span class="info-label">{{userProfileInfo.city}}</span></span>
+          </div>
         </div>
         <div class="block-info px-3" *ngIf="showAdditionalInfo">
           <hr class="hr-def">
-          <p *ngIf="userProfileInfo.dateOfBirth">Дата народження: <span
-            class="info-label">{{userProfileInfo.dateOfBirth | date: 'dd.MM.yyyy'}}</span></p>
-          <p *ngIf="userProfileInfo.school">Школа: <span class="info-label">{{userProfileInfo.school}}</span></p>
-          <p *ngIf="userProfileInfo.university">Університет: <span
-            class="info-label">{{userProfileInfo.university}}</span></p>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.dateOfBirth">Дата народження: <span class="info-label">{{userProfileInfo.dateOfBirth | date: 'dd.MM.yyyy'}}</span></span>
+          </div>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.school">Школа: <span class="info-label">{{userProfileInfo.school}}</span></span>
+          </div>
+          <div class="pb-1">
+            <span *ngIf="userProfileInfo.university">Університет: <span class="info-label">{{userProfileInfo.university}}</span></span>
+          </div>
         </div>
         <div class="text-center">
           <button type="button" class="inp-def-form btn-hidden btn-info-cst" (click)="toggleShowAdditionalInfo()">
@@ -123,68 +143,20 @@
         </div>
         <div class="container-def p-3">
           <div>
-            <p class="form-label">Друзі <span class="text-gray-1">2</span></p>
+            <a [routerLink]="['/friends']" class="text-decoration-none text-black mb-0">Друзі <span class="text-gray-1">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
           </div>
-          <div class="row">
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
-            </div>
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
-            </div>
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
-            </div>
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
-            </div>
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
-            </div>
-            <div class="icon-small-box">
-              <a href="#" class="link-def">
-                <div>
-                  <img src="../../assets/my.jpg" class="icon-small">
-                </div>
-                <div class="text-center">
-                  <p class="form-label">Андрій</p>
-                </div>
-              </a>
+          <div *ngIf="userProfileInfo.userFriendList" class="pt-3">
+            <div class="row">
+              <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-small-box">
+                <a href="#" class="link-def">
+                  <div>
+                    <img [src]="friend.avatarUrl" class="icon-small">
+                  </div>
+                  <div class="text-center">
+                    <p class="form-label">{{friend.firstName}}</p>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
