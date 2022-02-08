@@ -44,6 +44,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public List<User> findByIds(List<Long> userIdList) {
+        return userRepository.findByIds(userIdList);
+    }
+
+    @Override
     public User findById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -85,5 +90,5 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
-    
+
 }

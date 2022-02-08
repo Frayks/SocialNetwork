@@ -3,10 +3,7 @@ package andrew.project.socialNetwork.backend;
 import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import andrew.project.socialNetwork.backend.api.constants.Sex;
 import andrew.project.socialNetwork.backend.api.entities.*;
-import andrew.project.socialNetwork.backend.api.services.RoleService;
-import andrew.project.socialNetwork.backend.api.services.UserPhotoService;
-import andrew.project.socialNetwork.backend.api.services.UserPostService;
-import andrew.project.socialNetwork.backend.api.services.UserService;
+import andrew.project.socialNetwork.backend.api.services.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootApplication
 public class SocialNetworkBackendApplication {
@@ -64,7 +63,7 @@ public class SocialNetworkBackendApplication {
             userInfo1.setDateOfBirth(new Timestamp(dateFormat.parse("07.05.2001").getTime()));
 
             UserInfo userInfo2 = new UserInfo();
-            userInfo2.setAvatarUrl("...");
+            userInfo2.setAvatarUrl("https://blog.cpanel.com/wp-content/uploads/2019/08/user-01.png");
             userInfo2.setSex(Sex.MALE);
             userInfo2.setDateOfBirth(new Timestamp(dateFormat.parse("07.05.2001").getTime()));
 
@@ -124,6 +123,21 @@ public class SocialNetworkBackendApplication {
             userService.addRoleToUser("and_you", RoleName.ADMIN);
 
             userService.addRoleToUser("vinnytile", RoleName.ADMIN);
+        };
+    }
+
+    //@Bean
+    CommandLineRunner run1(FriendsService friendsService, UserService userService) {
+        return args -> {
+            System.out.println(friendsService.findFriends(367L, 1));
+            System.out.println(friendsService.findRequestsToFriends(367L));
+            System.out.println(friendsService.checkIfFriends(367L, 369L));
+            System.out.println(friendsService.checkIfFriends(369L, 367L));
+            List<Long> userIdList = new ArrayList<>();
+            userIdList.add(367L);
+            userIdList.add(369L);
+            List<User> userList = userService.findByIds(userIdList);
+            System.out.println();
         };
     }
 

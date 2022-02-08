@@ -1,19 +1,20 @@
 package andrew.project.socialNetwork.backend.api.mappers;
 
+import andrew.project.socialNetwork.backend.api.dtos.UserFriendDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserPhotoDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserPostDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
-import andrew.project.socialNetwork.backend.api.entities.User;
-import andrew.project.socialNetwork.backend.api.entities.UserInfo;
-import andrew.project.socialNetwork.backend.api.entities.UserPhoto;
-import andrew.project.socialNetwork.backend.api.entities.UserPost;
+import andrew.project.socialNetwork.backend.api.entities.*;
+import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 public class UserMapper {
 
-    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<UserPost> userPostList) {
+    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<UserPost> userPostList, List<User> userFriendList, Friends friends) {
         UserProfileInfoDto userProfileInfoDto = new UserProfileInfoDto();
         UserInfo userInfo = user.getUserInfo();
         userProfileInfoDto.setUsername(user.getUsername());
@@ -26,13 +27,37 @@ public class UserMapper {
         userProfileInfoDto.setSchool(userInfo.getSchool());
         userProfileInfoDto.setUniversity(userInfo.getUniversity());
         userProfileInfoDto.setAboutYourself(userInfo.getAboutYourself());
-        if (userPhotoList != null && !userPhotoList.isEmpty()) {
+        if (friends != null) {
+            userProfileInfoDto.setFriend(friends.getAccepted());
+            userProfileInfoDto.setRequestToFriends(Objects.equals(user.getId(), friends.getSecondUserId()));
+        }
+        if (!CollectionUtils.isEmpty(userPhotoList)) {
             userProfileInfoDto.setUserPhotoList(mapToPhotoDtoList(userPhotoList));
         }
-        if (userPostList != null && !userPostList.isEmpty()) {
+        if (!CollectionUtils.isEmpty(userPostList)) {
             userProfileInfoDto.setUserPostList(mapToPostDtoList(userPostList));
         }
+        if (!CollectionUtils.isEmpty(userFriendList)) {
+            userProfileInfoDto.setUserFriendList(mapToUserFriendDtoList(userFriendList));
+        }
         return userProfileInfoDto;
+    }
+
+    public static List<UserFriendDto> mapToUserFriendDtoList(List<User> userFriendList) {
+        List<UserFriendDto> userFriendDtoList = new ArrayList<>();
+        for (User user : userFriendList) {
+            userFriendDtoList.add(mapToUserFriendDto(user));
+        }
+        return userFriendDtoList;
+    }
+
+    public static UserFriendDto mapToUserFriendDto(User user) {
+        UserFriendDto userFriendDto = new UserFriendDto();
+        userFriendDto.setUsername(user.getUsername());
+        userFriendDto.setFirstName(user.getFirstName());
+        userFriendDto.setLastName(user.getLastName());
+        userFriendDto.setAvatarUrl(user.getUserInfo().getAvatarUrl());
+        return userFriendDto;
     }
 
     public static List<UserPhotoDto> mapToPhotoDtoList(List<UserPhoto> userPhotoList) {

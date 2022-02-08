@@ -28,5 +28,8 @@ public class UserProfileInfoDto {
     private String aboutYourself;
     private List<UserPhotoDto> userPhotoList = new ArrayList<>();
     private List<UserPostDto> userPostList = new ArrayList<>();
+    private List<UserFriendDto> userFriendList = new ArrayList<>();
+    private boolean friend;
+    private boolean requestToFriends;
 
 }

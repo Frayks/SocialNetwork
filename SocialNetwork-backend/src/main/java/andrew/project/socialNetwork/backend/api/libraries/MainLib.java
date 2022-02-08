@@ -12,7 +12,7 @@ public interface MainLib {
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
-    UserProfileInfoDto getUserProfileInfo(String username);
+    UserProfileInfoDto getUserProfileInfo(String username) throws Exception;
 
     void deletePhoto(Long photoId);
 

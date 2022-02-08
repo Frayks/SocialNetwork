@@ -1,31 +1,29 @@
 package andrew.project.socialNetwork.backend.api.entities;
 
+import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
 
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @Entity
-@Table(name = "users_photos")
-public class UserPhoto {
+@Table(name = "friends")
+public class Friends {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Column(nullable = false)
-    private Long userId;
+    private Long firstUserId;
     @Column(nullable = false)
-    private String photoUrl;
+    private Long secondUserId;
     @Column(nullable = false)
-    private Integer numOfLikes = 0;
-    @Column(nullable = false)
-    private Timestamp loadTime;
+    private Boolean accepted = false;
 
 }

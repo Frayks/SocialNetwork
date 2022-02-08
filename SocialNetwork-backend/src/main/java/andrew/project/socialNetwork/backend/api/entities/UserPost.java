@@ -23,8 +23,8 @@ public class UserPost {
     private Long userId;
     private String photoUrl;
     private String text;
-    @Column(nullable = false, columnDefinition = "integer default 0")
-    private Integer numOfLikes;
+    @Column(nullable = false)
+    private Integer numOfLikes = 0;
     @Column(nullable = false)
     private Timestamp creationTime;
 

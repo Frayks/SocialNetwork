@@ -22,7 +22,7 @@ public class MainController {
     private MainLib mainLib;
 
     @GetMapping("/getUserProfileInfo")
-    public ResponseEntity<UserProfileInfoDto> getUserProfileInfo(@RequestParam String username) {
+    public ResponseEntity<UserProfileInfoDto> getUserProfileInfo(@RequestParam String username) throws Exception {
         LOGGER.debug("Method getUserProfileInfo called!");
         UserProfileInfoDto userProfileInfoDto = mainLib.getUserProfileInfo(username);
         if (userProfileInfoDto == null) {

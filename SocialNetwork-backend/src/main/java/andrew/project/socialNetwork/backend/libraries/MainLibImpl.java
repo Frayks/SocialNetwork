@@ -2,11 +2,13 @@ package andrew.project.socialNetwork.backend.libraries;
 
 import andrew.project.socialNetwork.backend.api.constants.TokenType;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
+import andrew.project.socialNetwork.backend.api.entities.Friends;
 import andrew.project.socialNetwork.backend.api.entities.User;
 import andrew.project.socialNetwork.backend.api.entities.UserPhoto;
 import andrew.project.socialNetwork.backend.api.entities.UserPost;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
 import andrew.project.socialNetwork.backend.api.mappers.UserMapper;
+import andrew.project.socialNetwork.backend.api.services.FriendsService;
 import andrew.project.socialNetwork.backend.api.services.UserPhotoService;
 import andrew.project.socialNetwork.backend.api.services.UserPostService;
 import andrew.project.socialNetwork.backend.api.services.UserService;
@@ -23,10 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MainLibImpl implements MainLib {
 
@@ -35,6 +34,7 @@ public class MainLibImpl implements MainLib {
     private UserService userService;
     private UserPhotoService userPhotoService;
     private UserPostService userPostService;
+    private FriendsService friendsService;
     private JwtProvider jwtProvider;
 
     @Override
@@ -64,12 +64,18 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public UserProfileInfoDto getUserProfileInfo(String username) {
+    public UserProfileInfoDto getUserProfileInfo(String username) throws Exception {
         User user = userService.findByUsername(username);
         if (user != null) {
             List<UserPhoto> userPhotoList = userPhotoService.findByUserId(user.getId());
             List<UserPost> userPostList = userPostService.findByUserId(user.getId());
-            return UserMapper.mapToUserProfileInfoDto(user, userPhotoList, userPostList);
+            org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
+            List<Friends> friendsList = friendsService.findFriends(user.getId(), 6);
+            List<Long> friendsIdList = getFriendsIdList(user.getId(), friendsList);
+            List<User> userFriendList = userService.findByIds(friendsIdList);
+            Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), user.getId());
+            return UserMapper.mapToUserProfileInfoDto(user, userPhotoList, userPostList, userFriendList, friends);
         }
         return null;
     }
@@ -97,6 +103,14 @@ public class MainLibImpl implements MainLib {
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }
 
+    private List<Long> getFriendsIdList(Long userId, List<Friends> friendsList) {
+        List<Long> friendsIdList = new ArrayList<>();
+        for (Friends friends : friendsList) {
+            friendsIdList.add((Objects.equals(friends.getFirstUserId(), userId)) ? friends.getSecondUserId() : friends.getFirstUserId());
+        }
+        return friendsIdList;
+    }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -110,6 +124,11 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setUserPostService(UserPostService userPostService) {
         this.userPostService = userPostService;
+    }
+
+    @Autowired
+    public void setFriendsService(FriendsService friendsService) {
+        this.friendsService = friendsService;
     }
 
     @Autowired
