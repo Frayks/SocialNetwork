@@ -1,1 +1,57 @@
 <app-header></app-header>
+
+<div class="block-main">
+  <div class="row">
+    <div class="col-78pr px-def">
+      <div class="container-def p-3 mb-3">
+        <div *ngIf="myProfile; else anotherUser">
+          <button (click)="switchToShowFriends()">Мої друзі</button>
+          <button (click)="switchToShowFriendRequests()">Запит в друзі {{(userFriendsInfo.userFriendRequestList && userFriendsInfo.userFriendRequestList.length > 0) ? '[' + userFriendsInfo.userFriendRequestList.length + ']' : ''}}</button>
+        </div>
+        <ng-template #anotherUser>
+          <p>Друзі
+            користувача: {{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</p>
+        </ng-template>
+        <hr class="hr-def">
+        <div *ngIf="displaySwitch == 1">
+          <div *ngFor="let friend of userFriendsInfo.userFriendList; let i = index">
+            <hr *ngIf="i > 0" class="hr-def">
+            <a [routerLink]="['/users', friend.username]">
+              <div>
+                <img [src]="friend.avatarUrl" class="icon-small">
+              </div>
+              <div>
+                <p class="form-label">{{friend.firstName}} {{friend.lastName}}</p>
+              </div>
+            </a>
+            <div *ngIf="myProfile">
+              <button (click)="deleteFriend(friend.id)">X</button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="displaySwitch == 2 && myProfile">
+          <div *ngFor="let friendRequest of userFriendsInfo.userFriendRequestList; let i = index">
+            <hr *ngIf="i > 0" class="hr-def">
+            <a [routerLink]="['/users', friendRequest.username]">
+              <div>
+                <img [src]="friendRequest.avatarUrl" class="icon-small">
+              </div>
+              <div>
+                <p class="form-label">{{friendRequest.firstName}} {{friendRequest.lastName}}</p>
+              </div>
+            </a>
+            <button (click)="agreeRequest(friendRequest.id)">Добавити</button>
+            <button (click)="rejectRequest(friendRequest.id)">Відхилити</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-22pr px-def">
+      <div class="block-side-panel">
+        <div class="mb-3">
+          <app-menu></app-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

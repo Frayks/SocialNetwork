@@ -9,6 +9,9 @@ import {UserPhoto} from "../shared/models/UserPhoto";
 import {ViewPhotoDialogComponent} from "../view-photo-dialog/view-photo-dialog.component";
 import {UserPost} from "../shared/models/UserPost";
 import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-photo-dialog.component";
+import {FriendsService} from "../shared/services/friends.service";
+import {ResponseStatus} from "../shared/models/ResponseStatus";
+import {AddToFriendsConstants} from "../shared/constants/add-to-friends-constants";
 
 @Component({
   selector: 'app-user',
@@ -18,12 +21,18 @@ import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-
 export class UserComponent implements OnInit {
 
   userProfileInfo = new UserProfileInfo()
+  showAdditionalInfo = false
+  showPosts = true
+  myProfile = false
 
-  showAdditionalInfo = false;
-  showPosts = true;
-  myProfile = false;
-
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService, private userService: UserService, private dialog: MatDialog) {
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
+    private userService: UserService,
+    private friendsService: FriendsService,
+    private dialog: MatDialog
+  ) {
   }
 
   ngOnInit(): void {
@@ -34,7 +43,6 @@ export class UserComponent implements OnInit {
       this.userService.loadUserProfileInfo(params['username']).subscribe({
         next: data => {
           this.userProfileInfo = data
-          console.dir(data)
           this.myProfile = data.username === this.authService.getUsername()
         },
         error: error => {
@@ -58,11 +66,6 @@ export class UserComponent implements OnInit {
     return Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25)
   }
 
-  addPhoto(input: any) {
-    console.log("yes")
-    //this.userService.addPhoto(input.files[0])
-  }
-
   viewPhoto(photo: UserPhoto) {
     let dialogRef = this.dialog.open(ViewPhotoDialogComponent, {
       panelClass: 'dialog-container-cst',
@@ -75,6 +78,22 @@ export class UserComponent implements OnInit {
       panelClass: 'dialog-container-cst',
       data: post
     });
+  }
+
+  addPhoto(input: any) {
+    console.log("yes")
+    //this.userService.addPhoto(input.files[0])
+  }
+
+  deletePhoto(photoId: number) {
+    this.userService.deletePhoto(photoId).subscribe({
+      next: () => {
+        this.userProfileInfo.userPhotoList = this.userProfileInfo.userPhotoList.filter(item => item.id !== photoId)
+      },
+      error: () => {
+
+      }
+    })
   }
 
   createPost() {
@@ -90,14 +109,40 @@ export class UserComponent implements OnInit {
     })
   }
 
-  deletePhoto(photoId: number) {
-    this.userProfileInfo.userPhotoList = this.userProfileInfo.userPhotoList.filter(item => item.id !== photoId)
-    this.userService.deletePhoto(photoId).subscribe()
-  }
-
   deletePost(postId: number) {
-    this.userProfileInfo.userPostList = this.userProfileInfo.userPostList.filter(item => item.id !== postId)
-    this.userService.deletePost(postId).subscribe()
+    this.userService.deletePost(postId).subscribe({
+      next: () => {
+        this.userProfileInfo.userPostList = this.userProfileInfo.userPostList.filter(item => item.id !== postId)
+      },
+      error: () => {
+
+      }
+    })
   }
 
+  createFriendRequest(userId: number) {
+    this.userService.createFriendRequest(userId).subscribe({
+      next: data => {
+        if (data.status === AddToFriendsConstants.ADDED) {
+          this.userProfileInfo.friend = true
+        } else if (data.status === AddToFriendsConstants.REQUEST_CREATED) {
+          this.userProfileInfo.requestToFriends = true
+        }
+      },
+      error: () => {
+
+      }
+    })
+  }
+
+  cancelFriendRequest(userId: number) {
+    this.userService.cancelFriendRequest(userId).subscribe({
+      next: () => {
+        this.userProfileInfo.requestToFriends = false
+      },
+      error: () => {
+
+      }
+    })
+  }
 }

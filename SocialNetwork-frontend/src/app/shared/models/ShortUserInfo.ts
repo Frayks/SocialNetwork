@@ -1,4 +1,4 @@
-export class UserFriend {
+export class ShortUserInfo {
   id!: number
   username!: string
   firstName!: string

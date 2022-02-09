@@ -3,6 +3,7 @@ import {UserPost} from "./UserPost";
 import {UserFriend} from "./UserFriend";
 
 export class UserProfileInfo {
+  id!: number
   username!: string
   firstName!: string
   lastName!: string

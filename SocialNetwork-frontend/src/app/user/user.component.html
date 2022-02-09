@@ -12,13 +12,13 @@
         </div>
         <hr class="hr-def">
         <div *ngIf="!myProfile" class="pb-3 px-3">
-          <input type="submit" class="w-100 inp-def-form btn-def" value="Повідомлення">
+          <input type="button" class="w-100 inp-def-form btn-def" value="Повідомлення">
           <div *ngIf="!userProfileInfo.friend" class="pt-2">
-            <div *ngIf="!userProfileInfo.requestToFriends; else sendRequestToFriends">
-              <input type="submit" class="w-100 inp-def-form btn-def" value="Долучити до друзів">
+            <div *ngIf="!userProfileInfo.requestToFriends; else friendshipRequestSent">
+              <input type="button" (click)="createFriendRequest(userProfileInfo.id)" class="w-100 inp-def-form btn-def" value="Долучити до друзів">
             </div>
-            <ng-template #sendRequestToFriends>
-              <input type="submit" class="w-100 inp-def-form btn-used" value="Запит надіслано">
+            <ng-template #friendshipRequestSent>
+              <input type="button" (click)="cancelFriendRequest(userProfileInfo.id)" class="w-100 inp-def-form btn-used" value="Запит надіслано">
             </ng-template>
           </div>
         </div>
@@ -143,12 +143,12 @@
         </div>
         <div class="container-def p-3">
           <div>
-            <a [routerLink]="['/friends']" class="text-decoration-none text-black mb-0">Друзі <span class="text-gray-1">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
+            <a [routerLink]="['/users', userProfileInfo.username, 'friends']" class="text-decoration-none text-black mb-0">Друзі <span class="text-gray-1">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
           </div>
           <div *ngIf="userProfileInfo.userFriendList" class="pt-3">
             <div class="row">
               <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-small-box">
-                <a href="#" class="link-def">
+                <a [routerLink]="['/users', friend.username]" class="link-def">
                   <div>
                     <img [src]="friend.avatarUrl" class="icon-small">
                   </div>

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams, HttpRequest} from '@angular/common/http';
-import {first, map} from "rxjs";
+import {map} from "rxjs";
 import {EndpointConstants} from "../constants/endpoint-constants";
 import {environment} from "../../../environments/environment";
 import {JwtConstants} from "../constants/jwt-constants";

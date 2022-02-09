@@ -15,7 +15,7 @@ const routes: Routes = [
   {path: 'restoreMessage', component: RestoreMessageComponent},
   {path: 'resetPassword', component: ResetPasswordComponent},
   {path: 'users/:username', component: UserComponent},
-  {path: 'friends', component: FriendsComponent}
+  {path: 'users/:username/friends', component: FriendsComponent}
 ];
 
 @NgModule({
