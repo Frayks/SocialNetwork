@@ -1,6 +1,8 @@
 package andrew.project.socialNetwork.backend.libraries;
 
+import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatus;
 import andrew.project.socialNetwork.backend.api.constants.TokenType;
+import andrew.project.socialNetwork.backend.api.dtos.UserFriendsInfoDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
 import andrew.project.socialNetwork.backend.api.entities.Friends;
 import andrew.project.socialNetwork.backend.api.entities.User;
@@ -81,17 +83,87 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public void deletePhoto(Long photoId) {
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User userDbi = userService.findByUsername(user.getUsername());
-        userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
+    public UserFriendsInfoDto getUserFriendsInfo(String username) throws Exception {
+        User user = userService.findByUsername(username);
+        if (user != null) {
+            List<Friends> friendsList = friendsService.findFriends(user.getId());
+            List<Long> friendsIdList = getFriendsIdList(user.getId(), friendsList);
+            List<User> userFriendList = userService.findByIds(friendsIdList);
+            List<User> userFriendRequestList = null;
+            org.springframework.security.core.userdetails.User userdetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            if (username.equals(userdetails.getUsername())) {
+                List<Friends> friendRequestList = friendsService.findRequestsToFriends(user.getId());
+                List<Long> friendRequestsIdList = getFriendRequestsIdList(friendRequestList);
+                userFriendRequestList = userService.findByIds(friendRequestsIdList);
+            }
+            return UserMapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList);
+        }
+        return null;
     }
 
     @Override
-    public void deletePost(Long postId) {
+    public int deletePhoto(Long photoId) {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
-        userPostService.deleteByIdAndUserId(postId, userDbi.getId());
+        return userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
+    }
+
+    @Override
+    public int deletePost(Long postId) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        return userPostService.deleteByIdAndUserId(postId, userDbi.getId());
+    }
+
+    @Override
+    public AddToFriendsStatus createFriendRequest(Long userId) throws Exception {
+        org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
+        if (userRequesterDbi.getId().equals(userId)) {
+            return AddToFriendsStatus.BAD_REQUEST;
+        }
+        User user = userService.findById(userId);
+        if (user == null) {
+            return AddToFriendsStatus.BAD_REQUEST;
+        }
+        Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), userId);
+        if (friends != null) {
+            if (friends.getAccepted()) {
+                return AddToFriendsStatus.BAD_REQUEST;
+            } else {
+                if (Objects.equals(friends.getSecondUserId(), userRequesterDbi.getId())) {
+                    friends.setAccepted(true);
+                    friendsService.save(friends);
+                    return AddToFriendsStatus.ADDED;
+                } else {
+                    return AddToFriendsStatus.BAD_REQUEST;
+                }
+            }
+        }
+        friends = new Friends();
+        friends.setFirstUserId(userRequesterDbi.getId());
+        friends.setSecondUserId(userId);
+        friendsService.save(friends);
+        return AddToFriendsStatus.REQUEST_CREATED;
+    }
+
+    @Override
+    public boolean cancelFriendRequest(Long userId) throws Exception {
+        org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
+        if (userRequesterDbi.getId().equals(userId)) {
+            return false;
+        }
+        User user = userService.findById(userId);
+        if (user == null) {
+            return false;
+        }
+        Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), userId);
+        if (friends != null && Objects.equals(friends.getSecondUserId(), userId)) {
+            friendsService.delete(friends);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -107,6 +179,14 @@ public class MainLibImpl implements MainLib {
         List<Long> friendsIdList = new ArrayList<>();
         for (Friends friends : friendsList) {
             friendsIdList.add((Objects.equals(friends.getFirstUserId(), userId)) ? friends.getSecondUserId() : friends.getFirstUserId());
+        }
+        return friendsIdList;
+    }
+
+    private List<Long> getFriendRequestsIdList(List<Friends> friendsList) {
+        List<Long> friendsIdList = new ArrayList<>();
+        for (Friends friends : friendsList) {
+            friendsIdList.add(friends.getFirstUserId());
         }
         return friendsIdList;
     }

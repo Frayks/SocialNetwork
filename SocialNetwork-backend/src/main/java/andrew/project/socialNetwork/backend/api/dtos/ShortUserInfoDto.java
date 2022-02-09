@@ -1,13 +1,15 @@
 package andrew.project.socialNetwork.backend.api.dtos;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
 @ToString
-public class UserFriendDto {
+@NoArgsConstructor
+public class ShortUserInfoDto {
     private Long id;
     private String username;
     private String firstName;

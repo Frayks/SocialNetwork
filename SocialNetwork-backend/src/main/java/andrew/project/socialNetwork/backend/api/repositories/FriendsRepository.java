@@ -15,6 +15,9 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
     @Query(value = "FROM Friends f WHERE (f.firstUserId = ?1 or f.secondUserId = ?1) and f.accepted = true")
     List<Friends> findFriends(Long userId, PageRequest pageRequest);
 
+    @Query(value = "FROM Friends f WHERE (f.firstUserId = ?1 or f.secondUserId = ?1) and f.accepted = true")
+    List<Friends> findFriends(Long userId);
+
     @Query(value = "FROM Friends f WHERE f.secondUserId = ?1 and f.accepted = false")
     List<Friends> findRequestsToFriends(Long userId);
 

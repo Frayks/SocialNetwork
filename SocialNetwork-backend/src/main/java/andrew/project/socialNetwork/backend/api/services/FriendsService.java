@@ -8,6 +8,8 @@ public interface FriendsService {
 
     List<Friends> findFriends(Long userId, int limit);
 
+    List<Friends> findFriends(Long userId);
+
     List<Friends> findRequestsToFriends(Long userId);
 
     Friends checkIfFriends(Long firstUserId, Long secondUserId) throws Exception;

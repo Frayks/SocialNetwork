@@ -27,6 +27,11 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    public List<Friends> findFriends(Long userId) {
+        return friendsRepository.findFriends(userId);
+    }
+
+    @Override
     public List<Friends> findRequestsToFriends(Long userId) {
         return friendsRepository.findRequestsToFriends(userId);
     }

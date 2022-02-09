@@ -1,4 +1,4 @@
-package andrew.project.socialNetwork.backend.api.entities;
+package andrew.project.socialNetwork.backend.api.dtos;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,5 +9,6 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class UserFriend {
+public class ResponseStatusDto {
+    private String status;
 }

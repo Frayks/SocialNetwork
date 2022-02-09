@@ -41,8 +41,8 @@ public class UserPostServiceImpl implements UserPostService {
     }
 
     @Override
-    public void deleteByIdAndUserId(Long id, Long userId) {
-        userPostRepository.deleteByIdAndUserId(id, userId);
+    public int deleteByIdAndUserId(Long id, Long userId) {
+        return userPostRepository.deleteByIdAndUserId(id, userId);
     }
 
     @Autowired

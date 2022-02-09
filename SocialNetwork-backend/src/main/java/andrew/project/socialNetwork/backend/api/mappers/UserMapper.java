@@ -1,14 +1,10 @@
 package andrew.project.socialNetwork.backend.api.mappers;
 
-import andrew.project.socialNetwork.backend.api.dtos.UserFriendDto;
-import andrew.project.socialNetwork.backend.api.dtos.UserPhotoDto;
-import andrew.project.socialNetwork.backend.api.dtos.UserPostDto;
-import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
+import andrew.project.socialNetwork.backend.api.dtos.*;
 import andrew.project.socialNetwork.backend.api.entities.*;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -17,6 +13,7 @@ public class UserMapper {
     public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<UserPost> userPostList, List<User> userFriendList, Friends friends) {
         UserProfileInfoDto userProfileInfoDto = new UserProfileInfoDto();
         UserInfo userInfo = user.getUserInfo();
+        userProfileInfoDto.setId(user.getId());
         userProfileInfoDto.setUsername(user.getUsername());
         userProfileInfoDto.setFirstName(user.getFirstName());
         userProfileInfoDto.setLastName(user.getLastName());
@@ -43,6 +40,28 @@ public class UserMapper {
         return userProfileInfoDto;
     }
 
+    public static UserFriendsInfoDto mapToUserFriendsInfoDto(User user, List<User> userFriendList, List<User> userFriendRequestList) {
+        UserFriendsInfoDto userFriendsInfoDto = new UserFriendsInfoDto();
+        userFriendsInfoDto.setShortUserInfo(mapShortUserInfoDto(user));
+        if (!CollectionUtils.isEmpty(userFriendList)) {
+            userFriendsInfoDto.setUserFriendList(mapToUserFriendDtoList(userFriendList));
+        }
+        if (!CollectionUtils.isEmpty(userFriendRequestList)) {
+            userFriendsInfoDto.setUserFriendRequestList(mapToUserFriendDtoList(userFriendRequestList));
+        }
+        return userFriendsInfoDto;
+    }
+
+    private static ShortUserInfoDto mapShortUserInfoDto(User user) {
+        ShortUserInfoDto shortUserInfoDto = new ShortUserInfoDto();
+        shortUserInfoDto.setId(user.getId());
+        shortUserInfoDto.setUsername(user.getUsername());
+        shortUserInfoDto.setFirstName(user.getFirstName());
+        shortUserInfoDto.setLastName(user.getLastName());
+        shortUserInfoDto.setAvatarUrl(user.getUserInfo().getAvatarUrl());
+        return shortUserInfoDto;
+    }
+
     public static List<UserFriendDto> mapToUserFriendDtoList(List<User> userFriendList) {
         List<UserFriendDto> userFriendDtoList = new ArrayList<>();
         for (User user : userFriendList) {
@@ -53,6 +72,7 @@ public class UserMapper {
 
     public static UserFriendDto mapToUserFriendDto(User user) {
         UserFriendDto userFriendDto = new UserFriendDto();
+        userFriendDto.setId(user.getId());
         userFriendDto.setUsername(user.getUsername());
         userFriendDto.setFirstName(user.getFirstName());
         userFriendDto.setLastName(user.getLastName());

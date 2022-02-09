@@ -1,8 +1,8 @@
 package andrew.project.socialNetwork.backend.api.constants;
 
-public class JwtConstants {
+public interface JwtConstants {
 
-    public static final String TOKEN_HEADER = "Bearer ";
-    public static final String TOKEN_TYPE = "token_type";
-    public static final String ROLES = "roles";
+    String TOKEN_HEADER = "Bearer ";
+    String TOKEN_TYPE = "token_type";
+    String ROLES = "roles";
 }

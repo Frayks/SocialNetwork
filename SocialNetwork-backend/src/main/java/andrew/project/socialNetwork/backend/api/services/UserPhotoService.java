@@ -15,5 +15,5 @@ public interface UserPhotoService {
 
     void delete(UserPhoto userPhoto);
 
-    void deleteByIdAndUserId(Long id, Long userId);
+    int deleteByIdAndUserId(Long id, Long userId);
 }
