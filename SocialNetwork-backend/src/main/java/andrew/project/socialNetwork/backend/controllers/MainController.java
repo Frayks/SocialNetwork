@@ -1,6 +1,7 @@
 package andrew.project.socialNetwork.backend.controllers;
 
 import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatus;
+import andrew.project.socialNetwork.backend.api.dtos.NewsDto;
 import andrew.project.socialNetwork.backend.api.dtos.ResponseStatusDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserFriendsInfoDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
@@ -66,7 +67,7 @@ public class MainController {
 
     @GetMapping("/createFriendRequest")
     public ResponseEntity<ResponseStatusDto> createFriendRequest(@RequestParam Long userId) throws Exception {
-        LOGGER.debug("Method addToFriends called!");
+        LOGGER.debug("Method createFriendRequest called!");
         AddToFriendsStatus status = mainLib.createFriendRequest(userId);
         if (AddToFriendsStatus.ADDED.equals(status) || AddToFriendsStatus.REQUEST_CREATED.equals(status)) {
             ResponseStatusDto responseStatusDto = new ResponseStatusDto();
@@ -78,11 +79,42 @@ public class MainController {
 
     @GetMapping("/cancelFriendRequest")
     public ResponseEntity<Void> cancelFriendRequest(@RequestParam Long userId) throws Exception {
-        LOGGER.debug("Method addToFriends called!");
+        LOGGER.debug("Method cancelFriendRequest called!");
         if (mainLib.cancelFriendRequest(userId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/deleteFriend")
+    public ResponseEntity<Void> deleteFriend(@RequestParam Long userId) throws Exception {
+        LOGGER.debug("Method deleteFriend called!");
+        mainLib.deleteFriend(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/agreeFriendRequest")
+    public ResponseEntity<Void> agreeFriendRequest(@RequestParam Long userId) throws Exception {
+        LOGGER.debug("Method agreeFriendRequest called!");
+        mainLib.agreeFriendRequest(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/rejectFriendRequest")
+    public ResponseEntity<Void> rejectFriendRequest(@RequestParam Long userId) throws Exception {
+        LOGGER.debug("Method rejectFriendRequest called!");
+        mainLib.rejectFriendRequest(userId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/getNews")
+    public ResponseEntity<NewsDto> getNews(@RequestParam String username) {
+        LOGGER.debug("Method getNews called!");
+        NewsDto newsDto = mainLib.getNews(username);
+        if (newsDto == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return ResponseEntity.ok().body(newsDto);
     }
 
     @GetMapping("/refreshToken")

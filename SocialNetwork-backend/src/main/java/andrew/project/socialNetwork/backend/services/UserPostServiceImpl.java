@@ -26,8 +26,8 @@ public class UserPostServiceImpl implements UserPostService {
     }
 
     @Override
-    public List<UserPost> findByUserId(Long userId) {
-        return userPostRepository.findByUserId(userId);
+    public List<UserPost> findByUserIdOrderByCreationTimeDesc(Long userId) {
+        return userPostRepository.findByUserIdOrderByCreationTimeDesc(userId);
     }
 
     @Override
@@ -43,6 +43,11 @@ public class UserPostServiceImpl implements UserPostService {
     @Override
     public int deleteByIdAndUserId(Long id, Long userId) {
         return userPostRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList) {
+        return userPostRepository.findByUserIdsOrderByCreationTimeDesc(userIdList);
     }
 
     @Autowired

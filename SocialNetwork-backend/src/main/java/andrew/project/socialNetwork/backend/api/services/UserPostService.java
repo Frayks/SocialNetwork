@@ -9,11 +9,13 @@ public interface UserPostService {
 
     UserPost findById(Long id);
 
-    List<UserPost> findByUserId(Long userId);
+    List<UserPost> findByUserIdOrderByCreationTimeDesc(Long userId);
 
     UserPost save(UserPost userPost);
 
     void delete(UserPost userPhoto);
 
     int deleteByIdAndUserId(Long id, Long userId);
+
+    List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList);
 }

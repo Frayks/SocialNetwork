@@ -1,6 +1,7 @@
 package andrew.project.socialNetwork.backend.api.libraries;
 
 import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatus;
+import andrew.project.socialNetwork.backend.api.dtos.NewsDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserFriendsInfoDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
 
@@ -22,7 +23,15 @@ public interface MainLib {
 
     int deletePost(Long postId);
 
+    AddToFriendsStatus createFriendRequest(Long userId) throws Exception;
+
     boolean cancelFriendRequest(Long userId) throws Exception;
 
-    AddToFriendsStatus createFriendRequest(Long userId) throws Exception;
+    void deleteFriend(Long userId) throws Exception;
+
+    void agreeFriendRequest(Long userId) throws Exception;
+
+    void rejectFriendRequest(Long userId) throws Exception;
+
+    NewsDto getNews(String username);
 }
