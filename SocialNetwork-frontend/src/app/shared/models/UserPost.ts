@@ -1,5 +1,5 @@
 export class UserPost {
-  id!:number
+  id!: number
   photoUrl!: string
   text!: string
   numOfLikes!: number

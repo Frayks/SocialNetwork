@@ -1,5 +1,4 @@
-import {Component, OnInit} from '@angular/core';
-import {Router} from "@angular/router";
+import {Component, Input, OnInit} from '@angular/core';
 import {AuthService} from "../shared/services/auth.service";
 
 @Component({
@@ -9,17 +8,13 @@ import {AuthService} from "../shared/services/auth.service";
 })
 export class MenuComponent implements OnInit {
 
-  constructor(private router: Router, private authService: AuthService) {
+  username!: string
+
+  constructor(private authService: AuthService) {
+    this.username = authService.getUsername()
   }
 
   ngOnInit(): void {
   }
 
-  goToMyAccount() {
-    this.router.navigate([`users/${this.authService.getUsername()}`])
-  }
-
-  goToFriends() {
-    this.router.navigate(["friends"])
-  }
 }

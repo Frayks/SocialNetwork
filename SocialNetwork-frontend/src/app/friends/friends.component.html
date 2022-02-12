@@ -1,5 +1,4 @@
 <app-header></app-header>
-
 <div class="block-main">
   <div class="row">
     <div class="col-78pr px-def">
@@ -40,8 +39,8 @@
                 <p class="form-label">{{friendRequest.firstName}} {{friendRequest.lastName}}</p>
               </div>
             </a>
-            <button (click)="agreeRequest(friendRequest.id)">Добавити</button>
-            <button (click)="rejectRequest(friendRequest.id)">Відхилити</button>
+            <button (click)="agreeFriendRequest(friendRequest.id)">Добавити</button>
+            <button (click)="rejectFriendRequest(friendRequest.id)">Відхилити</button>
           </div>
         </div>
       </div>

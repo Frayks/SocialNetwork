@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {AuthService} from "../shared/services/auth.service";
-import {UserService} from "../shared/services/user.service";
 import {UserFriendsInfo} from "../shared/models/UserFriendsInfo";
 import {FriendsService} from "../shared/services/friends.service";
+import {ShortUserInfo} from "../shared/models/ShortUserInfo";
 
 @Component({
   selector: 'app-friends',
@@ -13,10 +13,12 @@ import {FriendsService} from "../shared/services/friends.service";
 export class FriendsComponent implements OnInit {
 
   displaySwitch = 1
-  userFriendsInfo = new UserFriendsInfo()
+  userFriendsInfo!: UserFriendsInfo
   myProfile = false
 
   constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService, private friendsService: FriendsService) {
+    this.userFriendsInfo = new UserFriendsInfo()
+    this.userFriendsInfo.shortUserInfo = new ShortUserInfo();
   }
 
   ngOnInit(): void {
@@ -28,8 +30,8 @@ export class FriendsComponent implements OnInit {
       this.friendsService.loadUserFriendsInfo(username).subscribe({
         next: data => {
           this.userFriendsInfo = data
-          this.myProfile = username === this.authService.getUsername()
           console.dir(this.userFriendsInfo)
+          this.myProfile = username === this.authService.getUsername()
         },
         error: error => {
           this.router.navigate(["/"])
@@ -46,15 +48,38 @@ export class FriendsComponent implements OnInit {
     this.displaySwitch = 2
   }
 
-  deleteFriend(id: number) {
+  deleteFriend(userId: number) {
+    this.friendsService.deleteFriend(userId).subscribe({
+      next: () => {
+        this.userFriendsInfo.userFriendList = this.userFriendsInfo.userFriendList.filter(item => item.id !== userId)
+      },
+      error: () => {
 
+      }
+    })
   }
 
-  agreeRequest(id: number) {
+  agreeFriendRequest(userId: number) {
+    this.friendsService.agreeFriendRequest(userId).subscribe({
+      next: data => {
+        let friends = this.userFriendsInfo.userFriendRequestList.filter(item => item.id == userId)
+        this.userFriendsInfo.userFriendList = this.userFriendsInfo.userFriendList.concat(friends)
+        this.userFriendsInfo.userFriendRequestList = this.userFriendsInfo.userFriendRequestList.filter(item => item.id !== userId)
+      },
+      error: () => {
 
+      }
+    })
   }
 
-  rejectRequest(id: number) {
+  rejectFriendRequest(userId: number) {
+    this.friendsService.rejectFriendRequest(userId).subscribe({
+      next: () => {
+        this.userFriendsInfo.userFriendRequestList = this.userFriendsInfo.userFriendRequestList.filter(item => item.id !== userId)
+      },
+      error: () => {
 
+      }
+    })
   }
 }

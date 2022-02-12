@@ -16,11 +16,13 @@ import {FormsModule} from '@angular/forms';
 import {AuthInterceptor} from "./shared/interceptors/auth.interceptor";
 import {JWT_OPTIONS, JwtHelperService, JwtModule} from "@auth0/angular-jwt";
 import {MatDialogModule} from "@angular/material/dialog";
-import { CreatePostDialogComponent } from './create-post-dialog/create-post-dialog.component';
+import {CreatePostDialogComponent} from './create-post-dialog/create-post-dialog.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import { ViewPhotoDialogComponent } from './view-photo-dialog/view-photo-dialog.component';
-import { ViewPostPhotoDialogComponent } from './view-post-photo-dialog/view-post-photo-dialog.component';
-import { FriendsComponent } from './friends/friends.component';
+import {ViewPhotoDialogComponent} from './view-photo-dialog/view-photo-dialog.component';
+import {ViewPostPhotoDialogComponent} from './view-post-photo-dialog/view-post-photo-dialog.component';
+import {FriendsComponent} from './friends/friends.component';
+import {NewsComponent} from './news/news.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { FriendsComponent } from './friends/friends.component';
     ViewPhotoDialogComponent,
     ViewPostPhotoDialogComponent,
     FriendsComponent,
+    NewsComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,

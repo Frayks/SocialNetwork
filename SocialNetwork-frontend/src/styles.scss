@@ -29,9 +29,10 @@ $color-red-0: #ff3333;
   font-size: 14px;
 }
 
-
 body {
   background-color: $color-background;
+  height: 100%;
+  min-height: 100%;
 }
 
 /* --- Containers --- */
@@ -73,7 +74,8 @@ body {
   width: 100%;
   height: 3.5rem;
   top: 0;
-  background: white;
+  background-color: white;
+  border-bottom: $color-gray-0 2px solid;
 }
 
 .container-menu {
@@ -85,26 +87,25 @@ body {
     margin: 0;
   }
 
-  .menu-item {
-    width: 100%;
-    text-align: left;
+  a {
+    text-decoration: none;
+  }
+
+  .link-box {
     padding-top: 0.3rem;
     padding-bottom: 0.3rem;
     padding-left: 1.5rem;
-    background-color: white;
-    border: 0;
-
   }
 
-  .menu-item:hover {
+  .link-box:hover {
     background-color: #f8f8f8;
   }
 
-  .menu-item-icon {
+  .link-icon {
     color: #5181b8;
   }
 
-  .menu-item-name {
+  .link-name {
     margin-left: 0.5rem;
     color: black;
   }
@@ -145,7 +146,7 @@ body {
   overflow: hidden;
   object-fit: cover;
   width: 100%;
-  height: 100%;
+  height: 177.8px;
   border-radius: 50%;
 }
 
@@ -159,6 +160,13 @@ body {
   object-fit: cover;
   width: 60px;
   height: 60px;
+  border-radius: 50%;
+}
+
+.icon-super-small {
+  object-fit: cover;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
 }
 
@@ -255,6 +263,17 @@ body {
 }
 
 .btn-gray:hover {
+  color: $color-gray-4;
+}
+
+.btn-refresh {
+  background-color: $color-gray-0;
+  box-shadow: 0 0 0.5rem rgba($color-gray-2, 0.5);
+  color: $color-gray-2;
+  height: 3rem;
+}
+
+.btn-refresh:hover {
   color: $color-gray-4;
 }
 
@@ -375,11 +394,10 @@ body {
 }
 
 .textarea-def {
-  min-height: 5rem;
+  min-height: 6rem;
   border: 1px solid $color-gray-1;
   border-radius: 0.25rem;
   width: 100%;
-
 }
 
 .textarea-def:focus {
@@ -407,6 +425,14 @@ body {
 .view-photo-item {
   border-radius: 0.25rem;
   width: auto; height: auto; max-width: 90rem; max-height: 40rem;
+}
+
+.material-icons-size-1 {
+  font-size: 1rem;
+}
+
+.material-icons-size-2 {
+  font-size: 1.35rem;
 }
 
 /* --- CST --- */

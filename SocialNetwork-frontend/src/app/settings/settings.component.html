@@ -1,0 +1,123 @@
+<app-header></app-header>
+<div class="block-main">
+  <div class="row">
+    <div class="col-78pr px-def">
+      <div class="container-def p-3 mb-3">
+        <p>Мої налаштування</p>
+        <form #form="ngForm" (ngSubmit)="onSubmit(form)">
+          <div class="mb-3 text-center">
+            <img class="border"
+                 src="https://sun6-21.userapi.com/s/v1/if1/tnyBZ8EAmFn51Oe2bGHqgqwDsayH2lRVEnuKrEEaagW8yjhSPsVUmQjSPeeRSV1D2AKTV5RZ.jpg?size=200x200&quality=96&crop=269,0,1036,1036&ava=1">
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Ім'я:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Прізвище:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Username:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Про себе:</span>
+            </div>
+            <div class="col-7 px-def">
+              <textarea class="form-control" rows="3"></textarea>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Дата народження:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Ваша стать:</span>
+            </div>
+            <div class="col-7 px-def">
+              <div class="row">
+                <div class="col">
+                  <div class="form-check-cst">
+                    <div class="row">
+                      <div class="col-10">
+                        <label class="form-check-label" for="inlineFormCheckMale">чоловік</label>
+                      </div>
+                      <div class="col-2">
+                        <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckMale">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="form-check-cst">
+                    <div class="row">
+                      <div class="col-10">
+                        <label class="form-check-label" for="inlineFormCheckFemale">жінка</label>
+                      </div>
+                      <div class="col-2">
+                        <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckFemale">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Місто:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Школа:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-3 px-def pt-2 text-end">
+              <span>Університет:</span>
+            </div>
+            <div class="col-7 px-def">
+              <input class="form-control">
+            </div>
+          </div>
+          <div class="text-center">
+            <input type="button" class="inp-def-form btn-def" value="Зберегти">
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="col-22pr px-def">
+      <div class="block-side-panel">
+        <div class="mb-3">
+          <app-menu></app-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

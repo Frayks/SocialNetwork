@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {AuthService} from "../shared/services/auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../shared/services/user.service";
@@ -10,7 +10,6 @@ import {ViewPhotoDialogComponent} from "../view-photo-dialog/view-photo-dialog.c
 import {UserPost} from "../shared/models/UserPost";
 import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-photo-dialog.component";
 import {FriendsService} from "../shared/services/friends.service";
-import {ResponseStatus} from "../shared/models/ResponseStatus";
 import {AddToFriendsConstants} from "../shared/constants/add-to-friends-constants";
 
 @Component({
@@ -24,6 +23,7 @@ export class UserComponent implements OnInit {
   showAdditionalInfo = false
   showPosts = true
   myProfile = false
+  visible = false
 
   constructor(
     private router: Router,
@@ -45,7 +45,7 @@ export class UserComponent implements OnInit {
           this.userProfileInfo = data
           this.myProfile = data.username === this.authService.getUsername()
         },
-        error: error => {
+        error: () => {
           this.router.navigate([`users/${this.authService.getUsername()}`])
         }
       })
@@ -121,7 +121,7 @@ export class UserComponent implements OnInit {
   }
 
   createFriendRequest(userId: number) {
-    this.userService.createFriendRequest(userId).subscribe({
+    this.friendsService.createFriendRequest(userId).subscribe({
       next: data => {
         if (data.status === AddToFriendsConstants.ADDED) {
           this.userProfileInfo.friend = true
@@ -136,7 +136,7 @@ export class UserComponent implements OnInit {
   }
 
   cancelFriendRequest(userId: number) {
-    this.userService.cancelFriendRequest(userId).subscribe({
+    this.friendsService.cancelFriendRequest(userId).subscribe({
       next: () => {
         this.userProfileInfo.requestToFriends = false
       },
@@ -145,4 +145,19 @@ export class UserComponent implements OnInit {
       }
     })
   }
+
+  @HostListener('window:scroll', ['$event'])
+  scrollHandler(event: any) {
+    let pos = window.scrollY;
+    if (pos > 50) {
+      this.visible = true
+    } else {
+      this.visible = false
+    }
+  }
+
+  goUp() {
+    window.scroll(0, 0);
+  }
+
 }
