@@ -1,6 +1,6 @@
 export class UserPhoto {
   id!:number
-  photoUrl!: string
+  photoUri!: string
   numOfLikes!: number
   loadTime!: string
 

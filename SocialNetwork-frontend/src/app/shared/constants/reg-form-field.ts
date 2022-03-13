@@ -1,0 +1,11 @@
+export enum RegFormField {
+
+  FIRST_NAME = 'FIRST_NAME',
+  LAST_NAME = 'LAST_NAME',
+  EMAIL = 'EMAIL',
+  USERNAME = 'USERNAME',
+  PASSWORD = 'PASSWORD',
+  DATE_OF_BIRTH = 'DATE_OF_BIRTH',
+  SEX = 'SEX'
+
+}

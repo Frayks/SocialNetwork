@@ -7,6 +7,8 @@ import {UserPost} from "../shared/models/UserPost";
 import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-photo-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DOCUMENT} from "@angular/common";
+import {MenuData} from "../shared/models/MenuData";
+import {UserService} from "../shared/services/user.service";
 
 @Component({
   selector: 'app-news',
@@ -17,22 +19,33 @@ export class NewsComponent implements OnInit {
 
   username!: string
   news = new News()
+  menuData = new MenuData()
   visible = false
 
   constructor(
     private router: Router,
     private authService: AuthService,
     private newsService: NewsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private userService: UserService
   ) {
-    if (!this.authService.authCredentials) {
-      this.router.navigate(["/"])
-    }
-    this.username = authService.getUsername();
-    this.refreshNews()
   }
 
   ngOnInit(): void {
+    if (!this.authService.authCredentials) {
+      this.router.navigate(["/"])
+    }
+    this.username = this.authService.getUsername()
+    this.refreshNews()
+    this.userService.loadMenuData().subscribe({
+        next: data => {
+          this.menuData = data
+        },
+        error: () => {
+
+        }
+      }
+    )
   }
 
   viewPostPhoto(post: UserPost) {

@@ -2,7 +2,7 @@
   <form #form="ngForm" (ngSubmit)="onSubmit(form)">
     <div class="pb-3">
       <input #photoFile name="photo" ngModel type="file" class="d-none" accept="image/gif, image/jpeg, image/png"
-             (change)="photoSelected($event.target)">
+             (change)="photoSelected($event)">
       <button type="button" class="btn-add-photo" *ngIf="!photoURL" (click)="photoFile.click()">
         <span class="material-icons align-middle btn-add-photo-icon">add</span>
       </button>

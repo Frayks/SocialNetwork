@@ -4,6 +4,8 @@ import {AuthService} from "../shared/services/auth.service";
 import {UserFriendsInfo} from "../shared/models/UserFriendsInfo";
 import {FriendsService} from "../shared/services/friends.service";
 import {ShortUserInfo} from "../shared/models/ShortUserInfo";
+import {MenuData} from "../shared/models/MenuData";
+import {UserService} from "../shared/services/user.service";
 
 @Component({
   selector: 'app-friends',
@@ -13,10 +15,16 @@ import {ShortUserInfo} from "../shared/models/ShortUserInfo";
 export class FriendsComponent implements OnInit {
 
   displaySwitch = 1
-  userFriendsInfo!: UserFriendsInfo
+  userFriendsInfo = new UserFriendsInfo()
+  menuData = new MenuData()
   myProfile = false
 
-  constructor(private router: Router, private activatedRoute: ActivatedRoute, private authService: AuthService, private friendsService: FriendsService) {
+  constructor(private router: Router,
+              private activatedRoute: ActivatedRoute,
+              private authService: AuthService,
+              private friendsService: FriendsService,
+              private userService: UserService
+  ) {
     this.userFriendsInfo = new UserFriendsInfo()
     this.userFriendsInfo.shortUserInfo = new ShortUserInfo();
   }
@@ -30,11 +38,18 @@ export class FriendsComponent implements OnInit {
       this.friendsService.loadUserFriendsInfo(username).subscribe({
         next: data => {
           this.userFriendsInfo = data
-          console.dir(this.userFriendsInfo)
           this.myProfile = username === this.authService.getUsername()
         },
         error: error => {
           this.router.navigate(["/"])
+        }
+      })
+      this.userService.loadMenuData().subscribe({
+        next:data => {
+          this.menuData = data
+        },
+        error: () => {
+
         }
       })
     })
@@ -45,7 +60,9 @@ export class FriendsComponent implements OnInit {
   }
 
   switchToShowFriendRequests() {
-    this.displaySwitch = 2
+    if (this.userFriendsInfo.userFriendRequestList.length > 0) {
+      this.displaySwitch = 2
+    }
   }
 
   deleteFriend(userId: number) {
@@ -65,6 +82,9 @@ export class FriendsComponent implements OnInit {
         let friends = this.userFriendsInfo.userFriendRequestList.filter(item => item.id == userId)
         this.userFriendsInfo.userFriendList = this.userFriendsInfo.userFriendList.concat(friends)
         this.userFriendsInfo.userFriendRequestList = this.userFriendsInfo.userFriendRequestList.filter(item => item.id !== userId)
+        if (this.userFriendsInfo.userFriendRequestList.length == 0) {
+          this.displaySwitch = 1
+        }
       },
       error: () => {
 
@@ -76,6 +96,9 @@ export class FriendsComponent implements OnInit {
     this.friendsService.rejectFriendRequest(userId).subscribe({
       next: () => {
         this.userFriendsInfo.userFriendRequestList = this.userFriendsInfo.userFriendRequestList.filter(item => item.id !== userId)
+        if (this.userFriendsInfo.userFriendRequestList.length == 0) {
+          this.displaySwitch = 1
+        }
       },
       error: () => {
 

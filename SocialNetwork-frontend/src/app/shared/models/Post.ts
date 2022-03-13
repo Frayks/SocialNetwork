@@ -2,7 +2,7 @@ import {ShortUserInfo} from "./ShortUserInfo";
 
 export class Post {
   id!: number
-  photoUrl!: string
+  photoUri!: string
   text!: string
   numOfLikes!: number
   creationTime!: string

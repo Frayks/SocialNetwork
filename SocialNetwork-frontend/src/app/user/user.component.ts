@@ -10,7 +10,8 @@ import {ViewPhotoDialogComponent} from "../view-photo-dialog/view-photo-dialog.c
 import {UserPost} from "../shared/models/UserPost";
 import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-photo-dialog.component";
 import {FriendsService} from "../shared/services/friends.service";
-import {AddToFriendsConstants} from "../shared/constants/add-to-friends-constants";
+import {AddToFriendsStatusCode} from "../shared/constants/add-to-friends-status-code";
+import {MenuData} from "../shared/models/MenuData";
 
 @Component({
   selector: 'app-user',
@@ -20,6 +21,7 @@ import {AddToFriendsConstants} from "../shared/constants/add-to-friends-constant
 export class UserComponent implements OnInit {
 
   userProfileInfo = new UserProfileInfo()
+  menuData = new MenuData()
   showAdditionalInfo = false
   showPosts = true
   myProfile = false
@@ -50,20 +52,15 @@ export class UserComponent implements OnInit {
         }
       })
     })
-  }
+    this.userService.loadMenuData().subscribe({
+        next: data => {
+          this.menuData = data
+        },
+        error: () => {
 
-  toggleShowAdditionalInfo() {
-    this.showAdditionalInfo = !this.showAdditionalInfo;
-  }
-
-  toggleShowPosts() {
-    this.showPosts = !this.showPosts;
-  }
-
-  calcAge() {
-    let date = Date.parse(this.userProfileInfo.dateOfBirth)
-    let timeDiff = Math.abs(Date.now() - new Date(date).getTime())
-    return Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25)
+        }
+      }
+    )
   }
 
   viewPhoto(photo: UserPhoto) {
@@ -81,8 +78,19 @@ export class UserComponent implements OnInit {
   }
 
   addPhoto(input: any) {
-    console.log("yes")
-    //this.userService.addPhoto(input.files[0])
+    let photo = input.files[0];
+    if (this.mapToMb(photo.size) < 10) {
+      let payload = new FormData()
+      payload.append("photo", photo, photo.name)
+      this.userService.addPhoto(payload).subscribe({
+        next: data => {
+          this.userProfileInfo.userPhotoList.unshift(data)
+        },
+        error: () => {
+
+        }
+      })
+    }
   }
 
   deletePhoto(photoId: number) {
@@ -103,8 +111,16 @@ export class UserComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        console.dir(result)
-        //this.userService.createPost(result).subscribe()
+        this.userService.createPost(result).subscribe(
+          {
+            next: data => {
+              this.userProfileInfo.userPostList.unshift(data)
+            },
+            error: () => {
+
+            }
+          }
+        )
       }
     })
   }
@@ -123,9 +139,9 @@ export class UserComponent implements OnInit {
   createFriendRequest(userId: number) {
     this.friendsService.createFriendRequest(userId).subscribe({
       next: data => {
-        if (data.status === AddToFriendsConstants.ADDED) {
+        if (data.status === AddToFriendsStatusCode.ADDED) {
           this.userProfileInfo.friend = true
-        } else if (data.status === AddToFriendsConstants.REQUEST_CREATED) {
+        } else if (data.status === AddToFriendsStatusCode.REQUEST_CREATED) {
           this.userProfileInfo.requestToFriends = true
         }
       },
@@ -146,6 +162,21 @@ export class UserComponent implements OnInit {
     })
   }
 
+
+  toggleShowAdditionalInfo() {
+    this.showAdditionalInfo = !this.showAdditionalInfo;
+  }
+
+  toggleShowPosts() {
+    this.showPosts = !this.showPosts;
+  }
+
+  calcAge() {
+    let date = Date.parse(this.userProfileInfo.dateOfBirth)
+    let timeDiff = Math.abs(Date.now() - new Date(date).getTime())
+    return Math.floor(timeDiff / (1000 * 3600 * 24) / 365.25)
+  }
+
   @HostListener('window:scroll', ['$event'])
   scrollHandler(event: any) {
     let pos = window.scrollY;
@@ -158,6 +189,10 @@ export class UserComponent implements OnInit {
 
   goUp() {
     window.scroll(0, 0);
+  }
+
+  mapToMb(size: number): number {
+    return size / 1024 / 1024
   }
 
 }

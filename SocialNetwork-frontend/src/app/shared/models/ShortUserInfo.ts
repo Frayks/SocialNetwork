@@ -3,5 +3,5 @@ export class ShortUserInfo {
   username!: string
   firstName!: string
   lastName!: string
-  avatarUrl!: string
+  avatarUri!: string
 }

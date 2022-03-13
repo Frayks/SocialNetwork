@@ -20,15 +20,14 @@ export class CreatePostDialogComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  photoSelected(input: any) {
-    this.selectedPhoto = input.files[0]
+  photoSelected(event: any) {
+    this.selectedPhoto = event.target.files[0]
     const reader = new FileReader()
     reader.readAsDataURL(this.selectedPhoto)
     reader.onload = () => {
       this.photoURL = reader.result
     }
   }
-
 
   clearSelectedPhoto() {
     this.photoFileElement.nativeElement.value = ""
@@ -51,7 +50,6 @@ export class CreatePostDialogComponent implements OnInit {
   }
 
   cancelCreate() {
-    console.log("yes1")
     this.dialogRef.close()
   }
 

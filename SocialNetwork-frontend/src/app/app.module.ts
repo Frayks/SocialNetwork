@@ -9,7 +9,7 @@ import {UserComponent} from './user/user.component';
 import {MenuComponent} from './menu/menu.component';
 import {RestoreComponent} from './restore/restore.component';
 import {ResetPasswordComponent} from './reset-password/reset-password.component';
-import {RestoreMessageComponent} from './restore-message/restore-message.component';
+import {MessageComponent} from './message/message.component';
 import {HeaderComponent} from './header/header.component';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
 import {FormsModule} from '@angular/forms';
@@ -23,6 +23,7 @@ import {ViewPostPhotoDialogComponent} from './view-post-photo-dialog/view-post-p
 import {FriendsComponent} from './friends/friends.component';
 import {NewsComponent} from './news/news.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ConfirmComponent } from './confirm/confirm.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,7 @@ import { SettingsComponent } from './settings/settings.component';
     MenuComponent,
     RestoreComponent,
     ResetPasswordComponent,
-    RestoreMessageComponent,
+    MessageComponent,
     HeaderComponent,
     CreatePostDialogComponent,
     ViewPhotoDialogComponent,
@@ -41,6 +42,7 @@ import { SettingsComponent } from './settings/settings.component';
     FriendsComponent,
     NewsComponent,
     SettingsComponent,
+    ConfirmComponent,
   ],
   imports: [
     BrowserModule,

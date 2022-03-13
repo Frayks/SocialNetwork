@@ -2,41 +2,47 @@
   <ul class="py-2">
     <li>
       <a [routerLink]="['/users', username]">
-        <div class="link-box">
-          <span class="material-icons link-icon align-middle">account_circle</span>
-          <span class="link-name">Моя сторінка</span>
+        <div class="menu-item-box menu-item-hover">
+          <span class="material-icons menu-item-icon align-middle">account_circle</span>
+          <span class="menu-item-name">Моя сторінка</span>
         </div>
       </a>
     </li>
     <li>
       <a [routerLink]="['/news']">
-        <div class="link-box">
-          <span class="material-icons link-icon align-middle">article</span>
-          <span class="link-name">Новини</span>
+        <div class="menu-item-box menu-item-hover">
+          <span class="material-icons menu-item-icon align-middle">article</span>
+          <span class="menu-item-name">Новини</span>
         </div>
       </a>
     </li>
     <li>
       <a href="#">
-        <div class="link-box">
-          <span class="material-icons link-icon align-middle">question_answer</span>
-          <span class="link-name">Повідомлення</span>
+        <div class="menu-item-box menu-item-hover">
+          <span class="material-icons menu-item-icon align-middle">question_answer</span>
+          <span class="menu-item-name">Повідомлення</span>
+          <span class="counter" *ngIf="numOfMessages > 0">
+            {{numOfMessages}}
+          </span>
         </div>
       </a>
     </li>
     <li class="nav-item">
       <a [routerLink]="['/users', username, 'friends']">
-        <div class="link-box">
-          <span class="material-icons link-icon align-middle">people_alt</span>
-          <span class="link-name">Друзі</span>
+        <div class="menu-item-box menu-item-hover">
+          <span class="material-icons menu-item-icon align-middle">people_alt</span>
+          <span class="menu-item-name">Друзі</span>
+          <span class="counter" *ngIf="numOfRequestsToFriends > 0">
+            {{numOfRequestsToFriends}}
+          </span>
         </div>
       </a>
     </li>
     <li class="nav-item">
       <a [routerLink]="['/settings']">
-        <div class="link-box">
-          <span class="material-icons link-icon align-middle">settings</span>
-          <span class="link-name">Налаштування</span>
+        <div class="menu-item-box menu-item-hover">
+          <span class="material-icons menu-item-icon align-middle">settings</span>
+          <span class="menu-item-name">Налаштування</span>
         </div>
       </a>
     </li>

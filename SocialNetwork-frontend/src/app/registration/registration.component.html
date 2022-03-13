@@ -1,144 +1,141 @@
 <div class="container container-def container-reg">
-  <form>
+  <form #form="ngForm" (ngSubmit)="onSubmit(form)">
     <div class="py-4 text-center">
       <h5>Реєстрація</h5>
     </div>
-    <div class="d-flex justify-content-center">
+    <div class="px-4">
       <div class="w-80">
         <div class="row py-2">
           <div class="col">
-            <input type="text" class="form-control" placeholder="Ім'я" required>
+            <input type="text" class="form-control" placeholder="Ім'я" name="firstName" [(ngModel)]="regForm.firstName"
+                   [class.is-invalid]="firstName.touched && firstName.invalid"
+                   [class.is-valid]="firstName.touched && firstName.valid"
+                   #firstName="ngModel" required>
+            <div class="invalid-feedback px-2"
+                 [class.d-block]="errorMessages.has(firstName.name) && firstName.invalid">{{errorMessages.get(firstName.name)}}</div>
           </div>
           <div class="col">
-            <input type="text" class="form-control" placeholder="Прізвище" required>
+            <input type="text" class="form-control" placeholder="Прізвище" name="lastName"
+                   [(ngModel)]="regForm.lastName"
+                   [class.is-invalid]="lastName.touched && lastName.invalid"
+                   [class.is-valid]="lastName.touched && lastName.valid"
+                   #lastName="ngModel" required>
+            <div class="invalid-feedback px-2"
+                 [class.d-block]="errorMessages.has(lastName.name) && lastName.invalid">{{errorMessages.get(lastName.name)}}</div>
           </div>
         </div>
-        <div class="py-2">
-          <input type="email" class="form-control" placeholder="Email" required>
+        <div class="py-2 ">
+          <input type="email" class="form-control" placeholder="Email" name="email" [(ngModel)]="regForm.email"
+                 [class.is-invalid]="email.touched && email.invalid"
+                 [class.is-valid]="email.touched && email.valid"
+                 #email="ngModel" email required>
+          <div class="invalid-feedback px-2"
+               [class.d-block]="errorMessages.has(email.name) && email.invalid">{{errorMessages.get(email.name)}}</div>
         </div>
         <div class="row py-2">
           <div class="col">
-            <input type="text" class="form-control" placeholder="Username" required>
+            <input type="text" class="form-control" placeholder="Username" name="username"
+                   [(ngModel)]="regForm.username"
+                   [class.is-invalid]="username.touched && username.invalid"
+                   [class.is-valid]="username.touched && username.valid"
+                   #username="ngModel" required>
+            <div class="invalid-feedback px-2"
+                 [class.d-block]="errorMessages.has(username.name) && username.invalid">{{errorMessages.get(username.name)}}</div>
           </div>
           <div class="col">
             <div class="input-group">
-            <input [type]="passwordVisibility ? 'text' : 'password'" class="form-control" placeholder="Пароль" required>
-            <button class="inp-def-form btn-gray" type="button" (click)="togglePasswordVisibility()">
-              <span class="material-icons align-middle material-icons-size-2">{{passwordVisibility ? 'visibility_off' : 'visibility' }}</span>
-            </button>
+              <input [type]="passwordVisibility ? 'text' : 'password'" class="form-control" placeholder="Пароль"
+                     name="password" [(ngModel)]="regForm.password"
+                     [class.is-invalid]="password.touched && password.invalid"
+                     [class.is-valid]="password.touched && password.valid"
+                     #password="ngModel" required minlength="8">
+              <button class="inp-def-form btn-gray" type="button" (click)="togglePasswordVisibility()">
+                <span class="material-icons align-middle material-icons-size-2">
+                  {{passwordVisibility ? 'visibility_off' : 'visibility' }}
+                </span>
+              </button>
             </div>
+            <div class="invalid-feedback px-2"
+                 [class.d-block]="errorMessages.has(password.name) && password.invalid">{{errorMessages.get(password.name)}}</div>
           </div>
         </div>
         <div class="py-2">
           <p class="form-label">Дата народження</p>
           <div class="row">
             <div class="col">
-              <select class="form-select">
-                <option selected value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
-                <option value="7">7</option>
-                <option value="8">8</option>
-                <option value="9">9</option>
-                <option value="10">10</option>
-                <option value="11">11</option>
-                <option value="12">12</option>
-                <option value="13">13</option>
-                <option value="14">14</option>
-                <option value="15">15</option>
-                <option value="16">16</option>
-                <option value="17">17</option>
-                <option value="18">18</option>
-                <option value="19">19</option>
-                <option value="20">20</option>
-                <option value="21">21</option>
-                <option value="22">22</option>
-                <option value="23">23</option>
-                <option value="24">24</option>
-                <option value="25">25</option>
-                <option value="26">26</option>
-                <option value="27">27</option>
-                <option value="28">28</option>
-                <option value="29">29</option>
-                <option value="30">30</option>
-                <option value="31">31</option>
+              <select class="form-select" name="dayOfBirth" [(ngModel)]="regForm.dayOfBirth" (change)="validateDateOfBirth(form)"
+                      [class.is-invalid]="dayOfBirth.touched && dayOfBirth.invalid"
+                      [class.is-valid]="dayOfBirth.touched && dayOfBirth.valid"
+                      #dayOfBirth="ngModel" required>
+                <option [ngValue]="undefined" [disabled]="true">День</option>
+                <option *ngFor="let day of days" [value]="day">{{day}}</option>
               </select>
             </div>
             <div class="col">
-              <select class="form-select">
-                <option selected value="1">січень</option>
-                <option value="2">лютий</option>
-                <option value="3">березень</option>
-                <option value="4">квітень</option>
-                <option value="5">травень</option>
-                <option value="6">червень</option>
-                <option value="7">липень</option>
-                <option value="8">серпень</option>
-                <option value="9">вересень</option>
-                <option value="10">жовтень</option>
-                <option value="11">листопад</option>
-                <option value="12">грудень</option>
+              <select class="form-select" name="monthOfBirth" [(ngModel)]="regForm.monthOfBirth" (change)="validateDateOfBirth(form)"
+                      [class.is-invalid]="monthOfBirth.touched && monthOfBirth.invalid"
+                      [class.is-valid]="monthOfBirth.touched && monthOfBirth.valid"
+                      #monthOfBirth="ngModel" required>
+                <option [ngValue]="undefined" [disabled]="true">Місяць</option>
+                <option *ngFor="let month of months; let i = index" [value]="i + 1">{{month}}</option>
               </select>
             </div>
             <div class="col">
-              <select class="form-select">
-                <option selected value="2021">2021</option>
-                <option value="2020">2020</option>
-                <option value="2019">2019</option>
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-                <option value="2016">2016</option>
-                <option value="2015">2015</option>
-                <option value="2014">2014</option>
-                <option value="2013">2013</option>
-                <option value="2012">2012</option>
-                <option value="2011">2011</option>
-                <option value="2010">2010</option>
-                <option value="2009">2009</option>
-                <option value="2008">2008</option>
-                <option value="2007">2007</option>
-                <option value="2006">2006</option>
-                <option value="2005">2005</option>
-                <option value="2004">2004</option>
-                <option value="2003">2003</option>
-                <option value="2002">2002</option>
-                <option value="2001">2001</option>
-                <option value="2000">2000</option>
+              <select class="form-select" name="yearOfBirth" [(ngModel)]="regForm.yearOfBirth" (change)="validateDateOfBirth(form)"
+                      [class.is-invalid]="yearOfBirth.touched && yearOfBirth.invalid"
+                      [class.is-valid]="yearOfBirth.touched && yearOfBirth.valid"
+                      #yearOfBirth="ngModel" required>
+                <option [ngValue]="undefined" [disabled]="true">Рік</option>
+                <option *ngFor="let year of years" [value]="year">{{year}}</option>
               </select>
             </div>
           </div>
+          <div class="invalid-feedback px-2" [class.d-block]="errorMessages.has('dateOfBirth')">{{errorMessages.get('dateOfBirth')}}</div>
         </div>
         <div class="py-2">
           <p class="form-label">Ваша стать</p>
           <div class="row">
             <div class="col">
-              <div class="form-check-cst">
+              <div class="form-check-cst"
+                   [class.border-invalid]="sex.touched && sex.invalid"
+                   [class.border-valid]="sex.touched && sex.valid"
+              >
                 <div class="row">
                   <div class="col-10">
                     <label class="form-check-label" for="inlineFormCheckMale">чоловік</label>
                   </div>
                   <div class="col-2">
-                    <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckMale">
+                    <input type="radio" class="form-check-input" id="inlineFormCheckMale" name="sex" [value]="'MALE'"
+                           [(ngModel)]="regForm.sex"
+                           [class.is-invalid]="sex.touched && sex.invalid"
+                           [class.is-valid]="sex.touched && sex.valid"
+                           #sex="ngModel" required>
                   </div>
                 </div>
               </div>
             </div>
             <div class="col">
-              <div class="form-check-cst">
+              <div class="form-check-cst"
+                   [class.border-invalid]="sex.touched && sex.invalid"
+                   [class.border-valid]="sex.touched && sex.valid"
+              >
                 <div class="row">
                   <div class="col-10">
                     <label class="form-check-label" for="inlineFormCheckFemale">жінка</label>
                   </div>
                   <div class="col-2">
-                    <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckFemale">
+                    <input type="radio" class="form-check-input" id="inlineFormCheckFemale" name="sex"
+                           [value]="'FEMALE'" [(ngModel)]="regForm.sex"
+                           [class.is-invalid]="sex.touched && sex.invalid"
+                           [class.is-valid]="sex.touched && sex.valid"
+                           #sex="ngModel" required>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+          <div class="invalid-feedback px-2"
+               [class.d-block]="errorMessages.has(sex.name)">{{errorMessages.get(sex.name)}}</div>
         </div>
         <div class="py-4 text-center">
           <button class="inp-def-form btn-def me-4" type="button" (click)="onBackClick()">

@@ -4,7 +4,7 @@
     <div class="col-22pr px-def">
       <div class="container-def block-side-panel overflow-hidden">
         <div class="p-3">
-          <img [src]="userProfileInfo.avatarUrl" class="icon">
+          <img [src]="userProfileInfo.avatarUri" class="icon">
         </div>
         <div class="text-center">
           <span>{{userProfileInfo.firstName}} {{userProfileInfo.lastName}}</span>
@@ -64,7 +64,7 @@
           <div class="row">
             <div class="col">
               <p class="mb-0">Фотографії <span
-                class="text-gray-1">{{(userProfileInfo.userPhotoList) ? userProfileInfo.userPhotoList.length : 0}}</span>
+                class="text-gray">{{(userProfileInfo.userPhotoList) ? userProfileInfo.userPhotoList.length : 0}}</span>
               </p>
             </div>
             <div class="col">
@@ -80,7 +80,7 @@
         </div>
         <div class="images-list">
           <div class="image-item mt-2" *ngFor="let photo of userProfileInfo.userPhotoList">
-            <input type="image" [src]="photo.photoUrl" class="image" (click)="viewPhoto(photo)">
+            <input type="image" [src]="photo.photoUri" class="image" (click)="viewPhoto(photo)">
             <div *ngIf="myProfile">
               <button class="btn-on-photo" type="button" (click)="deletePhoto(photo.id)">
                 <span class="material-icons align-middle">clear</span>
@@ -93,7 +93,7 @@
         <div class="row">
           <div class="col">
             <span class="mb-0">Пости <span
-              class="text-gray-1">{{(userProfileInfo.userPostList) ? userProfileInfo.userPostList.length : 0}}</span></span>
+              class="text-gray">{{(userProfileInfo.userPostList) ? userProfileInfo.userPostList.length : 0}}</span></span>
           </div>
           <div class="col">
             <div *ngIf="myProfile">
@@ -110,8 +110,8 @@
       <div *ngIf="showPosts">
         <div class="container-def p-3 mb-3" *ngFor="let post of userProfileInfo.userPostList">
           <div class="post-image-item mb-2">
-            <div class="text-center">
-              <input type="image" [src]="post.photoUrl" class="image-post" (click)="viewPostPhoto(post)">
+            <div class="text-center" *ngIf="post.photoUri">
+              <input type="image" [src]="post.photoUri" class="image-post" (click)="viewPostPhoto(post)">
             </div>
             <div *ngIf="myProfile">
               <button class="btn-on-post" type="button" (click)="deletePost(post.id)">
@@ -120,7 +120,8 @@
             </div>
           </div>
           <div class="px-2">
-            <span>{{post.text}}</span>
+            <span class="text-pre-wrap">{{post.text}}</span>
+
           </div>
           <div>
             <hr class="hr-def mt-2">
@@ -132,7 +133,7 @@
               </div>
               <div class="col">
                 <button class="inp-small-form btn-hidden float-end me-2" type="button">
-                  <span class="material-icons align-middle text-red-1">favorite</span>
+                  <span class="material-icons align-middle text-red">favorite</span>
                   <span class="ms-1">{{post.numOfLikes}}</span>
                 </button>
               </div>
@@ -144,20 +145,20 @@
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
         </div>
         <div class="container-def p-3 mb-3">
           <div>
             <a [routerLink]="['/users', userProfileInfo.username, 'friends']"
                class="text-decoration-none text-black mb-0">Друзі <span
-              class="text-gray-1">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
+              class="text-gray">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
           </div>
-          <div *ngIf="userProfileInfo.userFriendList" class="pt-3">
+          <div *ngIf="userProfileInfo.userFriendList && userProfileInfo.userFriendList.length" class="pt-3">
             <div class="row">
-              <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-small-box">
+              <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-super-small-box">
                 <a [routerLink]="['/users', friend.username]" class="link-def">
                   <div>
-                    <img [src]="friend.avatarUrl" class="icon-small">
+                    <img [src]="friend.avatarUri" class="icon-super-small">
                   </div>
                   <div class="text-center">
                     <p class="form-label">{{friend.firstName}}</p>

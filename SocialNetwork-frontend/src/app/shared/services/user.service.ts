@@ -3,6 +3,9 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {EndpointConstants} from "../constants/endpoint-constants";
 import {UserProfileInfo} from "../models/UserProfileInfo";
+import {UserPost} from "../models/UserPost";
+import {UserPhoto} from "../models/UserPhoto";
+import {MenuData} from "../models/MenuData";
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +23,16 @@ export class UserService {
     })
   }
 
+  loadMenuData() {
+    return this.httpClient.get<MenuData>(environment.server_url + EndpointConstants.GET_MENU_DATA)
+  }
+
+  addPhoto(payload: FormData) {
+    return this.httpClient.post<UserPhoto>(environment.server_url + EndpointConstants.ADD_PHOTO_ENDPOINT, payload);
+  }
+
   createPost(payload: FormData) {
-    return this.httpClient.post(environment.server_url + EndpointConstants.CREATE_POST_ENDPOINT, payload);
+    return this.httpClient.post<UserPost>(environment.server_url + EndpointConstants.CREATE_POST_ENDPOINT, payload);
   }
 
   deletePhoto(photoId: number) {
@@ -39,5 +50,7 @@ export class UserService {
       params: params
     })
   }
+
+
 
 }

@@ -3,18 +3,20 @@ import {RouterModule, Routes} from '@angular/router';
 import {LoginComponent} from "./login/login.component";
 import {RegistrationComponent} from "./registration/registration.component";
 import {RestoreComponent} from "./restore/restore.component";
-import {RestoreMessageComponent} from "./restore-message/restore-message.component";
+import {MessageComponent} from "./message/message.component";
 import {ResetPasswordComponent} from "./reset-password/reset-password.component";
 import {UserComponent} from "./user/user.component";
 import {FriendsComponent} from "./friends/friends.component";
 import {NewsComponent} from "./news/news.component";
 import {SettingsComponent} from "./settings/settings.component";
+import {ConfirmComponent} from "./confirm/confirm.component";
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
   {path: 'registration', component: RegistrationComponent},
+  {path: 'confirm/:key', component: ConfirmComponent},
   {path: 'restore', component: RestoreComponent},
-  {path: 'restoreMessage', component: RestoreMessageComponent},
+  {path: 'message', component: MessageComponent},
   {path: 'resetPassword', component: ResetPasswordComponent},
   {path: 'users/:username', component: UserComponent},
   {path: 'users/:username/friends', component: FriendsComponent},

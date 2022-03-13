@@ -8,6 +8,8 @@ import {AuthService} from "../shared/services/auth.service";
 })
 export class MenuComponent implements OnInit {
 
+  @Input() numOfMessages!: number
+  @Input() numOfRequestsToFriends!: number
   username!: string
 
   constructor(private authService: AuthService) {

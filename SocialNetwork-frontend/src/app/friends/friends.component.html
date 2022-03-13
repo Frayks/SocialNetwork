@@ -1,46 +1,85 @@
 <app-header></app-header>
 <div class="block-main">
   <div class="row">
-    <div class="col-78pr px-def">
-      <div class="container-def p-3 mb-3">
-        <div *ngIf="myProfile; else anotherUser">
-          <button (click)="switchToShowFriends()">Мої друзі</button>
-          <button (click)="switchToShowFriendRequests()">Запит в друзі {{(userFriendsInfo.userFriendRequestList && userFriendsInfo.userFriendRequestList.length > 0) ? '[' + userFriendsInfo.userFriendRequestList.length + ']' : ''}}</button>
+    <div class="col-22pr px-def">
+      <div class="container-def">
+        <div class="py-2">
+          <div *ngIf="myProfile; else anotherUser">
+            <div class="menu-item-box " (click)="switchToShowFriends()"
+                 [ngClass]="displaySwitch == 1 ? 'menu-item-activated' : 'menu-item-hover'">
+              <span class="material-icons menu-item-icon align-middle">people_alt</span>
+              <span class="menu-item-name">Мої друзі</span>
+            </div>
+            <div class="menu-item-box" (click)="switchToShowFriendRequests()"
+                 [ngClass]="displaySwitch == 2 ? 'menu-item-activated' : userFriendsInfo.userFriendRequestList.length > 0 ? 'menu-item-hover' : ''">
+              <span class="material-icons menu-item-icon align-middle">group_add</span>
+              <span class="menu-item-name">Запит в друзі</span>
+              <span class="counter" *ngIf="userFriendsInfo.userFriendRequestList.length > 0">
+                {{userFriendsInfo.userFriendRequestList.length}}
+              </span>
+            </div>
+          </div>
+          <ng-template #anotherUser>
+            <div class="menu-item-box menu-item-hover" [routerLink]="['/users', userFriendsInfo.shortUserInfo.username]">
+              <span class="material-icons menu-item-icon align-middle">group</span>
+              <span
+                class="menu-item-name">{{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</span>
+            </div>
+          </ng-template>
         </div>
-        <ng-template #anotherUser>
-          <p>Друзі
-            користувача: {{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</p>
-        </ng-template>
-        <hr class="hr-def">
+      </div>
+    </div>
+    <div class="col-56pr px-def">
+      <div class="container-def py-3">
         <div *ngIf="displaySwitch == 1">
           <div *ngFor="let friend of userFriendsInfo.userFriendList; let i = index">
-            <hr *ngIf="i > 0" class="hr-def">
-            <a [routerLink]="['/users', friend.username]">
-              <div>
-                <img [src]="friend.avatarUrl" class="icon-small">
+            <hr *ngIf="i > 0" class="hr-min">
+            <div class="row px-def py-2">
+              <div class="col-20pr ps-4 pb-1">
+                <a [routerLink]="['/users', friend.username]" class="link-def">
+                  <img [src]="friend.avatarUri" class="icon-middle">
+                </a>
               </div>
-              <div>
-                <p class="form-label">{{friend.firstName}} {{friend.lastName}}</p>
+              <div class="col-60pr ps-0 pt-2">
+                <a [routerLink]="['/users', friend.username]" class="link-def">
+                  <span class="form-label">{{friend.firstName}} {{friend.lastName}}</span>
+                </a>
               </div>
-            </a>
-            <div *ngIf="myProfile">
-              <button (click)="deleteFriend(friend.id)">X</button>
+              <div class="col-20pr">
+                <div *ngIf="myProfile">
+                  <button class="inp-small-form btn-hidden float-end me-3" (click)="deleteFriend(friend.id)">
+                    <span class="material-icons align-middle">clear</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         <div *ngIf="displaySwitch == 2 && myProfile">
           <div *ngFor="let friendRequest of userFriendsInfo.userFriendRequestList; let i = index">
-            <hr *ngIf="i > 0" class="hr-def">
-            <a [routerLink]="['/users', friendRequest.username]">
-              <div>
-                <img [src]="friendRequest.avatarUrl" class="icon-small">
+            <hr *ngIf="i > 0" class="hr-min">
+            <div class="row px-def py-2">
+              <div class="col-20pr ps-4 pb-1">
+                <a [routerLink]="['/users', friendRequest.username]" class="link-def">
+                  <img [src]="friendRequest.avatarUri" class="icon-middle">
+                </a>
               </div>
-              <div>
-                <p class="form-label">{{friendRequest.firstName}} {{friendRequest.lastName}}</p>
+              <div class="col-60pr ps-0 pt-2">
+                <a [routerLink]="['/users', friendRequest.username]" class="link-def">
+                  <span class="form-label">{{friendRequest.firstName}} {{friendRequest.lastName}}</span>
+                </a>
               </div>
-            </a>
-            <button (click)="agreeFriendRequest(friendRequest.id)">Добавити</button>
-            <button (click)="rejectFriendRequest(friendRequest.id)">Відхилити</button>
+              <div class="col-20pr">
+                <div *ngIf="myProfile">
+                  <button class="inp-small-form btn-hidden float-end mt-1 mb-2 me-3" (click)="agreeFriendRequest(friendRequest.id)">
+                    <span class="material-icons align-middle">done</span>
+                  </button>
+                  <button class="inp-small-form btn-hidden float-end me-3" (click)="rejectFriendRequest(friendRequest.id)">
+                    <span class="material-icons align-middle">clear</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -48,7 +87,7 @@
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="userFriendsInfo.userFriendRequestList ? userFriendsInfo.userFriendRequestList.length : 0"></app-menu>
         </div>
       </div>
     </div>

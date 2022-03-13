@@ -5,6 +5,8 @@ import {EndpointConstants} from "../constants/endpoint-constants";
 import {environment} from "../../../environments/environment";
 import {JwtConstants} from "../constants/jwt-constants";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {RegForm} from "../models/RegForm";
+import {RegStatus} from "../models/RegStatus";
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +24,18 @@ export class AuthService {
       .pipe(map(data => {
         localStorage.setItem(JwtConstants.AUTH_CREDENTIALS_KEY, JSON.stringify(data))
       }))
+  }
+
+  registration(regForm: RegForm) {
+    return this.httpClient.post<RegStatus>(environment.server_url + EndpointConstants.REGISTRATION_ENDPOINT, regForm);
+  }
+
+  confirm(key: string) {
+    let params = new HttpParams()
+      .set('key', key);
+    return this.httpClient.get(environment.server_url + EndpointConstants.CONFIRM_ENDPOINT, {
+      params: params
+    });
   }
 
   logout() {

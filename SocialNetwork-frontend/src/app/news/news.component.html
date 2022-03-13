@@ -14,7 +14,7 @@
         <a [routerLink]="['/users', post.shortUserInfo.username]" class="link-def">
           <div class="ms-2">
             <div class="d-inline-block pe-2">
-              <img [src]="post.shortUserInfo.avatarUrl" class="icon-super-small">
+              <img [src]="post.shortUserInfo.avatarUri" class="icon-super-small">
             </div>
             <div class="d-inline-block">
               <p class="form-label">{{post.shortUserInfo.firstName}} {{post.shortUserInfo.lastName}}</p>
@@ -24,7 +24,7 @@
         <hr class="hr-def my-2">
         <div class="post-image-item mb-2">
           <div class="text-center">
-            <input type="image" [src]="post.photoUrl" class="image-post" (click)="viewPostPhoto(post)">
+            <input type="image" [src]="post.photoUri" class="image-post" (click)="viewPostPhoto(post)">
           </div>
         </div>
         <div class="px-2">
@@ -40,7 +40,7 @@
             </div>
             <div class="col">
               <button class="inp-small-form btn-hidden float-end me-2" type="button">
-                <span class="material-icons align-middle text-red-1">favorite</span>
+                <span class="material-icons align-middle text-red">favorite</span>
                 <span class="ms-1">{{post.numOfLikes}}</span>
               </button>
             </div>
@@ -51,7 +51,7 @@
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
         </div>
         <div>
           <input type="button" [ngClass]="visible ? 'visible': 'invisible'" (click)="goUp()"

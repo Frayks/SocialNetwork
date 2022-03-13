@@ -14,6 +14,7 @@ export class AuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     let pathname = new URL(request.url).pathname
     if (pathname !== EndpointConstants.LOGIN_ENDPOINT &&
+      pathname !== EndpointConstants.REGISTRATION_ENDPOINT &&
       pathname !== EndpointConstants.REFRESH_TOKEN_ENDPOINT &&
       pathname !== EndpointConstants.LOGOUT_ENDPOINT
     ) {
@@ -34,7 +35,6 @@ export class AuthInterceptor implements HttpInterceptor {
           } else {
             throw error
           }
-          throw error
         })
       )
     } else {
