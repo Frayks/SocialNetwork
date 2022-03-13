@@ -15,9 +15,4 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
-    public MainLib mainLib() {
-        return new MainLibImpl();
-    }
-
 }

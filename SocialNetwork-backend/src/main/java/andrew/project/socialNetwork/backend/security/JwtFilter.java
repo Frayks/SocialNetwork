@@ -33,8 +33,10 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (SecurityConfig.LOGIN_ENDPOINT.equals(request.getServletPath()) ||
+                SecurityConfig.LOGOUT_ENDPOINT.equals(request.getServletPath()) ||
+                SecurityConfig.REGISTRATION_ENDPOINT.equals(request.getServletPath()) ||
                 SecurityConfig.REFRESH_TOKEN_ENDPOINTS.equals(request.getServletPath()) ||
-                SecurityConfig.LOGOUT_ENDPOINT.equals(request.getServletPath())
+                SecurityConfig.CONFIRM_ENDPOINTS.equals(request.getServletPath())
         ) {
             filterChain.doFilter(request, response);
         } else {

@@ -1,37 +1,44 @@
 package andrew.project.socialNetwork.backend.api.libraries;
 
-import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatus;
-import andrew.project.socialNetwork.backend.api.dtos.NewsDto;
-import andrew.project.socialNetwork.backend.api.dtos.UserFriendsInfoDto;
-import andrew.project.socialNetwork.backend.api.dtos.UserProfileInfoDto;
+import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatusCode;
+import andrew.project.socialNetwork.backend.api.dtos.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 public interface MainLib {
 
-    void addErrorToResponse(HttpServletResponse response, int status, String errorMessage) throws IOException;
+    RegStatusDto registration(RegFormDto regFormDto);
 
-    void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    boolean confirm(String key);
 
-    UserProfileInfoDto getUserProfileInfo(String username) throws Exception;
+    void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
-    UserFriendsInfoDto getUserFriendsInfo(String username) throws Exception;
+    UserProfileInfoDto getUserProfileInfo(String username);
+
+    UserFriendsInfoDto getUserFriendsInfo(String username);
+
+    MenuDataDto getMenuData();
+
+    UserPhotoDto addPhoto(MultipartFile file);
 
     int deletePhoto(Long photoId);
 
+    UserPostDto createPost(MultipartFile file, String text);
+
     int deletePost(Long postId);
 
-    AddToFriendsStatus createFriendRequest(Long userId) throws Exception;
+    AddToFriendsStatusCode createFriendRequest(Long userId);
 
-    boolean cancelFriendRequest(Long userId) throws Exception;
+    boolean cancelFriendRequest(Long userId);
 
-    void deleteFriend(Long userId) throws Exception;
+    void deleteFriend(Long userId);
 
-    void agreeFriendRequest(Long userId) throws Exception;
+    void agreeFriendRequest(Long userId);
 
-    void rejectFriendRequest(Long userId) throws Exception;
+    void rejectFriendRequest(Long userId);
 
     NewsDto getNews(String username);
+
 }

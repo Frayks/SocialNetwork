@@ -17,6 +17,9 @@ public interface UserPostRepository extends JpaRepository<UserPost, Long> {
     @Query("DELETE FROM UserPost up WHERE up.id = ?1 AND up.userId = ?2")
     int deleteByIdAndUserId(Long id, Long userId);
 
+
+    List<UserPost> findByIdAndUserId(Long id, Long userId);
+
     @Query( "FROM UserPost up WHERE up.userId in ?1 order by up.creationTime desc " )
     List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList);
 

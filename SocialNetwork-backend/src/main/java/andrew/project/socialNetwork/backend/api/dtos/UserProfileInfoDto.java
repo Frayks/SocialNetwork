@@ -19,7 +19,7 @@ public class UserProfileInfoDto {
     private String username;
     private String firstName;
     private String lastName;
-    private String avatarUrl;
+    private String avatarUri;
     private Date dateOfBirth;
     private Sex sex;
     private String city;
@@ -28,7 +28,7 @@ public class UserProfileInfoDto {
     private String aboutYourself;
     private List<UserPhotoDto> userPhotoList = new ArrayList<>();
     private List<UserPostDto> userPostList = new ArrayList<>();
-    private List<UserFriendDto> userFriendList = new ArrayList<>();
+    private List<ShortUserInfoDto> userFriendList = new ArrayList<>();
     private boolean friend;
     private boolean requestToFriends;
 

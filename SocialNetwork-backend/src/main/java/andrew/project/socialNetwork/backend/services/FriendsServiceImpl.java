@@ -37,6 +37,11 @@ public class FriendsServiceImpl implements FriendsService {
     }
 
     @Override
+    public int findNumOfRequestsToFriends(Long userId) {
+        return friendsRepository.findNumOfRequestsToFriends(userId);
+    }
+
+    @Override
     public Friends checkIfFriends(Long firstUserId, Long secondUserId) throws Exception {
         List<Friends> friendsList = friendsRepository.checkIfFriends(firstUserId, secondUserId);
         if (!CollectionUtils.isEmpty(friendsList)) {

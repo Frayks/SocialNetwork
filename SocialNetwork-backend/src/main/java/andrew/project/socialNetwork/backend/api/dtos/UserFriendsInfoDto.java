@@ -14,6 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UserFriendsInfoDto {
     private ShortUserInfoDto shortUserInfo;
-    private List<UserFriendDto> userFriendList = new ArrayList<>();
-    private List<UserFriendDto> userFriendRequestList = new ArrayList<>();
+    private List<ShortUserInfoDto> userFriendList = new ArrayList<>();
+    private List<ShortUserInfoDto> userFriendRequestList = new ArrayList<>();
 }

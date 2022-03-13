@@ -21,7 +21,7 @@ public class UserPost {
     private Long id;
     @Column(nullable = false)
     private Long userId;
-    private String photoUrl;
+    private String photoName;
     private String text;
     @Column(nullable = false)
     private Integer numOfLikes = 0;

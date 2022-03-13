@@ -11,7 +11,7 @@ import java.util.Date;
 @ToString
 public class UserPostDto {
     private Long id;
-    private String photoUrl;
+    private String photoUri;
     private String text;
     private Integer numOfLikes;
     private Date creationTime;

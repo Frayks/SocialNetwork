@@ -4,6 +4,7 @@ import andrew.project.socialNetwork.backend.api.constants.JwtConstants;
 import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import andrew.project.socialNetwork.backend.api.constants.TokenType;
 import andrew.project.socialNetwork.backend.api.entities.Role;
+import andrew.project.socialNetwork.backend.api.properties.JwtProperties;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -28,12 +29,7 @@ import java.util.List;
 @Component
 public class JwtProvider implements InitializingBean {
 
-    @Value("${jwt.secret_key}")
-    private String secretKey;
-    @Value("${jwt.access_token_expiration_time}")
-    private long accessTokenExpirationTime;
-    @Value("${jwt.refresh_token_expiration_time}")
-    private long refreshTokenExpirationTime;
+    JwtProperties jwtProperties;
 
     private UserDetailsService userDetailsService;
 
@@ -42,12 +38,12 @@ public class JwtProvider implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        algorithm = Algorithm.HMAC256(secretKey.getBytes());
+        algorithm = Algorithm.HMAC256(jwtProperties.getSecretKey().getBytes());
         verifier = JWT.require(algorithm).build();
     }
 
     public String createAccessToken(String username, List<String> roles) throws IllegalArgumentException, JWTCreationException {
-        Date expiresAt = new Date(System.currentTimeMillis() + accessTokenExpirationTime);
+        Date expiresAt = new Date(System.currentTimeMillis() + jwtProperties.getAccessTokenExpirationTime());
         return JWT.create()
                 .withSubject(username)
                 .withExpiresAt(expiresAt)
@@ -57,7 +53,7 @@ public class JwtProvider implements InitializingBean {
     }
 
     public String createRefreshToken(String username) throws IllegalArgumentException, JWTCreationException {
-        Date expiresAt = new Date(System.currentTimeMillis() + refreshTokenExpirationTime);
+        Date expiresAt = new Date(System.currentTimeMillis() + jwtProperties.getRefreshTokenExpirationTime());
         return JWT.create()
                 .withSubject(username)
                 .withExpiresAt(expiresAt)
@@ -97,5 +93,10 @@ public class JwtProvider implements InitializingBean {
     @Autowired
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    @Autowired
+    public void setJwtProperties(JwtProperties jwtProperties) {
+        this.jwtProperties = jwtProperties;
     }
 }

@@ -14,5 +14,5 @@ public class ShortUserInfoDto {
     private String username;
     private String firstName;
     private String lastName;
-    private String avatarUrl;
+    private String avatarUri;
 }

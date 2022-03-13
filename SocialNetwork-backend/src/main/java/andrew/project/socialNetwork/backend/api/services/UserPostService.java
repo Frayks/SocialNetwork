@@ -17,5 +17,7 @@ public interface UserPostService {
 
     int deleteByIdAndUserId(Long id, Long userId);
 
+    List<UserPost> findByIdAndUserId(Long id, Long userId);
+
     List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList);
 }

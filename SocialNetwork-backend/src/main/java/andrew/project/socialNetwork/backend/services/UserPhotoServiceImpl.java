@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -30,12 +31,18 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     }
 
     @Override
+    public List<UserPhoto> findByIdAndUserId(Long id, Long userId) {
+        return userPhotoRepository.findByIdAndUserId(id, userId);
+    }
+
+    @Override
     public List<UserPhoto> findByUserId(Long userId) {
         return userPhotoRepository.findByUserId(userId);
     }
 
     @Override
     public UserPhoto save(UserPhoto userPhoto) {
+        userPhoto.setLoadTime(new Timestamp(System.currentTimeMillis()));
         return userPhotoRepository.save(userPhoto);
     }
 

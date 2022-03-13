@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @Entity
 @Table(name = "users_info")
@@ -23,7 +22,7 @@ public class UserInfo {
     @OneToOne(mappedBy = "userInfo")
     private User user;
     @Column(nullable = false)
-    private String avatarUrl;
+    private String avatarName;
     @Column(nullable = false)
     private Timestamp dateOfBirth;
     @Column(nullable = false)
@@ -34,4 +33,17 @@ public class UserInfo {
     private String university;
     private String aboutYourself;
 
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "id=" + id +
+                ", avatarName='" + avatarName + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", sex=" + sex +
+                ", city='" + city + '\'' +
+                ", school='" + school + '\'' +
+                ", university='" + university + '\'' +
+                ", aboutYourself='" + aboutYourself + '\'' +
+                '}';
+    }
 }

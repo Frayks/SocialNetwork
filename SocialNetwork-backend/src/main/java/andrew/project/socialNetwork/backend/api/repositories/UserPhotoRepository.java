@@ -13,6 +13,8 @@ public interface UserPhotoRepository extends JpaRepository<UserPhoto, Long> {
 
     List<UserPhoto> findByUserId(Long userId);
 
+    List<UserPhoto> findByIdAndUserId(Long id, Long userId);
+
     @Modifying
     @Query("DELETE FROM UserPhoto up WHERE up.id = ?1 AND up.userId = ?2")
     int deleteByIdAndUserId(Long id, Long userId);

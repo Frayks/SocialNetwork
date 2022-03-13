@@ -22,7 +22,7 @@ public class UserPhoto {
     @Column(nullable = false)
     private Long userId;
     @Column(nullable = false)
-    private String photoUrl;
+    private String name;
     @Column(nullable = false)
     private Integer numOfLikes = 0;
     @Column(nullable = false)

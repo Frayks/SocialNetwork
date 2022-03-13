@@ -12,6 +12,8 @@ public interface FriendsService {
 
     List<Friends> findRequestsToFriends(Long userId);
 
+    int findNumOfRequestsToFriends(Long userId);
+
     Friends checkIfFriends(Long firstUserId, Long secondUserId) throws Exception;
 
     Friends save(Friends friends);

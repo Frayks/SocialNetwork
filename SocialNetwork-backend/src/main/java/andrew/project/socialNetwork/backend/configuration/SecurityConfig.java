@@ -22,8 +22,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtProvider jwtProvider;
 
     public static final String LOGIN_ENDPOINT = "/api/login";
+    public static final String REGISTRATION_ENDPOINT = "/api/registration";
     public static final String LOGOUT_ENDPOINT = "/api/logout";
     public static final String REFRESH_TOKEN_ENDPOINTS = "/api/refreshToken";
+    public static final String CONFIRM_ENDPOINTS = "/api/confirm";
 
     public SecurityConfig(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
@@ -35,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .authorizeRequests().antMatchers(LOGIN_ENDPOINT, REFRESH_TOKEN_ENDPOINTS, LOGOUT_ENDPOINT).permitAll()
+                .authorizeRequests().antMatchers(LOGIN_ENDPOINT, REFRESH_TOKEN_ENDPOINTS, LOGOUT_ENDPOINT, REGISTRATION_ENDPOINT, CONFIRM_ENDPOINTS).permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()

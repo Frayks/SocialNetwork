@@ -9,6 +9,8 @@ public interface UserPhotoService {
 
     UserPhoto findById(Long id);
 
+    List<UserPhoto> findByIdAndUserId(Long id, Long userId);
+
     List<UserPhoto> findByUserId(Long userId);
 
     UserPhoto save(UserPhoto userPhoto);
@@ -16,4 +18,6 @@ public interface UserPhotoService {
     void delete(UserPhoto userPhoto);
 
     int deleteByIdAndUserId(Long id, Long userId);
+
+
 }

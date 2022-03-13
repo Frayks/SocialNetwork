@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Service
@@ -32,6 +33,7 @@ public class UserPostServiceImpl implements UserPostService {
 
     @Override
     public UserPost save(UserPost userPost) {
+        userPost.setCreationTime(new Timestamp(System.currentTimeMillis()));
         return userPostRepository.save(userPost);
     }
 
@@ -43,6 +45,11 @@ public class UserPostServiceImpl implements UserPostService {
     @Override
     public int deleteByIdAndUserId(Long id, Long userId) {
         return userPostRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public List<UserPost> findByIdAndUserId(Long id, Long userId) {
+        return userPostRepository.findByIdAndUserId(id, userId);
     }
 
     @Override

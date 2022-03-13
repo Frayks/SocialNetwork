@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +26,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
-    private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -59,8 +59,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    @Override
     public User save(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRegistrationTime(new Timestamp(System.currentTimeMillis()));
         return userRepository.save(user);
     }
 
@@ -84,11 +89,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
     }
 
 }

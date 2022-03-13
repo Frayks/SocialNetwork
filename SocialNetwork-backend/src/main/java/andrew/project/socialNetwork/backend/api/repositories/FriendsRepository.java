@@ -20,6 +20,9 @@ public interface FriendsRepository extends JpaRepository<Friends, Long> {
     @Query(value = "FROM Friends f WHERE f.secondUserId = ?1 and f.accepted = false")
     List<Friends> findRequestsToFriends(Long userId);
 
+    @Query(value = "SELECT COUNT(f.id) FROM Friends f WHERE f.secondUserId = ?1 and f.accepted = false")
+    int findNumOfRequestsToFriends(Long userId);
+
     @Query(value = "FROM Friends f WHERE (f.firstUserId = ?1 AND f.secondUserId = ?2) OR (f.firstUserId = ?2 AND f.secondUserId = ?1)")
     List<Friends> checkIfFriends(Long firstUserId, Long secondUserId);
 
