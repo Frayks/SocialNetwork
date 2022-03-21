@@ -20,6 +20,7 @@
         <version.com.auth0.java-jwt>3.18.2</version.com.auth0.java-jwt>
         <version.commons-io.commons-io>2.11.0</version.commons-io.commons-io>
         <version.org.projectlombok.lombok>1.18.22</version.org.projectlombok.lombok>
+        <version.com.google.code.gson.gson>2.8.5</version.com.google.code.gson.gson>
     </properties>
 
     <dependencies>
@@ -62,6 +63,12 @@
             <artifactId>java-jwt</artifactId>
             <version>${version.com.auth0.java-jwt}</version>
         </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${version.com.google.code.gson.gson}</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.postgresql</groupId>

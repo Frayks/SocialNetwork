@@ -31,13 +31,13 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     }
 
     @Override
-    public List<UserPhoto> findByIdAndUserId(Long id, Long userId) {
-        return userPhotoRepository.findByIdAndUserId(id, userId);
+    public List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId) {
+        return userPhotoRepository.findByUserIdOrderByLoadTimeDesc(userId);
     }
 
     @Override
-    public List<UserPhoto> findByUserId(Long userId) {
-        return userPhotoRepository.findByUserId(userId);
+    public List<UserPhoto> findByUserIdInOrderByLoadTimeDesc(List<Long> userIdList) {
+        return userPhotoRepository.findByUserIdInOrderByLoadTimeDesc(userIdList);
     }
 
     @Override

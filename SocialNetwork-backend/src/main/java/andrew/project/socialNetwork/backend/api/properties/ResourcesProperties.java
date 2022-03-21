@@ -12,17 +12,26 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource(value = "classpath:resources.properties", encoding = "UTF-8")
 @ConfigurationProperties(prefix = "resources")
 public class ResourcesProperties {
-    private String forbiddenFirstNameText;
-    private String forbiddenLastNameText;
-    private String invalidEmailText;
-    private String busyEmailText;
-    private String forbiddenUsernameText;
-    private String reservedUsernameText;
-    private String busyUsernameText;
-    private String forbiddenPasswordText;
-    private String wrongDateOfBirthText;
-    private String sexUnknownText;
+    private String forbiddenFirstNameErrorMsg;
+    private String forbiddenLastNameErrorMsg;
+    private String invalidEmailErrorMsg;
+    private String busyEmailErrorMsg;
+    private String forbiddenUsernameErrorMsg;
+    private String reservedUsernameErrorMsg;
+    private String busyUsernameErrorMsg;
+    private String forbiddenPasswordErrorMsg;
+    private String wrongDateOfBirthErrorMsg;
+    private String sexUnknownErrorMsg;
+    private String invalidRestoreKeyErrorMsg;
+    private String tooLongTextErrorMsg;
+    private String tooLargeImageSizeErrorMsg;
+    private String wrongImageTypeErrorMsg;
+    private String forbiddenCityNameErrorMsg;
+    private String forbiddenSchoolNameErrorMsg;
+    private String forbiddenUniversityNameErrorMsg;
 
-    private String confirmEmailSubjectText;
-    private String confirmEmailBodyText;
+    private String confirmMailSubjectText;
+    private String confirmMailBodyText;
+    private String restoreMailSubjectText;
+    private String restoreMailBodyText;
 }

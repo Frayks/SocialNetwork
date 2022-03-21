@@ -4,6 +4,7 @@ import andrew.project.socialNetwork.backend.api.entities.UserPost;
 import andrew.project.socialNetwork.backend.api.repositories.UserPostRepository;
 import andrew.project.socialNetwork.backend.api.services.UserPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,26 @@ public class UserPostServiceImpl implements UserPostService {
     }
 
     @Override
-    public List<UserPost> findByUserIdOrderByCreationTimeDesc(Long userId) {
-        return userPostRepository.findByUserIdOrderByCreationTimeDesc(userId);
+    public int countByUserId(Long userId) {
+        return userPostRepository.countByUserId(userId);
+    }
+
+    @Override
+    public List<UserPost> findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(Long userId, Timestamp beforeTime, int limit) {
+        if (beforeTime == null) {
+            return userPostRepository.findByUserIdOrderByCreationTimeDesc(userId, PageRequest.of(0, limit));
+        } else {
+            return userPostRepository.findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(userId, beforeTime, PageRequest.of(0, limit));
+        }
+    }
+
+    @Override
+    public List<UserPost> findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(List<Long> userIdList, Timestamp beforeTime, int limit) {
+        if (beforeTime == null) {
+            return userPostRepository.findByUserIdInOrderByCreationTimeDesc(userIdList, PageRequest.of(0, limit));
+        } else {
+            return userPostRepository.findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(userIdList, beforeTime, PageRequest.of(0, limit));
+        }
     }
 
     @Override
@@ -45,16 +64,6 @@ public class UserPostServiceImpl implements UserPostService {
     @Override
     public int deleteByIdAndUserId(Long id, Long userId) {
         return userPostRepository.deleteByIdAndUserId(id, userId);
-    }
-
-    @Override
-    public List<UserPost> findByIdAndUserId(Long id, Long userId) {
-        return userPostRepository.findByIdAndUserId(id, userId);
-    }
-
-    @Override
-    public List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList) {
-        return userPostRepository.findByUserIdsOrderByCreationTimeDesc(userIdList);
     }
 
     @Autowired

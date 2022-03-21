@@ -16,7 +16,7 @@ public class PostDto {
     private String photoUri;
     private String text;
     private Integer numOfLikes;
-    private Date creationTime;
+    private Boolean like;
     private ShortUserInfoDto shortUserInfo;
-
+    private String creationTime;
 }

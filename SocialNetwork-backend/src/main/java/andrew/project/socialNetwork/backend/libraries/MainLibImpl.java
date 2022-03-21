@@ -1,9 +1,6 @@
 package andrew.project.socialNetwork.backend.libraries;
 
-import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatusCode;
-import andrew.project.socialNetwork.backend.api.constants.RegStatusCode;
-import andrew.project.socialNetwork.backend.api.constants.RoleName;
-import andrew.project.socialNetwork.backend.api.constants.TokenType;
+import andrew.project.socialNetwork.backend.api.constants.*;
 import andrew.project.socialNetwork.backend.api.dtos.*;
 import andrew.project.socialNetwork.backend.api.entities.*;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
@@ -11,21 +8,27 @@ import andrew.project.socialNetwork.backend.api.mappers.Mapper;
 import andrew.project.socialNetwork.backend.api.properties.ImageStorageProperties;
 import andrew.project.socialNetwork.backend.api.properties.SystemProperties;
 import andrew.project.socialNetwork.backend.api.services.*;
+import andrew.project.socialNetwork.backend.api.validators.RegFormValidator;
+import andrew.project.socialNetwork.backend.api.validators.ResetPasswordValidator;
+import andrew.project.socialNetwork.backend.api.validators.SettingsValidator;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
-import andrew.project.socialNetwork.backend.validators.RegFormValidator;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.*;
 
 @Component
@@ -38,11 +41,18 @@ public class MainLibImpl implements MainLib {
     private UserPostService userPostService;
     private FriendsService friendsService;
     private ImageStorageService imageStorageService;
-    private RegistrationService registrationService;
     private RegistrationRequestService registrationRequestService;
+    private RegistrationService registrationService;
+    private RestoreRequestService restoreRequestService;
+    private RestoreService restoreService;
+    private PhotoLikeService photoLikeService;
+    private PostLikeService postLikeService;
 
     private JwtProvider jwtProvider;
     private RegFormValidator regFormValidator;
+    private ResetPasswordValidator resetPasswordValidator;
+    private PasswordEncoder passwordEncoder;
+    private SettingsValidator settingsValidator;
 
     private ImageStorageProperties imageStorageProperties;
     private SystemProperties systemProperties;
@@ -75,12 +85,12 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public RegStatusDto registration(RegFormDto regFormDto) {
-        RegStatusDto regStatusDto = regFormValidator.validate(regFormDto);
-        if (regStatusDto.getStatus().equals(RegStatusCode.SUCCESS)) {
+    public FormStatusDto registration(RegFormDto regFormDto) {
+        FormStatusDto formStatusDto = regFormValidator.validate(regFormDto);
+        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
             registrationService.register(regFormDto);
         }
-        return regStatusDto;
+        return formStatusDto;
     }
 
     @Override
@@ -98,19 +108,48 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public UserProfileInfoDto getUserProfileInfo(String username) {
-        try {
-            User user = userService.findByUsername(username);
+    public boolean restore(String email) {
+        User user = userService.findByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        restoreService.restore(user);
+        return true;
+    }
+
+    @Override
+    public FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
+        FormStatusDto formStatusDto = resetPasswordValidator.validate(resetPasswordRequestDto);
+        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+            RestoreRequest restoreRequest = restoreRequestService.findByRestoreKey(resetPasswordRequestDto.getRestoreKey());
+            restoreRequestService.deleteByUserId(restoreRequest.getUserId());
+            User user = userService.findById(restoreRequest.getUserId());
             if (user != null) {
-                List<UserPhoto> userPhotoList = userPhotoService.findByUserId(user.getId());
-                List<UserPost> userPostList = userPostService.findByUserIdOrderByCreationTimeDesc(user.getId());
+                user.setPassword(passwordEncoder.encode(resetPasswordRequestDto.getNewPassword()));
+                userService.save(user);
+            }
+        }
+        return formStatusDto;
+    }
+
+    @Override
+    public UserProfileInfoDto getUserProfileInfo(String username) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        try {
+            User targetUser = userService.findByUsername(username);
+            if (targetUser != null) {
+                int numOfPosts = userPostService.countByUserId(targetUser.getId());
+                List<UserPhoto> userPhotoList = userPhotoService.findByUserIdOrderByLoadTimeDesc(targetUser.getId());
+                List<Long> photosIdList = getPhotosIdList(userPhotoList);
+                List<PhotoLike> photoLikeList = photoLikeService.findByPhotoIdInAndUserId(photosIdList, userDbi.getId());
                 org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
-                List<Friends> friendsList = friendsService.findFriends(user.getId(), 6);
-                List<Long> friendsIdList = getFriendsIdList(user.getId(), friendsList);
-                List<User> userFriendList = userService.findByIds(friendsIdList);
-                Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), user.getId());
-                return Mapper.mapToUserProfileInfoDto(user, userPhotoList, userPostList, userFriendList, friends, imageStorageProperties);
+                List<Friends> friendsList = friendsService.findFriends(targetUser.getId(), 9);
+                List<Long> friendsIdList = getFriendsIdList(targetUser.getId(), friendsList);
+                List<User> userFriendList = userService.findByIdIn(friendsIdList);
+                Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), targetUser.getId());
+                return Mapper.mapToUserProfileInfoDto(targetUser, userPhotoList, photoLikeList, userFriendList, numOfPosts, friends, imageStorageProperties);
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -124,13 +163,13 @@ public class MainLibImpl implements MainLib {
         if (user != null) {
             List<Friends> friendsList = friendsService.findFriends(user.getId());
             List<Long> friendsIdList = getFriendsIdList(user.getId(), friendsList);
-            List<User> userFriendList = userService.findByIds(friendsIdList);
+            List<User> userFriendList = userService.findByIdIn(friendsIdList);
             List<User> userFriendRequestList = null;
             org.springframework.security.core.userdetails.User userdetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (username.equals(userdetails.getUsername())) {
                 List<Friends> friendRequestList = friendsService.findRequestsToFriends(user.getId());
                 List<Long> friendRequestsIdList = getFriendRequestsIdList(friendRequestList);
-                userFriendRequestList = userService.findByIds(friendRequestsIdList);
+                userFriendRequestList = userService.findByIdIn(friendRequestsIdList);
             }
             return Mapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList, imageStorageProperties);
         }
@@ -148,17 +187,78 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public NewsDto getNews(String username) {
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            return null;
+    public SettingsDto getSettings() {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        return Mapper.mapToSettingsDto(userDbi, imageStorageProperties);
+    }
+
+    @Override
+    public FormStatusDto changeBasicSettings(MultipartFile image, String basicSettingsJson) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        FormStatusDto formStatusDto = new FormStatusDto();
+        try {
+            Gson gson = new Gson();
+            BasicSettingsDto basicSettingsDto = gson.fromJson(basicSettingsJson, BasicSettingsDto.class);
+            formStatusDto = settingsValidator.validateBasicSettings(image, basicSettingsDto, userDbi.getUsername(), userDbi.getEmail());
+            if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+                UserInfo userInfo = userDbi.getUserInfo();
+                if (image != null) {
+                    if (!userInfo.getAvatarName().equals(systemProperties.getDefaultUserAvatarName())) {
+                        imageStorageService.deleteImage(userInfo.getAvatarName());
+                    }
+                    SaveImageResponseDto response = imageStorageService.saveImage(image);
+                    userInfo.setAvatarName(response.getName());
+                }
+                userDbi.setFirstName(basicSettingsDto.getFirstName());
+                userDbi.setLastName(basicSettingsDto.getLastName());
+                userDbi.setUsername(basicSettingsDto.getUsername());
+
+                userInfo.setDateOfBirth(Mapper.mapToTimestamp(basicSettingsDto.getDayOfBirth(), basicSettingsDto.getMonthOfBirth(), basicSettingsDto.getYearOfBirth()));
+                userInfo.setSex(Sex.valueOf(basicSettingsDto.getSex()));
+                userService.save(userDbi);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
-        List<Friends> friendsList = friendsService.findFriends(user.getId());
-        List<Long> userIdList = getFriendsIdList(user.getId(), friendsList);
-        userIdList.add(user.getId());
-        List<User> userList = userService.findByIds(userIdList);
-        List<UserPost> userPostList = userPostService.findByUserIdsOrderByCreationTimeDesc(userIdList);
-        return Mapper.mapToNewsDto(userList, userPostList, imageStorageProperties);
+        return formStatusDto;
+    }
+
+    @Override
+    public FormStatusDto changeAdditionalSettings(AdditionalSettingsDto additionalSettingsDto) {
+        FormStatusDto formStatusDto = settingsValidator.validateAdditionalSettings(additionalSettingsDto);
+        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            User userDbi = userService.findByUsername(user.getUsername());
+            UserInfo userInfo = userDbi.getUserInfo();
+            userInfo.setAboutYourself(additionalSettingsDto.getAboutYourself());
+            userInfo.setCity(additionalSettingsDto.getCity());
+            userInfo.setSchool(additionalSettingsDto.getSchool());
+            userInfo.setUniversity(additionalSettingsDto.getUniversity());
+            userService.save(userDbi);
+        }
+        return formStatusDto;
+    }
+
+    @Override
+    public SearchResultDto searchUsers(String searchRequest) {
+        SearchResultDto searchResultDto = new SearchResultDto();
+        if (searchRequest.length() == 0) {
+            return searchResultDto;
+        }
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String[] searchParams = searchRequest.split(" ");
+        if (searchParams.length == 1) {
+            List<User> userList = userService.findUsersByText(searchParams[0] + "%", user.getUsername(), 20);
+            List<ShortUserInfoDto> userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
+            searchResultDto.setUserList(userDtoList);
+        } else if (searchParams.length > 1) {
+            List<User> userList = userService.findUsersByFirstNameAndLastName(searchParams[0] + "%", searchParams[1] + "%", user.getUsername(), 20);
+            List<ShortUserInfoDto> userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
+            searchResultDto.setUserList(userDtoList);
+        }
+        return searchResultDto;
     }
 
     @Override
@@ -183,17 +283,40 @@ public class MainLibImpl implements MainLib {
         try {
             org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User userDbi = userService.findByUsername(user.getUsername());
-            List<UserPhoto> userPhotoList = userPhotoService.findByIdAndUserId(photoId, userDbi.getId());
-            if (userPhotoList.size() != 1) {
-                return 0;
+            UserPhoto userPhoto = userPhotoService.findById(photoId);
+            if (userPhoto != null && userPhoto.getUserId().equals(userDbi.getId())) {
+                String photoName = userPhoto.getName();
+                imageStorageService.deleteImage(photoName);
+                return userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
             }
-            String photoName = userPhotoList.get(0).getName();
-            imageStorageService.deleteImage(photoName);
-            return userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
         } catch (Exception e) {
             LOGGER.error(e);
         }
         return 0;
+    }
+
+    @Override
+    public boolean changePhotoLike(Long photoId) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        UserPhoto userPhoto = userPhotoService.findById(photoId);
+        if (userPhoto != null) {
+            PhotoLike photoLike = photoLikeService.findByPhotoIdAndUserId(userPhoto.getId(), userDbi.getId());
+            if (photoLike == null) {
+                userPhoto.setNumOfLikes(userPhoto.getNumOfLikes() + 1);
+                userPhotoService.save(userPhoto);
+                photoLike = new PhotoLike();
+                photoLike.setPhotoId(userPhoto.getId());
+                photoLike.setUserId(userDbi.getId());
+                photoLikeService.save(photoLike);
+            } else {
+                userPhoto.setNumOfLikes(userPhoto.getNumOfLikes() - 1);
+                userPhotoService.save(userPhoto);
+                photoLikeService.delete(photoLike);
+            }
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -227,17 +350,86 @@ public class MainLibImpl implements MainLib {
         try {
             org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User userDbi = userService.findByUsername(user.getUsername());
-            List<UserPost> userPostList = userPostService.findByIdAndUserId(postId, userDbi.getId());
-            if (userPostList.size() != 1) {
-                return 0;
+            UserPost userPost = userPostService.findById(postId);
+            if (userPost != null && userPost.getUserId().equals(userDbi.getId())) {
+                String photoName = userPost.getPhotoName();
+                imageStorageService.deleteImage(photoName);
+                return userPostService.deleteByIdAndUserId(postId, userDbi.getId());
             }
-            String photoName = userPostList.get(0).getPhotoName();
-            imageStorageService.deleteImage(photoName);
-            return userPostService.deleteByIdAndUserId(postId, userDbi.getId());
         } catch (Exception e) {
             LOGGER.error(e);
         }
         return 0;
+    }
+
+    @Override
+    public boolean changePostLike(Long postId) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        UserPost userPost = userPostService.findById(postId);
+        if (userPost != null) {
+            PostLike postLike = postLikeService.findByPostIdAndUserId(userPost.getId(), userDbi.getId());
+            if (postLike == null) {
+                userPost.setNumOfLikes(userPost.getNumOfLikes() + 1);
+                userPostService.save(userPost);
+
+                postLike = new PostLike();
+                postLike.setPostId(userPost.getId());
+                postLike.setUserId(userDbi.getId());
+                postLikeService.save(postLike);
+            } else {
+                userPost.setNumOfLikes(userPost.getNumOfLikes() - 1);
+                userPostService.save(userPost);
+
+                postLikeService.delete(postLike);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public List<UserPostDto> getUserPostList(String username, String beforeTimeStr) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        User targetUser = userService.findByUsername(username);
+        if (targetUser != null) {
+            Timestamp beforeTime = null;
+            if (beforeTimeStr != null) {
+                try {
+                    beforeTime = new Timestamp(Mapper.DATE_FORMAT.parse(beforeTimeStr).getTime());
+                } catch (ParseException e) {
+                    LOGGER.error(e);
+                }
+            }
+            List<UserPost> userPostList = userPostService.findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(targetUser.getId(), beforeTime, 10);
+            List<Long> postsIdList = getPostsIdList(userPostList);
+            List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
+            return Mapper.mapToUserPostDtoList(userPostList, postLikeList, imageStorageProperties);
+        }
+        return null;
+    }
+
+    @Override
+    public List<PostDto> getPostList(String beforeTimeStr) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        List<Friends> friendsList = friendsService.findFriends(userDbi.getId());
+        List<Long> friendsIdList = getFriendsIdList(userDbi.getId(), friendsList);
+        friendsIdList.add(userDbi.getId());
+        List<User> userList = userService.findByIdIn(friendsIdList);
+        Timestamp beforeTime = null;
+        if (beforeTimeStr != null) {
+            try {
+                beforeTime = new Timestamp(Mapper.DATE_FORMAT.parse(beforeTimeStr).getTime());
+            } catch (ParseException e) {
+                LOGGER.error(e);
+            }
+        }
+        List<UserPost> userPostList = userPostService.findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(friendsIdList, beforeTime, 10);
+        List<Long> postsIdList = getPostsIdList(userPostList);
+        List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
+        return Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
     }
 
     @Override
@@ -392,6 +584,22 @@ public class MainLibImpl implements MainLib {
         return friendsIdList;
     }
 
+    private List<Long> getPhotosIdList(List<UserPhoto> userPhotoList) {
+        List<Long> photoIdList = new ArrayList<>();
+        for (UserPhoto userPhoto : userPhotoList) {
+            photoIdList.add(userPhoto.getId());
+        }
+        return photoIdList;
+    }
+
+    private List<Long> getPostsIdList(List<UserPost> userPostList) {
+        List<Long> postIdList = new ArrayList<>();
+        for (UserPost userPost : userPostList) {
+            postIdList.add(userPost.getId());
+        }
+        return postIdList;
+    }
+
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -413,8 +621,23 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
+    public void setPhotoLikeService(PhotoLikeService photoLikeService) {
+        this.photoLikeService = photoLikeService;
+    }
+
+    @Autowired
+    public void setPostLikeService(PostLikeService postLikeService) {
+        this.postLikeService = postLikeService;
+    }
+
+    @Autowired
     public void setJwtProvider(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Autowired
@@ -438,12 +661,33 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
-    public void setRegistrationService(RegistrationService registrationService) {
-        this.registrationService = registrationService;
+    public void setResetPasswordValidator(ResetPasswordValidator resetPasswordValidator) {
+        this.resetPasswordValidator = resetPasswordValidator;
+    }
+
+    @Autowired
+    public void setSettingsValidator(SettingsValidator settingsValidator) {
+        this.settingsValidator = settingsValidator;
     }
 
     @Autowired
     public void setRegistrationRequestService(RegistrationRequestService registrationRequestService) {
         this.registrationRequestService = registrationRequestService;
     }
+
+    @Autowired
+    public void setRegistrationService(RegistrationService registrationService) {
+        this.registrationService = registrationService;
+    }
+
+    @Autowired
+    public void setRestoreRequestService(RestoreRequestService restoreRequestService) {
+        this.restoreRequestService = restoreRequestService;
+    }
+
+    @Autowired
+    public void setRestoreService(RestoreService restoreService) {
+        this.restoreService = restoreService;
+    }
+
 }

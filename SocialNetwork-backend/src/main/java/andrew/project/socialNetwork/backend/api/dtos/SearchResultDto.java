@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
-public class NewsDto {
-    private List<PostDto> postList = new ArrayList<>();
+public class SearchResultDto {
+    private List<ShortUserInfoDto> userList = new ArrayList<>();
 }

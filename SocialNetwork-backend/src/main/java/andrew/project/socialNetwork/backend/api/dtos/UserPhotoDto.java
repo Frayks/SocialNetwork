@@ -13,6 +13,7 @@ public class UserPhotoDto {
     private Long id;
     private String photoUri;
     private Integer numOfLikes;
-    private Date loadTime;
+    private Boolean like = false;
+    private String loadTime;
 
 }

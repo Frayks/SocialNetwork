@@ -7,6 +7,7 @@ import andrew.project.socialNetwork.backend.api.repositories.RoleRepository;
 import andrew.project.socialNetwork.backend.api.repositories.UserRepository;
 import andrew.project.socialNetwork.backend.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -44,8 +45,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> findByIds(List<Long> userIdList) {
-        return userRepository.findByIds(userIdList);
+    public List<User> findByIdIn(List<Long> idList) {
+        return userRepository.findByIdIn(idList);
     }
 
     @Override
@@ -61,6 +62,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<User> findUsersByText(String text, String mainUsername, int limit) {
+        return userRepository.findUsersByText(text, mainUsername, PageRequest.of(0, limit));
+    }
+
+    @Override
+    public List<User> findUsersByFirstNameAndLastName(String firstName, String lastName, String mainUsername, int limit) {
+        return userRepository.findUsersByFirstNameAndLastName(firstName, lastName, mainUsername, PageRequest.of(0, limit));
     }
 
     @Override

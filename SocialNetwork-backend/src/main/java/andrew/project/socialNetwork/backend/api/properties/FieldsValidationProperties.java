@@ -9,15 +9,22 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Getter
 @Configuration
-@PropertySource("classpath:regFormValidation.properties")
-@ConfigurationProperties(prefix = "reg-form-validation")
-public class RegFormValidationProperties {
+@PropertySource("classpath:fieldsValidation.properties")
+@ConfigurationProperties(prefix = "fields-validation")
+public class FieldsValidationProperties {
     private String firstNameRegEx;
     private String lastNameRegEx;
     private String usernameRegEx;
-    private String reservedUsernames;
-    private String separator;
     private String passwordRegEx;
+    private String cityRegEx;
+    private String schoolRegEx;
+    private String universityRegEx;
+    private String reservedUsernames;
+    private String allowedImageTypes;
+    private String separator;
+    private int maxImageSize;
+    private int maxPostTextSize;
+    private int maxAboutYourselfTextSize;
     private int maxDateDiff;
 
 }

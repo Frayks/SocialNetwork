@@ -23,7 +23,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
     private static final Logger LOGGER = LogManager.getLogger(RegistrationServiceImpl.class);
 
-    private static final int CONFIRM_KEY_LENGTH = 64;
     private static final String CONFIRM_ENDPOINT = "confirm";
 
     private RegistrationRequestService registrationRequestService;
@@ -35,14 +34,14 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public void register(RegFormDto regFormDto) {
         try {
-            String confirmKey = GeneratorUtil.genRandStr(CONFIRM_KEY_LENGTH);
+            String confirmKey = GeneratorUtil.genRandStr(GeneratorUtil.DEFAULT_KEY_LENGTH);
             String confirmUri = UriComponentsBuilder
                     .fromUriString(systemProperties.getClientServerUrl())
                     .pathSegment(CONFIRM_ENDPOINT)
                     .pathSegment(confirmKey)
                     .build()
                     .toString();
-            emailSenderService.sendEmail(regFormDto.getEmail(), resourcesProperties.getConfirmEmailSubjectText(), String.format(resourcesProperties.getConfirmEmailBodyText(), confirmUri));
+            emailSenderService.sendEmail(regFormDto.getEmail(), resourcesProperties.getConfirmMailSubjectText(), String.format(resourcesProperties.getConfirmMailBodyText(), confirmUri));
             registrationRequestService.deleteByEmail(regFormDto.getEmail());
             RegistrationRequest registrationRequest = Mapper.mapRegistrationRequest(regFormDto);
             registrationRequest.setCreationTime(new Timestamp(System.currentTimeMillis()));

@@ -6,12 +6,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface MainLib {
 
-    RegStatusDto registration(RegFormDto regFormDto);
+    FormStatusDto registration(RegFormDto regFormDto);
 
     boolean confirm(String key);
+
+    boolean restore(String email);
+
+    FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto);
 
     void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
@@ -21,6 +26,14 @@ public interface MainLib {
 
     MenuDataDto getMenuData();
 
+    SettingsDto getSettings();
+
+    FormStatusDto changeBasicSettings(MultipartFile image, String basicSettingsJson);
+
+    FormStatusDto changeAdditionalSettings(AdditionalSettingsDto additionalSettingsDto);
+
+    SearchResultDto searchUsers(String searchRequest);
+
     UserPhotoDto addPhoto(MultipartFile file);
 
     int deletePhoto(Long photoId);
@@ -28,6 +41,14 @@ public interface MainLib {
     UserPostDto createPost(MultipartFile file, String text);
 
     int deletePost(Long postId);
+
+    boolean changePostLike(Long postId);
+
+    boolean changePhotoLike(Long photoId);
+
+    List<UserPostDto> getUserPostList(String username, String beforeTimeStr);
+
+    List<PostDto> getPostList(String beforeTime);
 
     AddToFriendsStatusCode createFriendRequest(Long userId);
 
@@ -38,7 +59,5 @@ public interface MainLib {
     void agreeFriendRequest(Long userId);
 
     void rejectFriendRequest(Long userId);
-
-    NewsDto getNews(String username);
 
 }

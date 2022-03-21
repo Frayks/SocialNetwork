@@ -10,13 +10,16 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Mapper {
 
-    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<UserPost> userPostList, List<User> userFriendList, Friends friends, ImageStorageProperties properties) {
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<PhotoLike> photoLikeList, List<User> userFriendList, int numOfPosts, Friends friends, ImageStorageProperties properties) {
         UserProfileInfoDto userProfileInfoDto = new UserProfileInfoDto();
         UserInfo userInfo = user.getUserInfo();
         userProfileInfoDto.setId(user.getId());
@@ -30,15 +33,13 @@ public class Mapper {
         userProfileInfoDto.setSchool(userInfo.getSchool());
         userProfileInfoDto.setUniversity(userInfo.getUniversity());
         userProfileInfoDto.setAboutYourself(userInfo.getAboutYourself());
+        userProfileInfoDto.setNumOfPosts(numOfPosts);
         if (friends != null) {
             userProfileInfoDto.setFriend(friends.getAccepted());
             userProfileInfoDto.setRequestToFriends(Objects.equals(user.getId(), friends.getSecondUserId()));
         }
         if (!CollectionUtils.isEmpty(userPhotoList)) {
-            userProfileInfoDto.setUserPhotoList(mapToPhotoDtoList(userPhotoList, properties));
-        }
-        if (!CollectionUtils.isEmpty(userPostList)) {
-            userProfileInfoDto.setUserPostList(mapToPostDtoList(userPostList, properties));
+            userProfileInfoDto.setUserPhotoList(mapToUserPhotoDtoList(userPhotoList, photoLikeList, properties));
         }
         if (!CollectionUtils.isEmpty(userFriendList)) {
             userProfileInfoDto.setUserFriendList(mapShortUserInfoDtoList(userFriendList, properties));
@@ -69,25 +70,26 @@ public class Mapper {
         return shortUserInfoDto;
     }
 
-    public static NewsDto mapToNewsDto(List<User> userList, List<UserPost> userPostList, ImageStorageProperties properties) {
-        NewsDto newsDto = new NewsDto();
-        if (!CollectionUtils.isEmpty(userPostList)) {
-            newsDto.setPostList(mapToPostDtoList(userList, userPostList, properties));
-        }
-        return newsDto;
-    }
-
-    private static List<PostDto> mapToPostDtoList(List<User> userList, List<UserPost> userPostList, ImageStorageProperties properties) {
-        List<PostDto> postList = new ArrayList<>();
+    public static List<PostDto> mapToPostDtoList(List<User> userList, List<UserPost> userPostList, List<PostLike> postLikeList, ImageStorageProperties properties) {
+        List<PostDto> postDtoList = new ArrayList<>();
         Map<Long, User> userMap = new HashMap<>();
         for (User user : userList) {
             userMap.put(user.getId(), user);
         }
+        Map<Long, PostLike> postLikeMap = new HashMap<>();
+        for (PostLike postLike : postLikeList) {
+            postLikeMap.put(postLike.getPostId(), postLike);
+        }
         for (UserPost userPost : userPostList) {
             User user = userMap.get(userPost.getUserId());
-            postList.add(mapToPostDto(userPost, user, properties));
+            PostDto postDto = mapToPostDto(userPost, user, properties);
+            PostLike postLike = postLikeMap.get(userPost.getId());
+            if (postLike != null) {
+                postDto.setLike(true);
+            }
+            postDtoList.add(postDto);
         }
-        return postList;
+        return postDtoList;
     }
 
     private static PostDto mapToPostDto(UserPost userPost, User user, ImageStorageProperties properties) {
@@ -96,7 +98,7 @@ public class Mapper {
         postDto.setPhotoUri(mapToImageUri(userPost.getPhotoName(), properties));
         postDto.setText(userPost.getText());
         postDto.setNumOfLikes(userPost.getNumOfLikes());
-        postDto.setCreationTime(userPost.getCreationTime());
+        postDto.setCreationTime(DATE_FORMAT.format(userPost.getCreationTime()));
         if (user != null) {
             UserInfo userInfo = user.getUserInfo();
             ShortUserInfoDto shortUserInfoDto = new ShortUserInfoDto();
@@ -118,12 +120,18 @@ public class Mapper {
         return shortUserInfoDtoList;
     }
 
-    public static List<UserPhotoDto> mapToPhotoDtoList(List<UserPhoto> userPhotoList, ImageStorageProperties properties) {
-        List<UserPhotoDto> userPhotoDtoList = new ArrayList<>();
+    public static List<UserPhotoDto> mapToUserPhotoDtoList(List<UserPhoto> userPhotoList, List<PhotoLike> photoLikeList, ImageStorageProperties properties) {
+        Map<Long, UserPhotoDto> userPhotoDtoMap = new HashMap<>();
         for (UserPhoto userPhoto : userPhotoList) {
-            userPhotoDtoList.add(mapToPhotoDto(userPhoto, properties));
+            userPhotoDtoMap.put(userPhoto.getId(), mapToPhotoDto(userPhoto, properties));
         }
-        return userPhotoDtoList;
+        for (PhotoLike photoLike : photoLikeList) {
+            UserPhotoDto userPhotoDto = userPhotoDtoMap.get(photoLike.getPhotoId());
+            if (userPhotoDto != null) {
+                userPhotoDto.setLike(true);
+            }
+        }
+        return new ArrayList<>(userPhotoDtoMap.values());
     }
 
     public static UserPhotoDto mapToPhotoDto(UserPhoto userPhoto, ImageStorageProperties properties) {
@@ -131,14 +139,23 @@ public class Mapper {
         userPhotoDto.setId(userPhoto.getId());
         userPhotoDto.setPhotoUri(mapToImageUri(userPhoto.getName(), properties));
         userPhotoDto.setNumOfLikes(userPhoto.getNumOfLikes());
-        userPhotoDto.setLoadTime(userPhoto.getLoadTime());
+        userPhotoDto.setLoadTime(DATE_FORMAT.format(userPhoto.getLoadTime()));
         return userPhotoDto;
     }
 
-    public static List<UserPostDto> mapToPostDtoList(List<UserPost> userPostList, ImageStorageProperties properties) {
+    public static List<UserPostDto> mapToUserPostDtoList(List<UserPost> userPostList, List<PostLike> postLikeList, ImageStorageProperties properties) {
         List<UserPostDto> userPostDtoList = new ArrayList<>();
+        Map<Long, PostLike> postLikeMap = new HashMap<>();
+        for (PostLike postLike : postLikeList) {
+            postLikeMap.put(postLike.getPostId(), postLike);
+        }
         for (UserPost userPost : userPostList) {
-            userPostDtoList.add(mapToUserPostDto(userPost, properties));
+            UserPostDto userPostDto = mapToUserPostDto(userPost, properties);
+            PostLike postLike = postLikeMap.get(userPost.getId());
+            if (postLike != null) {
+                userPostDto.setLike(true);
+            }
+            userPostDtoList.add(userPostDto);
         }
         return userPostDtoList;
     }
@@ -149,7 +166,7 @@ public class Mapper {
         userPostDto.setPhotoUri(mapToImageUri(userPost.getPhotoName(), properties));
         userPostDto.setText(userPost.getText());
         userPostDto.setNumOfLikes(userPost.getNumOfLikes());
-        userPostDto.setCreationTime(userPost.getCreationTime());
+        userPostDto.setCreationTime(DATE_FORMAT.format(userPost.getCreationTime()));
         return userPostDto;
     }
 
@@ -177,14 +194,13 @@ public class Mapper {
     }
 
     public static RegistrationRequest mapRegistrationRequest(RegFormDto regFormDto) throws ParseException {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         RegistrationRequest registrationRequest = new RegistrationRequest();
         registrationRequest.setFirstName(regFormDto.getFirstName());
         registrationRequest.setLastName(regFormDto.getLastName());
         registrationRequest.setEmail(regFormDto.getEmail());
         registrationRequest.setUsername(regFormDto.getUsername());
         registrationRequest.setPassword(regFormDto.getPassword());
-        registrationRequest.setDateOfBirth(new Timestamp(simpleDateFormat.parse(String.format("%d.%d.%d", regFormDto.getDayOfBirth(), regFormDto.getMonthOfBirth(), regFormDto.getYearOfBirth())).getTime()));
+        registrationRequest.setDateOfBirth(mapToTimestamp(regFormDto.getDayOfBirth(), regFormDto.getMonthOfBirth(), regFormDto.getYearOfBirth()));
         registrationRequest.setSex(Sex.valueOf(regFormDto.getSex()));
         return registrationRequest;
     }
@@ -203,5 +219,39 @@ public class Mapper {
 
         user.setUserInfo(userInfo);
         return user;
+    }
+
+    public static SettingsDto mapToSettingsDto(User user, ImageStorageProperties properties) {
+        UserInfo userInfo = user.getUserInfo();
+
+        SettingsDto settingsDto = new SettingsDto();
+
+        BasicSettingsDto basicSettingsDto = new BasicSettingsDto();
+        basicSettingsDto.setAvatarUri(mapToImageUri(userInfo.getAvatarName(), properties));
+        basicSettingsDto.setFirstName(user.getFirstName());
+        basicSettingsDto.setLastName(user.getLastName());
+        basicSettingsDto.setUsername(user.getUsername());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(userInfo.getDateOfBirth().getTime());
+        basicSettingsDto.setDayOfBirth(calendar.get(Calendar.DAY_OF_MONTH));
+        basicSettingsDto.setMonthOfBirth(calendar.get(Calendar.MONTH) + 1);
+        basicSettingsDto.setYearOfBirth(calendar.get(Calendar.YEAR));
+        basicSettingsDto.setSex(userInfo.getSex().name());
+
+        AdditionalSettingsDto additionalSettingsDto = new AdditionalSettingsDto();
+        additionalSettingsDto.setAboutYourself(userInfo.getAboutYourself());
+        additionalSettingsDto.setCity(userInfo.getCity());
+        additionalSettingsDto.setSchool(userInfo.getSchool());
+        additionalSettingsDto.setUniversity(userInfo.getUniversity());
+
+        settingsDto.setBasicSettings(basicSettingsDto);
+        settingsDto.setAdditionalSettings(additionalSettingsDto);
+
+        return settingsDto;
+    }
+
+    public static Timestamp mapToTimestamp(int day, int month, int year) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+        return new Timestamp(simpleDateFormat.parse(String.format("%d.%d.%d", day, month, year)).getTime());
     }
 }

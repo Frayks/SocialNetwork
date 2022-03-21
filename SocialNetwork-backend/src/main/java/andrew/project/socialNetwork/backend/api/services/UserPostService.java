@@ -2,6 +2,7 @@ package andrew.project.socialNetwork.backend.api.services;
 
 import andrew.project.socialNetwork.backend.api.entities.UserPost;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 public interface UserPostService {
@@ -9,7 +10,11 @@ public interface UserPostService {
 
     UserPost findById(Long id);
 
-    List<UserPost> findByUserIdOrderByCreationTimeDesc(Long userId);
+    int countByUserId(Long userId);
+
+    List<UserPost> findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(Long userId, Timestamp beforeTime, int limit);
+
+    List<UserPost> findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(List<Long> userIdList, Timestamp beforeTime, int limit);
 
     UserPost save(UserPost userPost);
 
@@ -17,7 +22,4 @@ public interface UserPostService {
 
     int deleteByIdAndUserId(Long id, Long userId);
 
-    List<UserPost> findByIdAndUserId(Long id, Long userId);
-
-    List<UserPost> findByUserIdsOrderByCreationTimeDesc(List<Long> userIdList);
 }

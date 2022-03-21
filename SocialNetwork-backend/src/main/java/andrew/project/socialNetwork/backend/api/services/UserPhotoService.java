@@ -9,9 +9,9 @@ public interface UserPhotoService {
 
     UserPhoto findById(Long id);
 
-    List<UserPhoto> findByIdAndUserId(Long id, Long userId);
+    List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId);
 
-    List<UserPhoto> findByUserId(Long userId);
+    List<UserPhoto> findByUserIdInOrderByLoadTimeDesc(List<Long> userIdList);
 
     UserPhoto save(UserPhoto userPhoto);
 

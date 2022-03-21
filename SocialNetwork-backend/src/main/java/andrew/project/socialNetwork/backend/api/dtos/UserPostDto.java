@@ -14,6 +14,7 @@ public class UserPostDto {
     private String photoUri;
     private String text;
     private Integer numOfLikes;
-    private Date creationTime;
+    private Boolean like = false;
+    private String creationTime;
 
 }
