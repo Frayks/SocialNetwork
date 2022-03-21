@@ -1,6 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {NgForm} from "@angular/forms";
+import {CommonUtil} from "../shared/Utils/common-util";
 
 @Component({
   selector: 'app-create-post-dialog',
@@ -14,7 +15,9 @@ export class CreatePostDialogComponent implements OnInit {
   selectedPhoto: any
   photoURL: any
 
-  constructor(private dialogRef: MatDialogRef<CreatePostDialogComponent>) {
+  constructor(
+    private dialogRef: MatDialogRef<CreatePostDialogComponent>
+  ) {
   }
 
   ngOnInit(): void {
@@ -36,7 +39,7 @@ export class CreatePostDialogComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    let photoValid = this.selectedPhoto && this.mapToMb(this.selectedPhoto.size) < 10
+    let photoValid = this.selectedPhoto && CommonUtil.mapToMb(this.selectedPhoto.size) < 2
     if (photoValid || form.value.text) {
       let payload = new FormData()
       if (photoValid) {
@@ -51,10 +54,6 @@ export class CreatePostDialogComponent implements OnInit {
 
   cancelCreate() {
     this.dialogRef.close()
-  }
-
-  mapToMb(size: number): number {
-    return size / 1024 / 1024
   }
 
 }

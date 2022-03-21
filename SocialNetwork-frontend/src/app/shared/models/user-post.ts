@@ -3,6 +3,7 @@ export class UserPost {
   photoUri!: string
   text!: string
   numOfLikes!: number
+  like!: boolean
   creationTime!: string
 
 }

@@ -1,121 +1,235 @@
 <app-header></app-header>
 <div class="block-main">
   <div class="row">
-    <div class="col-78pr px-def">
+    <div class="col-22pr px-def">
+      <div class="container-def">
+        <div class="py-2">
+          <div class="menu-item-box " (click)="switchToBasicSettings()"
+               [ngClass]="displaySwitch == 1 ? 'menu-item-activated' : 'menu-item-hover'">
+            <span class="material-icons menu-item-icon align-middle">manage_accounts</span>
+            <span class="menu-item-name">Основне</span>
+          </div>
+          <div class="menu-item-box" (click)="switchToAdditionalSettings()"
+               [ngClass]="displaySwitch == 2 ? 'menu-item-activated' : 'menu-item-hover'">
+            <span class="material-icons menu-item-icon align-middle">settings_suggest</span>
+            <span class="menu-item-name">Додаткове</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-56pr px-def">
       <div class="container-def p-3 mb-3">
-        <p>Мої налаштування</p>
-        <form #form="ngForm" (ngSubmit)="onSubmit(form)">
-          <div class="mb-3 text-center">
-            <img class="border"
-                 src="https://sun6-21.userapi.com/s/v1/if1/tnyBZ8EAmFn51Oe2bGHqgqwDsayH2lRVEnuKrEEaagW8yjhSPsVUmQjSPeeRSV1D2AKTV5RZ.jpg?size=200x200&quality=96&crop=269,0,1036,1036&ava=1">
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Ім'я:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Прізвище:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Username:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Про себе:</span>
-            </div>
-            <div class="col-7 px-def">
-              <textarea class="form-control" rows="3"></textarea>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Дата народження:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Ваша стать:</span>
-            </div>
-            <div class="col-7 px-def">
-              <div class="row">
-                <div class="col">
-                  <div class="form-check-cst">
-                    <div class="row">
-                      <div class="col-10">
-                        <label class="form-check-label" for="inlineFormCheckMale">чоловік</label>
-                      </div>
-                      <div class="col-2">
-                        <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckMale">
-                      </div>
-                    </div>
+        <div *ngIf="displaySwitch == 1">
+          <form #form="ngForm" (ngSubmit)="onSubmitBasicSettings(form)">
+            <div class="d-flex justify-content-center">
+              <div class="w-95">
+                <div class="py-2 text-center">
+                  <input type="file" class="d-none" name="fileInput" accept="image/gif, image/jpeg, image/png"
+                         ngModel (change)="photoSelected($event)"
+                         #fileInput="ngModel" #photoFile >
+                  <div class="icon-preview-item">
+                    <img class="icon-preview"
+                         [src]="photoURL ? photoURL : basicSettings.avatarUri"
+                         [class.border-invalid]="selectedPhoto && !selectedPhotoValid"
+                         [class.border-valid]="selectedPhoto && selectedPhotoValid"
+                         (click)="photoFile.click()" >
+                    <button class="btn-on-photo-preview" type="button" *ngIf="photoURL" (click)="clearSelectedPhoto()">
+                      <span class="material-icons align-middle">clear</span>
+                    </button>
+                  </div>
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(fileInput.name) && !selectedPhotoValid">{{errorMessages.get(fileInput.name)}}</div>
+                </div>
+                <div class="row py-2">
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Ім'я" name="firstName"
+                           [(ngModel)]="basicSettings.firstName"
+                           [class.is-invalid]="firstName.touched && firstName.invalid"
+                           [class.is-valid]="firstName.touched && firstName.valid"
+                           (change)="basicSettingsChanged()"
+                           #firstName="ngModel" required>
+                    <div class="invalid-feedback px-2"
+                         [class.d-block]="errorMessages.has(firstName.name) && firstName.invalid">{{errorMessages.get(firstName.name)}}</div>
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control" placeholder="Прізвище" name="lastName"
+                           [(ngModel)]="basicSettings.lastName"
+                           [class.is-invalid]="lastName.touched && lastName.invalid"
+                           [class.is-valid]="lastName.touched && lastName.valid"
+                           (change)="basicSettingsChanged()"
+                           #lastName="ngModel" required>
+                    <div class="invalid-feedback px-2"
+                         [class.d-block]="errorMessages.has(lastName.name) && lastName.invalid">{{errorMessages.get(lastName.name)}}</div>
                   </div>
                 </div>
-                <div class="col">
-                  <div class="form-check-cst">
-                    <div class="row">
-                      <div class="col-10">
-                        <label class="form-check-label" for="inlineFormCheckFemale">жінка</label>
+                <div class="py-2">
+                  <input type="text" class="form-control" placeholder="Username" name="username"
+                         [(ngModel)]="basicSettings.username"
+                         [class.is-invalid]="username.touched && username.invalid"
+                         [class.is-valid]="username.touched && username.valid"
+                         (change)="basicSettingsChanged()"
+                         #username="ngModel" required>
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(username.name) && username.invalid">{{errorMessages.get(username.name)}}</div>
+                </div>
+                <div class="py-2">
+                  <p class="form-label">Дата народження</p>
+                  <div class="row">
+                    <div class="col">
+                      <select class="form-select" name="dayOfBirth" [(ngModel)]="basicSettings.dayOfBirth"
+                              (change)="validateDateOfBirth(form)"
+                              [class.is-invalid]="dayOfBirth.touched && dayOfBirth.invalid"
+                              [class.is-valid]="dayOfBirth.touched && dayOfBirth.valid"
+                              #dayOfBirth="ngModel" required>
+                        <option [ngValue]="undefined" [disabled]="true">День</option>
+                        <option *ngFor="let day of days" [value]="day">{{day}}</option>
+                      </select>
+                    </div>
+                    <div class="col">
+                      <select class="form-select" name="monthOfBirth" [(ngModel)]="basicSettings.monthOfBirth"
+                              (change)="validateDateOfBirth(form)"
+                              [class.is-invalid]="monthOfBirth.touched && monthOfBirth.invalid"
+                              [class.is-valid]="monthOfBirth.touched && monthOfBirth.valid"
+                              #monthOfBirth="ngModel" required>
+                        <option [ngValue]="undefined" [disabled]="true">Місяць</option>
+                        <option *ngFor="let month of months; let i = index" [value]="i + 1">{{month}}</option>
+                      </select>
+                    </div>
+                    <div class="col">
+                      <select class="form-select" name="yearOfBirth" [(ngModel)]="basicSettings.yearOfBirth"
+                              (change)="validateDateOfBirth(form)"
+                              [class.is-invalid]="yearOfBirth.touched && yearOfBirth.invalid"
+                              [class.is-valid]="yearOfBirth.touched && yearOfBirth.valid"
+                              #yearOfBirth="ngModel" required>
+                        <option [ngValue]="undefined" [disabled]="true">Рік</option>
+                        <option *ngFor="let year of years" [value]="year">{{year}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has('dateOfBirth')">{{errorMessages.get('dateOfBirth')}}</div>
+                </div>
+                <div class="py-2">
+                  <p class="form-label">Ваша стать</p>
+                  <div class="row">
+                    <div class="col">
+                      <div class="form-check-cst"
+                           [class.border-invalid]="sex.touched && sex.invalid"
+                           [class.border-valid]="sex.touched && sex.valid"
+                      >
+                        <div class="row">
+                          <div class="col-10">
+                            <label class="form-check-label" for="inlineFormCheckMale">чоловік</label>
+                          </div>
+                          <div class="col-2">
+                            <input type="radio" class="form-check-input" id="inlineFormCheckMale" name="sex"
+                                   [value]="'MALE'"
+                                   [(ngModel)]="basicSettings.sex"
+                                   [class.is-invalid]="sex.touched && sex.invalid"
+                                   [class.is-valid]="sex.touched && sex.valid"
+                                   (change)="basicSettingsChanged()"
+                                   #sex="ngModel" required>
+                          </div>
+                        </div>
                       </div>
-                      <div class="col-2">
-                        <input class="form-check-input" type="radio" name="sex" required id="inlineFormCheckFemale">
+                    </div>
+                    <div class="col">
+                      <div class="form-check-cst"
+                           [class.border-invalid]="sex.touched && sex.invalid"
+                           [class.border-valid]="sex.touched && sex.valid"
+                      >
+                        <div class="row">
+                          <div class="col-10">
+                            <label class="form-check-label" for="inlineFormCheckFemale">жінка</label>
+                          </div>
+                          <div class="col-2">
+                            <input type="radio" class="form-check-input" id="inlineFormCheckFemale" name="sex"
+                                   [value]="'FEMALE'"
+                                   [(ngModel)]="basicSettings.sex"
+                                   [class.is-invalid]="sex.touched && sex.invalid"
+                                   [class.is-valid]="sex.touched && sex.valid"
+                                   (change)="basicSettingsChanged()"
+                                   #sex="ngModel" required>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(sex.name)">{{errorMessages.get(sex.name)}}</div>
+                </div>
+                <div class="pt-2 text-center">
+                  <input type="submit" class="inp-def-form"
+                         [class.btn-def]="basicSettingsFormStatus == 0"
+                         [class.btn-not-active]="basicSettingsFormStatus == 1"
+                         [value]="basicSettingsFormStatus == 0 ? 'Зберегти' : 'Збережено' ">
                 </div>
               </div>
             </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Місто:</span>
+          </form>
+        </div>
+        <div *ngIf="displaySwitch == 2">
+          <form #form="ngForm" (ngSubmit)="onSubmitAdditionalSettings(form)">
+            <div class="d-flex justify-content-center">
+              <div class="w-95">
+                <div class="py-2">
+                  <textarea class="form-control" placeholder="Про себе" name="aboutYourself"
+                            [(ngModel)]="additionalSettings.aboutYourself"
+                            [class.is-invalid]="aboutYourself.touched && aboutYourself.invalid"
+                            [class.is-valid]="aboutYourself.touched && aboutYourself.valid"
+                            (change)="additionalSettingsChanged()"
+                            #aboutYourself="ngModel" maxlength="50">
+                  </textarea>
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(aboutYourself.name) && aboutYourself.invalid">{{errorMessages.get(aboutYourself.name)}}</div>
+                </div>
+                <div class="py-2">
+                  <input type="text" class="form-control" placeholder="Місто" name="city"
+                         [(ngModel)]="additionalSettings.city"
+                         [class.is-invalid]="city.touched && city.invalid"
+                         [class.is-valid]="city.touched && city.valid"
+                         (change)="additionalSettingsChanged()"
+                         #city="ngModel">
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(city.name) && city.invalid">{{errorMessages.get(city.name)}}</div>
+                </div>
+                <div class="py-2">
+                  <input type="text" class="form-control" placeholder="Школа" name="school"
+                         [(ngModel)]="additionalSettings.school"
+                         [class.is-invalid]="school.touched && school.invalid"
+                         [class.is-valid]="school.touched && school.valid"
+                         (change)="additionalSettingsChanged()"
+                         #school="ngModel">
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(school.name) && school.invalid">{{errorMessages.get(school.name)}}</div>
+                </div>
+                <div class="py-2">
+                  <input type="text" class="form-control" placeholder="Університет" name="university"
+                         [(ngModel)]="additionalSettings.university"
+                         [class.is-invalid]="university.touched && university.invalid"
+                         [class.is-valid]="university.touched && university.valid"
+                         (change)="additionalSettingsChanged()"
+                         #university="ngModel">
+                  <div class="invalid-feedback px-2"
+                       [class.d-block]="errorMessages.has(university.name) && university.invalid">{{errorMessages.get(university.name)}}</div>
+                </div>
+                <div class="pt-2 text-center">
+                  <input type="submit" class="inp-def-form"
+                         [class.btn-def]="additionalSettingsFormStatus == 0"
+                         [class.btn-not-active]="additionalSettingsFormStatus == 1"
+                         [value]="additionalSettingsFormStatus == 0 ? 'Зберегти' : 'Збережено' ">
+                </div>
+              </div>
             </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Школа:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-3 px-def pt-2 text-end">
-              <span>Університет:</span>
-            </div>
-            <div class="col-7 px-def">
-              <input class="form-control">
-            </div>
-          </div>
-          <div class="text-center">
-            <input type="button" class="inp-def-form btn-def" value="Зберегти">
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages"
+                    [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
         </div>
       </div>
     </div>

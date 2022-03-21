@@ -93,7 +93,7 @@
         <div class="row">
           <div class="col">
             <span class="mb-0">Пости <span
-              class="text-gray">{{(userProfileInfo.userPostList) ? userProfileInfo.userPostList.length : 0}}</span></span>
+              class="text-gray">{{userProfileInfo.numOfPosts}}</span></span>
           </div>
           <div class="col">
             <div *ngIf="myProfile">
@@ -108,7 +108,7 @@
         </div>
       </div>
       <div *ngIf="showPosts">
-        <div class="container-def p-3 mb-3" *ngFor="let post of userProfileInfo.userPostList">
+        <div class="container-def p-3 mb-3" *ngFor="let post of userPostList">
           <div class="post-image-item mb-2">
             <div class="text-center" *ngIf="post.photoUri">
               <input type="image" [src]="post.photoUri" class="image-post" (click)="viewPostPhoto(post)">
@@ -119,9 +119,8 @@
               </button>
             </div>
           </div>
-          <div class="px-2">
+          <div class="px-2" *ngIf="post.text">
             <span class="text-pre-wrap">{{post.text}}</span>
-
           </div>
           <div>
             <hr class="hr-def mt-2">
@@ -132,14 +131,20 @@
                 <span class="ms-2">{{post.creationTime | date: 'dd.MM.yyyy'}}</span>
               </div>
               <div class="col">
-                <button class="inp-small-form btn-hidden float-end me-2" type="button">
-                  <span class="material-icons align-middle text-red">favorite</span>
+                <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePostLike(post)">
+                  <span class="material-icons align-middle"
+                        [class.text-red]="post.like"
+                        [class.text-gray]="!post.like"
+                  >favorite</span>
                   <span class="ms-1">{{post.numOfLikes}}</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
+        <input type="button" class="w-100 inp-def-form mb-3 btn-refresh"
+               [class.d-none]="hideMoreButton"
+               (click)="loadUserPostListBlock()" value="Більше">
       </div>
     </div>
     <div class="col-22pr px-def">
@@ -147,21 +152,21 @@
         <div class="mb-3">
           <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
         </div>
-        <div class="container-def p-3 mb-3">
-          <div>
+        <div class="container-def mb-3">
+          <div class="p-3">
             <a [routerLink]="['/users', userProfileInfo.username, 'friends']"
                class="text-decoration-none text-black mb-0">Друзі <span
               class="text-gray">{{(userProfileInfo.userFriendList) ? userProfileInfo.userFriendList.length : 0}}</span></a>
           </div>
-          <div *ngIf="userProfileInfo.userFriendList && userProfileInfo.userFriendList.length" class="pt-3">
-            <div class="row">
+          <div *ngIf="userProfileInfo.userFriendList && userProfileInfo.userFriendList.length">
+            <div class="user-friends-list">
               <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-super-small-box">
                 <a [routerLink]="['/users', friend.username]" class="link-def">
                   <div>
                     <img [src]="friend.avatarUri" class="icon-super-small">
                   </div>
                   <div class="text-center">
-                    <p class="form-label">{{friend.firstName}}</p>
+                    <p class="form-label icon-text">{{friend.firstName}}</p>
                   </div>
                 </a>
               </div>
@@ -169,7 +174,7 @@
           </div>
         </div>
         <div>
-          <input type="button" [ngClass]="visible ? 'visible': 'invisible'" (click)="goUp()"
+          <input type="button" [ngClass]="hideUpButton ? 'invisible': 'visible'" (click)="goUp()"
                  class="w-100 inp-def-form mb-3 btn-refresh" value="Вверх">
         </div>
       </div>

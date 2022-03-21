@@ -32,6 +32,10 @@
     <div class="col-56pr px-def">
       <div class="container-def py-3">
         <div *ngIf="displaySwitch == 1">
+          <div class="text-center">
+            <span>Список друзів</span>
+            <hr>
+          </div>
           <div *ngFor="let friend of userFriendsInfo.userFriendList; let i = index">
             <hr *ngIf="i > 0" class="hr-min">
             <div class="row px-def py-2">
@@ -56,6 +60,10 @@
           </div>
         </div>
         <div *ngIf="displaySwitch == 2 && myProfile">
+          <div class="text-center">
+            <span>Список запитів у друзі</span>
+            <hr>
+          </div>
           <div *ngFor="let friendRequest of userFriendsInfo.userFriendRequestList; let i = index">
             <hr *ngIf="i > 0" class="hr-min">
             <div class="row px-def py-2">

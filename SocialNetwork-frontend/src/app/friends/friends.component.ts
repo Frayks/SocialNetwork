@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {AuthService} from "../shared/services/auth.service";
-import {UserFriendsInfo} from "../shared/models/UserFriendsInfo";
+import {UserFriendsInfo} from "../shared/models/user-friends-info";
 import {FriendsService} from "../shared/services/friends.service";
-import {ShortUserInfo} from "../shared/models/ShortUserInfo";
-import {MenuData} from "../shared/models/MenuData";
+import {ShortUserInfo} from "../shared/models/short-user-info";
+import {MenuData} from "../shared/models/menu-data";
 import {UserService} from "../shared/services/user.service";
 
 @Component({
@@ -19,13 +19,13 @@ export class FriendsComponent implements OnInit {
   menuData = new MenuData()
   myProfile = false
 
-  constructor(private router: Router,
-              private activatedRoute: ActivatedRoute,
-              private authService: AuthService,
-              private friendsService: FriendsService,
-              private userService: UserService
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private authService: AuthService,
+    private friendsService: FriendsService,
+    private userService: UserService
   ) {
-    this.userFriendsInfo = new UserFriendsInfo()
     this.userFriendsInfo.shortUserInfo = new ShortUserInfo();
   }
 
@@ -45,7 +45,7 @@ export class FriendsComponent implements OnInit {
         }
       })
       this.userService.loadMenuData().subscribe({
-        next:data => {
+        next: data => {
           this.menuData = data
         },
         error: () => {
@@ -53,16 +53,6 @@ export class FriendsComponent implements OnInit {
         }
       })
     })
-  }
-
-  switchToShowFriends() {
-    this.displaySwitch = 1
-  }
-
-  switchToShowFriendRequests() {
-    if (this.userFriendsInfo.userFriendRequestList.length > 0) {
-      this.displaySwitch = 2
-    }
   }
 
   deleteFriend(userId: number) {
@@ -105,4 +95,15 @@ export class FriendsComponent implements OnInit {
       }
     })
   }
+
+  switchToShowFriends() {
+    this.displaySwitch = 1
+  }
+
+  switchToShowFriendRequests() {
+    if (this.userFriendsInfo.userFriendRequestList.length > 0) {
+      this.displaySwitch = 2
+    }
+  }
+
 }

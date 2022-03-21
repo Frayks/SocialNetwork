@@ -2,8 +2,8 @@ import {Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {EndpointConstants} from "../constants/endpoint-constants";
-import {UserFriendsInfo} from "../models/UserFriendsInfo";
-import {ResponseStatus} from "../models/ResponseStatus";
+import {UserFriendsInfo} from "../models/user-friends-info";
+import {ResponseStatus} from "../models/response-status";
 
 @Injectable({
   providedIn: 'root'

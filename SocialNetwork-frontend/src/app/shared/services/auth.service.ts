@@ -5,8 +5,9 @@ import {EndpointConstants} from "../constants/endpoint-constants";
 import {environment} from "../../../environments/environment";
 import {JwtConstants} from "../constants/jwt-constants";
 import {JwtHelperService} from "@auth0/angular-jwt";
-import {RegForm} from "../models/RegForm";
-import {RegStatus} from "../models/RegStatus";
+import {RegForm} from "../models/reg-form";
+import {FormStatus} from "../models/form-status";
+import {ResetPasswordRequest} from "../models/reset-password-request";
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class AuthService {
   }
 
   registration(regForm: RegForm) {
-    return this.httpClient.post<RegStatus>(environment.server_url + EndpointConstants.REGISTRATION_ENDPOINT, regForm);
+    return this.httpClient.post<FormStatus>(environment.server_url + EndpointConstants.REGISTRATION_ENDPOINT, regForm);
   }
 
   confirm(key: string) {
@@ -36,6 +37,19 @@ export class AuthService {
     return this.httpClient.get(environment.server_url + EndpointConstants.CONFIRM_ENDPOINT, {
       params: params
     });
+  }
+
+
+  restore(email: string) {
+    let params = new HttpParams()
+      .set('email', email);
+    return this.httpClient.get(environment.server_url + EndpointConstants.RESTORE_ENDPOINT, {
+      params: params
+    });
+  }
+
+  resetPassword(resetPasswordRequest: ResetPasswordRequest) {
+    return this.httpClient.post<FormStatus>(environment.server_url + EndpointConstants.RESET_PASSWORD_ENDPOINTS, resetPasswordRequest);
   }
 
   logout() {

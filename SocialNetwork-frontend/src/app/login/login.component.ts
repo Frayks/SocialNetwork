@@ -2,7 +2,6 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../shared/services/auth.service";
 import {NgForm} from "@angular/forms";
-import {first} from "rxjs";
 
 @Component({
   selector: 'app-login',
@@ -11,7 +10,12 @@ import {first} from "rxjs";
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router, private authService: AuthService) {
+  errorMessage!: string
+
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {
   }
 
   ngOnInit(): void {
@@ -33,11 +37,11 @@ export class LoginComponent implements OnInit {
           error: error => {
             switch (error.status) {
               case 403: {
-                alert("Неправильний логін або пароль!")
+                this.errorMessage = "Неправильний логін або пароль!"
                 break
               }
               default: {
-                alert("Непередбачувана помилка!")
+                this.errorMessage = "Непередбачувана помилка!"
               }
             }
           }

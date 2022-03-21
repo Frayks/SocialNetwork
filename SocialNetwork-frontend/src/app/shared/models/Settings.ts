@@ -1,14 +1,8 @@
-export class Settings {
-  id!: number
-  firstName!: string
-  lastName!: string
-  username!: string
-  aboutYourself!: string
-  dateOfBirth!: string
-  city!: string
-  sex!: string
-  school!: string
-  university!: string
+import {BasicSettings} from "./basic-settings";
+import {AdditionalSettings} from "./additional-settings";
 
+export class Settings {
+  basicSettings!: BasicSettings
+  additionalSettings!: AdditionalSettings
 
 }

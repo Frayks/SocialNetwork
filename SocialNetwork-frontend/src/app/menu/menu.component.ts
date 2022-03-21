@@ -12,11 +12,13 @@ export class MenuComponent implements OnInit {
   @Input() numOfRequestsToFriends!: number
   username!: string
 
-  constructor(private authService: AuthService) {
-    this.username = authService.getUsername()
+  constructor(
+    private authService: AuthService
+  ) {
   }
 
   ngOnInit(): void {
+    this.username = this.authService.getUsername()
   }
 
 }

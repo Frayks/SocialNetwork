@@ -7,8 +7,22 @@
         </div>
       </div>
       <div class="col-56pr px-def">
-        <div>
-          <input type="text" class="inp-def-form inp-search" placeholder="Пошук">
+        <input #inputSearch type="text" class="inp-def-form inp-search" maxlength="100" placeholder="Пошук"
+               (input)="search(inputSearch)" (focusout)="clearSearchState(inputSearch)" >
+        <div class="container-def block-search-result" *ngIf="searchResult && searchResult.userList.length > 0">
+          <div *ngFor="let user of searchResult.userList">
+            <a [routerLink]="['/users', user.username]" class="link-def" (click)="clearSearchState(inputSearch)">
+              <div class="user-item-box">
+                <div class="user-item-icon-box">
+                  <img [src]="user.avatarUri" class="user-item-icon">
+                </div>
+                <div class="user-item-name-box">
+                  <span>{{user.firstName}} {{user.lastName}}</span>
+                </div>
+              </div>
+              <hr class="hr-min-full">
+            </a>
+          </div>
         </div>
       </div>
       <div class="col-22pr px-def">

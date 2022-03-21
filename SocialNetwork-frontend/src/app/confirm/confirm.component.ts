@@ -16,21 +16,24 @@ export class ConfirmComponent implements OnInit {
     private authService: AuthService,
     private messageDataService: MessageDataService
   ) {
-    this.activatedRoute.params.subscribe((params: Params) => {
-      authService.confirm(params['key']).subscribe({
-        next: data => {
-          messageDataService.title = "Вітаю!"
-          messageDataService.text = "Акаунт успішно створено."
-          router.navigate(['/message'])
-        },
-        error: error => {
-          router.navigate([''])
-        }
-      })
-    })
   }
 
   ngOnInit(): void {
+    if (this.authService.authCredentials) {
+      this.router.navigate([`users/${this.authService.getUsername()}`])
+    }
+    this.activatedRoute.params.subscribe((params: Params) => {
+      this.authService.confirm(params['key']).subscribe({
+        next: data => {
+          this.messageDataService.title = "Вітаю!"
+          this.messageDataService.text = "Акаунт успішно створено."
+          this.router.navigate(['/message'])
+        },
+        error: error => {
+          this.router.navigate([''])
+        }
+      })
+    })
   }
 
 }

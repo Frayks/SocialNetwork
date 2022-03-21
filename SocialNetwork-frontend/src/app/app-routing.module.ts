@@ -17,7 +17,7 @@ const routes: Routes = [
   {path: 'confirm/:key', component: ConfirmComponent},
   {path: 'restore', component: RestoreComponent},
   {path: 'message', component: MessageComponent},
-  {path: 'resetPassword', component: ResetPasswordComponent},
+  {path: 'resetPassword/:key', component: ResetPasswordComponent},
   {path: 'users/:username', component: UserComponent},
   {path: 'users/:username/friends', component: FriendsComponent},
   {path: 'news', component: NewsComponent},

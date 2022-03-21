@@ -2,16 +2,17 @@ import {Component, HostListener, OnInit} from '@angular/core';
 import {AuthService} from "../shared/services/auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../shared/services/user.service";
-import {UserProfileInfo} from "../shared/models/UserProfileInfo";
+import {UserProfileInfo} from "../shared/models/user-profile-info";
 import {MatDialog} from "@angular/material/dialog";
 import {CreatePostDialogComponent} from "../create-post-dialog/create-post-dialog.component";
-import {UserPhoto} from "../shared/models/UserPhoto";
+import {UserPhoto} from "../shared/models/user-photo";
 import {ViewPhotoDialogComponent} from "../view-photo-dialog/view-photo-dialog.component";
-import {UserPost} from "../shared/models/UserPost";
+import {UserPost} from "../shared/models/user-post";
 import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-photo-dialog.component";
 import {FriendsService} from "../shared/services/friends.service";
 import {AddToFriendsStatusCode} from "../shared/constants/add-to-friends-status-code";
-import {MenuData} from "../shared/models/MenuData";
+import {MenuData} from "../shared/models/menu-data";
+import {CommonUtil} from "../shared/Utils/common-util";
 
 @Component({
   selector: 'app-user',
@@ -22,10 +23,13 @@ export class UserComponent implements OnInit {
 
   userProfileInfo = new UserProfileInfo()
   menuData = new MenuData()
+  userPostList!: UserPost[]
   showAdditionalInfo = false
   showPosts = true
   myProfile = false
-  visible = false
+  username!: string
+  hideUpButton = true
+  hideMoreButton = false
 
   constructor(
     private router: Router,
@@ -42,7 +46,8 @@ export class UserComponent implements OnInit {
       this.router.navigate(["/"])
     }
     this.activatedRoute.params.subscribe((params: Params) => {
-      this.userService.loadUserProfileInfo(params['username']).subscribe({
+      this.username = params['username']
+      this.userService.loadUserProfileInfo(this.username).subscribe({
         next: data => {
           this.userProfileInfo = data
           this.myProfile = data.username === this.authService.getUsername()
@@ -51,16 +56,42 @@ export class UserComponent implements OnInit {
           this.router.navigate([`users/${this.authService.getUsername()}`])
         }
       })
-    })
-    this.userService.loadMenuData().subscribe({
-        next: data => {
-          this.menuData = data
-        },
-        error: () => {
+      this.loadUserPostList()
+      this.userService.loadMenuData().subscribe({
+          next: data => {
+            this.menuData = data
+          },
+          error: () => {
 
+          }
         }
+      )
+    })
+  }
+
+  loadUserPostList() {
+    this.userService.loadUserPostList(this.username).subscribe({
+      next: data => {
+        this.hideMoreButton = data.length == 0
+        this.userPostList = data
+      },
+      error: error => {
+
       }
-    )
+    })
+  }
+
+  loadUserPostListBlock() {
+    let beforeTime = this.userPostList[this.userPostList.length - 1].creationTime
+    this.userService.loadUserPostListBeforeTime(this.username, beforeTime).subscribe({
+      next: data => {
+        this.hideMoreButton = data.length == 0
+        this.userPostList = this.userPostList.concat(data)
+      },
+      error: error => {
+
+      }
+    })
   }
 
   viewPhoto(photo: UserPhoto) {
@@ -79,7 +110,7 @@ export class UserComponent implements OnInit {
 
   addPhoto(input: any) {
     let photo = input.files[0];
-    if (this.mapToMb(photo.size) < 10) {
+    if (CommonUtil.mapToMb(photo.size) < 2) {
       let payload = new FormData()
       payload.append("photo", photo, photo.name)
       this.userService.addPhoto(payload).subscribe({
@@ -114,7 +145,7 @@ export class UserComponent implements OnInit {
         this.userService.createPost(result).subscribe(
           {
             next: data => {
-              this.userProfileInfo.userPostList.unshift(data)
+              this.userPostList.unshift(data)
             },
             error: () => {
 
@@ -128,10 +159,26 @@ export class UserComponent implements OnInit {
   deletePost(postId: number) {
     this.userService.deletePost(postId).subscribe({
       next: () => {
-        this.userProfileInfo.userPostList = this.userProfileInfo.userPostList.filter(item => item.id !== postId)
+        this.userPostList = this.userPostList.filter(item => item.id !== postId)
       },
       error: () => {
 
+      }
+    })
+  }
+
+  changePostLike(post: UserPost) {
+    this.userService.changePostLike(post.id).subscribe({
+      next: () => {
+        if (post.like) {
+          post.like = false;
+          post.numOfLikes = post.numOfLikes - 1;
+        } else {
+          post.like = true;
+          post.numOfLikes = post.numOfLikes + 1;
+        }
+      },
+      error: () => {
       }
     })
   }
@@ -180,19 +227,11 @@ export class UserComponent implements OnInit {
   @HostListener('window:scroll', ['$event'])
   scrollHandler(event: any) {
     let pos = window.scrollY;
-    if (pos > 50) {
-      this.visible = true
-    } else {
-      this.visible = false
-    }
+    this.hideUpButton = pos < 50
   }
 
   goUp() {
     window.scroll(0, 0);
-  }
-
-  mapToMb(size: number): number {
-    return size / 1024 / 1024
   }
 
 }
