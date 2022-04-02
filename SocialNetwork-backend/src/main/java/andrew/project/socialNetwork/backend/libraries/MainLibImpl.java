@@ -573,7 +573,7 @@ public class MainLibImpl implements MainLib {
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
         List<List<UserChatMessage>> userChatMessageListList = new ArrayList<>();
         for (UserChat userChat : userChatList) {
-            int count = 5;
+            int count = 50;
             int numOfUnreadMessages;
             if (userChat.getFirstUserId().equals(userDbi.getId())) {
                 numOfUnreadMessages = Math.toIntExact(userChat.getFirstUserNumOfUnreadMessages());
@@ -604,7 +604,7 @@ public class MainLibImpl implements MainLib {
                     LOGGER.error(e);
                 }
             }
-            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, 5);
+            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, 50);
             List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChat);
             List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
             Map<Long, User> chatMemberMap = new HashMap<>();
