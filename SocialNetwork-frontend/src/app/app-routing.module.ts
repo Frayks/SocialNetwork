@@ -10,6 +10,7 @@ import {FriendsComponent} from "./friends/friends.component";
 import {NewsComponent} from "./news/news.component";
 import {SettingsComponent} from "./settings/settings.component";
 import {ConfirmComponent} from "./confirm/confirm.component";
+import {MessengerComponent} from "./messenger/messenger.component";
 
 const routes: Routes = [
   {path: '', component: LoginComponent},
@@ -21,7 +22,8 @@ const routes: Routes = [
   {path: 'users/:username', component: UserComponent},
   {path: 'users/:username/friends', component: FriendsComponent},
   {path: 'news', component: NewsComponent},
-  {path: 'settings', component: SettingsComponent}
+  {path: 'settings', component: SettingsComponent},
+  {path: 'messenger', component: MessengerComponent}
 ];
 
 @NgModule({

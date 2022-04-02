@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../shared/services/auth.service";
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {UserService} from "../shared/services/user.service";
@@ -13,13 +13,16 @@ import {FriendsService} from "../shared/services/friends.service";
 import {AddToFriendsStatusCode} from "../shared/constants/add-to-friends-status-code";
 import {MenuData} from "../shared/models/menu-data";
 import {CommonUtil} from "../shared/Utils/common-util";
+import {WebSocketService} from "../shared/services/web-socket.service";
+import {WebSocketMessage} from "../shared/models/web-socket-message";
+import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 
 @Component({
   selector: 'app-user',
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.scss']
 })
-export class UserComponent implements OnInit {
+export class UserComponent implements OnInit, OnDestroy {
 
   userProfileInfo = new UserProfileInfo()
   menuData = new MenuData()
@@ -37,13 +40,14 @@ export class UserComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private friendsService: FriendsService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private webSocketService: WebSocketService
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.authService.authCredentials) {
-      this.router.navigate(["/"])
+      await this.router.navigate(["/"])
     }
     this.activatedRoute.params.subscribe((params: Params) => {
       this.username = params['username']
@@ -62,11 +66,26 @@ export class UserComponent implements OnInit {
             this.menuData = data
           },
           error: () => {
-
           }
         }
       )
     })
+    await this.webSocketService.initialize()
+    this.webSocketService.webSocket.onmessage = (event) => {
+      let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
+      switch (webSocketMessage.type) {
+        case WebSocketMessageType.MESSAGE: {
+          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          break
+        }
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.webSocketService.webSocket) {
+      this.webSocketService.webSocket.onmessage = null
+    }
   }
 
   loadUserPostList() {
@@ -76,7 +95,6 @@ export class UserComponent implements OnInit {
         this.userPostList = data
       },
       error: error => {
-
       }
     })
   }
@@ -146,6 +164,7 @@ export class UserComponent implements OnInit {
           {
             next: data => {
               this.userPostList.unshift(data)
+              this.userProfileInfo.numOfPosts += 1
             },
             error: () => {
 
@@ -160,6 +179,7 @@ export class UserComponent implements OnInit {
     this.userService.deletePost(postId).subscribe({
       next: () => {
         this.userPostList = this.userPostList.filter(item => item.id !== postId)
+        this.userProfileInfo.numOfPosts -= 1
       },
       error: () => {
 
@@ -209,6 +229,13 @@ export class UserComponent implements OnInit {
     })
   }
 
+  goToChatWithUser() {
+    this.router.navigate(["/messenger"], {
+      queryParams: {
+        "chatWith": this.username
+      }
+    })
+  }
 
   toggleShowAdditionalInfo() {
     this.showAdditionalInfo = !this.showAdditionalInfo;

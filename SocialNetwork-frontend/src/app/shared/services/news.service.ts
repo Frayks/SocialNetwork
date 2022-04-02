@@ -13,13 +13,13 @@ export class NewsService {
   }
 
   loadPostList() {
-    return this.httpClient.get<Post[]>(environment.server_url + EndpointConstants.GET_POST_LIST_ENDPOINT)
+    return this.httpClient.get<Post[]>(environment.server_url + EndpointConstants.GET_POST_LIST_BLOCK_ENDPOINT)
   }
 
   loadPostListBeforeTime(beforeTime: string) {
     let params = new HttpParams()
       .set('beforeTime', beforeTime);
-    return this.httpClient.get<Post[]>(environment.server_url + EndpointConstants.GET_POST_LIST_ENDPOINT, {
+    return this.httpClient.get<Post[]>(environment.server_url + EndpointConstants.GET_POST_LIST_BLOCK_ENDPOINT, {
       params: params
     })
   }

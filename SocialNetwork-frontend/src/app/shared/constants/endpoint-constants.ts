@@ -21,11 +21,15 @@ export class EndpointConstants {
   public static readonly DELETE_FRIEND_ENDPOINT = '/api/deleteFriend'
   public static readonly AGREE_FRIEND_REQUEST_ENDPOINT = '/api/agreeFriendRequest'
   public static readonly REJECT_FRIEND_REQUEST_ENDPOINT = '/api/rejectFriendRequest'
-  public static readonly GET_POST_LIST_ENDPOINT = '/api/getPostList'
+  public static readonly GET_POST_LIST_BLOCK_ENDPOINT = '/api/getPostListBlock'
   public static readonly GET_USER_POST_LIST_ENDPOINT = '/api/getUserPostList'
   public static readonly GET_SETTINGS = '/api/getSettings'
   public static readonly SEARCH_USERS_ENDPOINT = '/api/searchUsers'
   public static readonly CHANGE_ADDITIONAL_SETTINGS_ENDPOINT = '/api/changeAdditionalSettings'
   public static readonly CHANGE_BASIC_SETTINGS_ENDPOINT = '/api/changeBasicSettings'
+  public static readonly WS_ENDPOINT = '/api/ws'
+  public static readonly GET_CHAT_INFO_DATA_ENDPOINT = '/api/getChatInfoData'
+  public static readonly GET_WEB_SOCKET_SESSION_KEY_ENDPOINT = '/api/getWebSocketSessionKey'
+  public static readonly GET_CHAT_MESSAGE_LIST_BLOCK_ENDPOINT = '/api/getChatMessageListBlock'
 
 }

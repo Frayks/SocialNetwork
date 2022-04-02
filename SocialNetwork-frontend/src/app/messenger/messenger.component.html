@@ -1,0 +1,38 @@
+<app-header></app-header>
+<div class="block-main">
+  <div class="row">
+    <div class="col-22pr px-def">
+      <div class="container-def">
+        <div *ngFor="let userChatInfo of chatInfoData?.userChatInfoList" (click)="selectChat(userChatInfo)">
+          <span>{{userChatInfo.username}} | {{userChatInfo.numOfUnreadMessages}}</span>
+          <hr class="hr-min-full">
+        </div>
+      </div>
+    </div>
+    <div class="col-56pr px-def">
+      <div class="container-def p-3">
+        <input type="button" (click)="loadChatMessageListBeforeTime()" value="Завантажити старіші повідомлення">
+        <div *ngIf="selectedChat && selectedChat.chatMessageList">
+          <div *ngFor="let chatMessage of selectedChat.chatMessageList">
+            <span>{{chatMessage.username}}: {{chatMessage.text}}</span>
+            <br>
+            <span>{{chatMessage.creationTime}}|{{chatMessage.revised}}</span>
+            <hr class="hr-min-full">
+          </div>
+          <div>
+            <input type="text" class="w-100" name="textInput" [(ngModel)]="selectedChat.textInput"
+                   (keyup.enter)="sendMessage(selectedChat.id, selectedChat.textInput)" autocomplete="off">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-22pr px-def">
+      <div class="block-side-panel">
+        <div class="mb-3">
+          <app-menu [numOfMessages]="menuData.numOfMessages"
+                    [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

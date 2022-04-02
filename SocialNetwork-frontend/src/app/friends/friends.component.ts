@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Params, Router} from "@angular/router";
 import {AuthService} from "../shared/services/auth.service";
 import {UserFriendsInfo} from "../shared/models/user-friends-info";
@@ -6,13 +6,16 @@ import {FriendsService} from "../shared/services/friends.service";
 import {ShortUserInfo} from "../shared/models/short-user-info";
 import {MenuData} from "../shared/models/menu-data";
 import {UserService} from "../shared/services/user.service";
+import {WebSocketService} from "../shared/services/web-socket.service";
+import {WebSocketMessage} from "../shared/models/web-socket-message";
+import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
   styleUrls: ['./friends.component.scss']
 })
-export class FriendsComponent implements OnInit {
+export class FriendsComponent implements OnInit, OnDestroy {
 
   displaySwitch = 1
   userFriendsInfo = new UserFriendsInfo()
@@ -24,14 +27,15 @@ export class FriendsComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private authService: AuthService,
     private friendsService: FriendsService,
-    private userService: UserService
+    private userService: UserService,
+    private webSocketService: WebSocketService
   ) {
     this.userFriendsInfo.shortUserInfo = new ShortUserInfo();
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.authService.authCredentials) {
-      this.router.navigate(["/"])
+      await this.router.navigate(["/"])
     }
     this.activatedRoute.params.subscribe((params: Params) => {
       let username = params['username']
@@ -53,6 +57,22 @@ export class FriendsComponent implements OnInit {
         }
       })
     })
+    await this.webSocketService.initialize()
+    this.webSocketService.webSocket.onmessage = (event) => {
+      let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
+      switch (webSocketMessage.type) {
+        case WebSocketMessageType.MESSAGE: {
+          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          break
+        }
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.webSocketService.webSocket) {
+      this.webSocketService.webSocket.onmessage = null
+    }
   }
 
   deleteFriend(userId: number) {

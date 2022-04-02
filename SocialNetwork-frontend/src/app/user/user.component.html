@@ -11,7 +11,7 @@
         </div>
         <hr class="hr-def">
         <div *ngIf="!myProfile" class="pb-3 px-3">
-          <input type="button" class="w-100 inp-def-form btn-def" value="Повідомлення">
+          <input type="button" (click)="goToChatWithUser()" class="w-100 inp-def-form btn-def" value="Повідомлення">
           <div *ngIf="!userProfileInfo.friend" class="pt-2">
             <div *ngIf="!userProfileInfo.requestToFriends; else friendshipRequestSent">
               <input type="button" (click)="createFriendRequest(userProfileInfo.id)" class="w-100 inp-def-form btn-def"

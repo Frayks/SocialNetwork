@@ -1,6 +1,6 @@
 export enum StatusCode {
 
-  SUCCESS= 'SUCCESS',
+  SUCCESS = 'SUCCESS',
   FAILURE = 'FAILURE'
 
 }

@@ -8,6 +8,7 @@ import {JwtHelperService} from "@auth0/angular-jwt";
 import {RegForm} from "../models/reg-form";
 import {FormStatus} from "../models/form-status";
 import {ResetPasswordRequest} from "../models/reset-password-request";
+import {WebSocketSessionKey} from "../models/web-socket-session-key";
 
 @Injectable({
   providedIn: 'root'
@@ -68,6 +69,10 @@ export class AuthService {
     }).pipe(map(data => {
       localStorage.setItem(JwtConstants.AUTH_CREDENTIALS_KEY, JSON.stringify(data))
     }))
+  }
+
+  loadWebSocketSessionKey() {
+    return this.httpClient.get<WebSocketSessionKey>(environment.server_url + EndpointConstants.GET_WEB_SOCKET_SESSION_KEY_ENDPOINT)
   }
 
   addAuthHeader(request: HttpRequest<unknown>) {

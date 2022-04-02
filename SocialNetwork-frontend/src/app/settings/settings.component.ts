@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {UserService} from "../shared/services/user.service";
 import {MenuData} from "../shared/models/menu-data";
 import {SettingsService} from "../shared/services/settings.service";
@@ -8,13 +8,16 @@ import {BasicSettings} from "../shared/models/basic-settings";
 import {AdditionalSettings} from "../shared/models/additional-settings";
 import {StatusCode} from "../shared/constants/status-code";
 import {CommonUtil} from "../shared/Utils/common-util";
+import {WebSocketMessage} from "../shared/models/web-socket-message";
+import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
+import {WebSocketService} from "../shared/services/web-socket.service";
 
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent implements OnInit {
+export class SettingsComponent implements OnInit, OnDestroy {
 
   readonly days = CommonUtil.DAYS
   readonly months = CommonUtil.MONTHS
@@ -37,13 +40,14 @@ export class SettingsComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private userService: UserService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private webSocketService: WebSocketService
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.authService.authCredentials) {
-      this.router.navigate(["/"])
+      await this.router.navigate(["/"])
     }
     this.settingsService.loadSettings().subscribe({
       next: data => {
@@ -63,6 +67,22 @@ export class SettingsComponent implements OnInit {
         }
       }
     )
+    await this.webSocketService.initialize()
+    this.webSocketService.webSocket.onmessage = (event) => {
+      let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
+      switch (webSocketMessage.type) {
+        case WebSocketMessageType.MESSAGE: {
+          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          break
+        }
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.webSocketService.webSocket) {
+      this.webSocketService.webSocket.onmessage = null
+    }
   }
 
   onSubmitBasicSettings(form: any) {

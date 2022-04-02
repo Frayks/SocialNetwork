@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {AuthService} from "../shared/services/auth.service";
 import {NewsService} from "../shared/services/news.service";
@@ -8,13 +8,16 @@ import {MatDialog} from "@angular/material/dialog";
 import {MenuData} from "../shared/models/menu-data";
 import {UserService} from "../shared/services/user.service";
 import {Post} from "../shared/models/post";
+import {WebSocketMessage} from "../shared/models/web-socket-message";
+import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
+import {WebSocketService} from "../shared/services/web-socket.service";
 
 @Component({
   selector: 'app-news',
   templateUrl: './news.component.html',
   styleUrls: ['./news.component.scss']
 })
-export class NewsComponent implements OnInit {
+export class NewsComponent implements OnInit, OnDestroy {
 
   username!: string
   postList!: Post[]
@@ -27,13 +30,14 @@ export class NewsComponent implements OnInit {
     private authService: AuthService,
     private newsService: NewsService,
     private dialog: MatDialog,
-    private userService: UserService
+    private userService: UserService,
+    private webSocketService: WebSocketService
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (!this.authService.authCredentials) {
-      this.router.navigate(["/"])
+      await this.router.navigate(["/"])
     }
     this.username = this.authService.getUsername()
     this.loadPostList()
@@ -46,6 +50,22 @@ export class NewsComponent implements OnInit {
         }
       }
     )
+    await this.webSocketService.initialize()
+    this.webSocketService.webSocket.onmessage = (event) => {
+      let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
+      switch (webSocketMessage.type) {
+        case WebSocketMessageType.MESSAGE: {
+          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          break
+        }
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.webSocketService.webSocket) {
+      this.webSocketService.webSocket.onmessage = null
+    }
   }
 
   viewPostPhoto(post: UserPost) {
@@ -85,7 +105,6 @@ export class NewsComponent implements OnInit {
 
   loadPostListBlock() {
     let beforeTime = this.postList[this.postList.length - 1].creationTime
-    console.log(beforeTime)
     this.newsService.loadPostListBeforeTime(beforeTime).subscribe({
       next: data => {
         this.hideMoreButton = data.length == 0

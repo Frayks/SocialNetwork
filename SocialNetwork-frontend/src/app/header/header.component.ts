@@ -3,6 +3,7 @@ import {AuthService} from "../shared/services/auth.service";
 import {Router} from "@angular/router";
 import {UserService} from "../shared/services/user.service";
 import {SearchResult} from "../shared/models/search-result";
+import {WebSocketService} from "../shared/services/web-socket.service";
 
 @Component({
   selector: 'app-header',
@@ -16,7 +17,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
-    private userService: UserService
+    private userService: UserService,
+    private webSocketService: WebSocketService
   ) {
   }
 
@@ -24,6 +26,7 @@ export class HeaderComponent implements OnInit {
   }
 
   logout() {
+    this.webSocketService.closeSession()
     this.authService.logout()
     this.router.navigate(["/"])
   }

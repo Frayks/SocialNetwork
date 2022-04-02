@@ -24,6 +24,7 @@ import {FriendsComponent} from './friends/friends.component';
 import {NewsComponent} from './news/news.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ConfirmComponent } from './confirm/confirm.component';
+import { MessengerComponent } from './messenger/messenger.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ConfirmComponent } from './confirm/confirm.component';
     NewsComponent,
     SettingsComponent,
     ConfirmComponent,
+    MessengerComponent,
   ],
   imports: [
     BrowserModule,
