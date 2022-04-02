@@ -14,11 +14,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.sql.Timestamp;
 
 @Service
+@Transactional
 public class RegistrationServiceImpl implements RegistrationService {
 
     private static final Logger LOGGER = LogManager.getLogger(RegistrationServiceImpl.class);

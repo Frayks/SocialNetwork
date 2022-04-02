@@ -28,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public static final String CONFIRM_ENDPOINTS = "/api/confirm";
     public static final String RESTORE_ENDPOINTS = "/api/restore";
     public static final String RESET_PASSWORD_ENDPOINTS = "/api/resetPassword";
+    public static final String WS_ENDPOINTS = "/api/ws";
 
     public SecurityConfig(JwtProvider jwtProvider) {
         this.jwtProvider = jwtProvider;
@@ -46,7 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         REGISTRATION_ENDPOINT,
                         CONFIRM_ENDPOINTS,
                         RESTORE_ENDPOINTS,
-                        RESET_PASSWORD_ENDPOINTS
+                        RESET_PASSWORD_ENDPOINTS,
+                        WS_ENDPOINTS
                 ).permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated()

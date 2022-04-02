@@ -49,7 +49,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         User user = (User) authentication.getPrincipal();
         List<String> roles = new ArrayList<>();
         user.getAuthorities().forEach(grantedAuthority -> roles.add(grantedAuthority.getAuthority()));
-
         String accessToken = jwtProvider.createAccessToken(user.getUsername(), roles);
         String refreshToken = jwtProvider.createRefreshToken(user.getUsername());
 

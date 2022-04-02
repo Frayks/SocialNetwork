@@ -1,6 +1,7 @@
 package andrew.project.socialNetwork.backend.api.mappers;
 
 import andrew.project.socialNetwork.backend.api.constants.Sex;
+import andrew.project.socialNetwork.backend.api.data.NewChatMessage;
 import andrew.project.socialNetwork.backend.api.dtos.*;
 import andrew.project.socialNetwork.backend.api.entities.*;
 import andrew.project.socialNetwork.backend.api.properties.ImageStorageProperties;
@@ -254,4 +255,80 @@ public class Mapper {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyyy");
         return new Timestamp(simpleDateFormat.parse(String.format("%d.%d.%d", day, month, year)).getTime());
     }
+
+    public static UserChatMessage mapToUserChatMessage(UserChat userChat, User owner, NewChatMessage newChatMessage) {
+        UserChatMessage userChatMessage = new UserChatMessage();
+        userChatMessage.setChatId(userChat.getId());
+        userChatMessage.setUserId(owner.getId());
+        userChatMessage.setText(newChatMessage.getText());
+        return userChatMessage;
+    }
+
+    public static ChatInfoDataDto mapToChatInfoDataDto(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, List<List<UserChatMessage>> userChatMessageListList, ImageStorageProperties properties) {
+        ChatInfoDataDto chatInfoDataDto = new ChatInfoDataDto();
+        chatInfoDataDto.setUserId(targetUserId);
+        chatInfoDataDto.setUserChatInfoList(mapToUserChatInfoDtoList(targetUserId, userChatList, chatMemberList, userChatMessageListList, properties));
+        return chatInfoDataDto;
+    }
+
+    public static List<UserChatInfoDto> mapToUserChatInfoDtoList(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, List<List<UserChatMessage>> userChatMessageListList, ImageStorageProperties properties) {
+        List<UserChatInfoDto> userChatInfoDtoList = new ArrayList<>();
+
+        Map<Long, User> chatMemberMap = new HashMap<>();
+        for (User chatMember : chatMemberList) {
+            chatMemberMap.put(chatMember.getId(), chatMember);
+        }
+        for (int i = 0; i < userChatList.size(); i++) {
+            UserChat userChat = userChatList.get(i);
+            List<UserChatMessage> userChatMessageList = userChatMessageListList.get(i);
+            userChatInfoDtoList.add(mapToUserChatInfoDto(targetUserId, userChat, chatMemberMap, userChatMessageList, properties));
+        }
+        return userChatInfoDtoList;
+    }
+
+    public static UserChatInfoDto mapToUserChatInfoDto(Long targetUserId, UserChat userChat, Map<Long, User> chatMemberMap, List<UserChatMessage> userChatMessageList, ImageStorageProperties properties) {
+        UserChatInfoDto userChatInfoDto = new UserChatInfoDto();
+        userChatInfoDto.setId(userChat.getId());
+        if (userChat.getFirstUserId().equals(targetUserId)) {
+            userChatInfoDto.setNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages());
+        } else {
+            userChatInfoDto.setNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages());
+        }
+        Long memberId = userChat.getFirstUserId().equals(targetUserId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
+        User chatMember = chatMemberMap.get(memberId);
+        userChatInfoDto.setUserId(chatMember.getId());
+        userChatInfoDto.setUsername(chatMember.getUsername());
+        userChatInfoDto.setFirstName(chatMember.getFirstName());
+        userChatInfoDto.setLastName(chatMember.getLastName());
+        UserInfo chatMemberInfo = chatMember.getUserInfo();
+        userChatInfoDto.setAvatarUri(mapToImageUri(chatMemberInfo.getAvatarName(), properties));
+        userChatInfoDto.setChatMessageList(mapToChatMessageDtoList(chatMemberMap, userChatMessageList, properties));
+        return userChatInfoDto;
+    }
+
+    public static List<ChatMessageDto> mapToChatMessageDtoList(Map<Long, User> chatMemberMap, List<UserChatMessage> userChatMessageList, ImageStorageProperties properties) {
+        List<ChatMessageDto> chatMessageDtoList = new ArrayList<>();
+        for (UserChatMessage userChatMessage : userChatMessageList) {
+            User messageOwner = chatMemberMap.get(userChatMessage.getUserId());
+            chatMessageDtoList.add(mapToChatMessageDto(userChatMessage, messageOwner, properties));
+        }
+        return chatMessageDtoList;
+    }
+
+    public static ChatMessageDto mapToChatMessageDto(UserChatMessage userChatMessage, User messageOwner, ImageStorageProperties properties) {
+        ChatMessageDto chatMessageDto = new ChatMessageDto();
+        chatMessageDto.setId(userChatMessage.getId());
+        chatMessageDto.setChatId(userChatMessage.getChatId());
+        chatMessageDto.setUserId(messageOwner.getId());
+        chatMessageDto.setUsername(messageOwner.getUsername());
+        chatMessageDto.setFirstName(messageOwner.getFirstName());
+        chatMessageDto.setLastName(messageOwner.getLastName());
+        UserInfo ownerInfo = messageOwner.getUserInfo();
+        chatMessageDto.setAvatarUri(mapToImageUri(ownerInfo.getAvatarName(), properties));
+        chatMessageDto.setCreationTime(DATE_FORMAT.format(userChatMessage.getCreationTime()));
+        chatMessageDto.setText(userChatMessage.getText());
+        chatMessageDto.setRevised(userChatMessage.getRevised());
+        return chatMessageDto;
+    }
+
 }

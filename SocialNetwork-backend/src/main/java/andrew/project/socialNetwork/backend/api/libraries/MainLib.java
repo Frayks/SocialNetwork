@@ -48,7 +48,7 @@ public interface MainLib {
 
     List<UserPostDto> getUserPostList(String username, String beforeTimeStr);
 
-    List<PostDto> getPostList(String beforeTime);
+    List<PostDto> getPostListBlock(String beforeTime);
 
     AddToFriendsStatusCode createFriendRequest(Long userId);
 
@@ -60,4 +60,9 @@ public interface MainLib {
 
     void rejectFriendRequest(Long userId);
 
+    ChatInfoDataDto getChatInfoData(String chatWith);
+
+    List<ChatMessageDto> getChatMessageListBlock(Long chatId, String beforeTime);
+
+    WebSocketSessionKeyDto getWebSocketSessionKey();
 }

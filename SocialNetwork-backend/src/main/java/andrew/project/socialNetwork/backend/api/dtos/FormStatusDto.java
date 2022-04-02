@@ -1,6 +1,6 @@
 package andrew.project.socialNetwork.backend.api.dtos;
 
-import andrew.project.socialNetwork.backend.api.constants.FormFields;
+import andrew.project.socialNetwork.backend.api.constants.FormField;
 import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +16,6 @@ import java.util.Map;
 @NoArgsConstructor
 public class FormStatusDto {
     private StatusCode status;
-    private Map<FormFields, String> invalidFieldsMap = new HashMap<>();
+    private Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
 }

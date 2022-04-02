@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -18,6 +19,7 @@ import javax.xml.ws.http.HTTPException;
 import java.net.URI;
 
 @Service
+@Transactional
 public class ImageStorageServiceImpl implements ImageStorageService {
 
     private static final Logger LOGGER = LogManager.getLogger(ImageStorageServiceImpl.class);

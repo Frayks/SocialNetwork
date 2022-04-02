@@ -5,11 +5,13 @@ import andrew.project.socialNetwork.backend.api.repositories.RestoreRequestRepos
 import andrew.project.socialNetwork.backend.api.services.RestoreRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 @Service
+@Transactional
 public class RestoreRequestServiceImpl implements RestoreRequestService {
 
     private RestoreRequestRepository restoreRequestRepository;

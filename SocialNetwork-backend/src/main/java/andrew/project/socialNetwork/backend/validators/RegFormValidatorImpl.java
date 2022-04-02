@@ -1,6 +1,6 @@
 package andrew.project.socialNetwork.backend.validators;
 
-import andrew.project.socialNetwork.backend.api.constants.FormFields;
+import andrew.project.socialNetwork.backend.api.constants.FormField;
 import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.FormStatusDto;
 import andrew.project.socialNetwork.backend.api.dtos.RegFormDto;
@@ -19,7 +19,7 @@ public class RegFormValidatorImpl implements RegFormValidator {
 
     @Override
     public FormStatusDto validate(RegFormDto regFormDto) {
-        Map<FormFields, String> invalidFieldsMap = new HashMap<>();
+        Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
         invalidFieldsMap.putAll(validator.validateFirstName(regFormDto.getFirstName()));
         invalidFieldsMap.putAll(validator.validateLastName(regFormDto.getLastName()));

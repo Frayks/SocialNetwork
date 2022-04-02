@@ -1,6 +1,6 @@
 package andrew.project.socialNetwork.backend.validators;
 
-import andrew.project.socialNetwork.backend.api.constants.FormFields;
+import andrew.project.socialNetwork.backend.api.constants.FormField;
 import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.AdditionalSettingsDto;
 import andrew.project.socialNetwork.backend.api.dtos.BasicSettingsDto;
@@ -21,7 +21,7 @@ public class SettingsValidatorImpl implements SettingsValidator {
 
     @Override
     public FormStatusDto validateBasicSettings(MultipartFile image, BasicSettingsDto basicSettingsDto, String previousUsername, String email) {
-        Map<FormFields, String> invalidFieldsMap = new HashMap<>();
+        Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
         invalidFieldsMap.putAll(validator.validateImage(image));
         invalidFieldsMap.putAll(validator.validateFirstName(basicSettingsDto.getFirstName()));
@@ -42,7 +42,7 @@ public class SettingsValidatorImpl implements SettingsValidator {
 
     @Override
     public FormStatusDto validateAdditionalSettings(AdditionalSettingsDto additionalSettingsDto) {
-        Map<FormFields, String> invalidFieldsMap = new HashMap<>();
+        Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
         invalidFieldsMap.putAll(validator.validateAboutYourself(additionalSettingsDto.getAboutYourself()));
         invalidFieldsMap.putAll(validator.validateCity(additionalSettingsDto.getCity()));

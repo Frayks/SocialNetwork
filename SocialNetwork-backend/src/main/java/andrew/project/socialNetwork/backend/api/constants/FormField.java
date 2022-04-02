@@ -1,6 +1,6 @@
 package andrew.project.socialNetwork.backend.api.constants;
 
-public enum FormFields {
+public enum FormField {
     FIRST_NAME,
     LAST_NAME,
     EMAIL,

@@ -8,6 +8,7 @@ import andrew.project.socialNetwork.backend.api.mappers.Mapper;
 import andrew.project.socialNetwork.backend.api.properties.ImageStorageProperties;
 import andrew.project.socialNetwork.backend.api.properties.SystemProperties;
 import andrew.project.socialNetwork.backend.api.services.*;
+import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
 import andrew.project.socialNetwork.backend.api.validators.RegFormValidator;
 import andrew.project.socialNetwork.backend.api.validators.ResetPasswordValidator;
 import andrew.project.socialNetwork.backend.api.validators.SettingsValidator;
@@ -47,6 +48,9 @@ public class MainLibImpl implements MainLib {
     private RestoreService restoreService;
     private PhotoLikeService photoLikeService;
     private PostLikeService postLikeService;
+    private UserChatService userChatService;
+    private UserChatMessageService userChatMessageService;
+    private WebSocketSessionsStorage webSocketSessionsStorage;
 
     private JwtProvider jwtProvider;
     private RegFormValidator regFormValidator;
@@ -182,6 +186,9 @@ public class MainLibImpl implements MainLib {
         User userDbi = userService.findByUsername(user.getUsername());
         MenuDataDto menuDataDto = new MenuDataDto();
         menuDataDto.setNumOfMessages(0);
+        List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
+        List<Long> userChatIdList = getUserChatIdList(userChatList);
+        menuDataDto.setNumOfMessages(userChatMessageService.countByChatIdInAndUserIdIsNotAndRevised(userChatIdList, userDbi.getId(), false));
         menuDataDto.setNumOfRequestsToFriends(friendsService.findNumOfRequestsToFriends(userDbi.getId()));
         return menuDataDto;
     }
@@ -411,7 +418,7 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public List<PostDto> getPostList(String beforeTimeStr) {
+    public List<PostDto> getPostListBlock(String beforeTimeStr) {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
         List<Friends> friendsList = friendsService.findFriends(userDbi.getId());
@@ -556,6 +563,67 @@ public class MainLibImpl implements MainLib {
         }
     }
 
+    @Override
+    public ChatInfoDataDto getChatInfoData(String chatWith) {
+        org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(userRequester.getUsername());
+        if (chatWith != null) {
+            createNewChat(chatWith, userDbi);
+        }
+        List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
+        List<List<UserChatMessage>> userChatMessageListList = new ArrayList<>();
+        for (UserChat userChat : userChatList) {
+            int count = 5;
+            int numOfUnreadMessages;
+            if (userChat.getFirstUserId().equals(userDbi.getId())) {
+                numOfUnreadMessages = Math.toIntExact(userChat.getFirstUserNumOfUnreadMessages());
+            } else {
+                numOfUnreadMessages = Math.toIntExact(userChat.getSecondUserNumOfUnreadMessages());
+            }
+            count = Math.max(numOfUnreadMessages, count);
+            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(userChat.getId(), null, count);
+            Collections.reverse(userChatMessageList);
+            userChatMessageListList.add(userChatMessageList);
+        }
+        List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChatList);
+        List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
+        return Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, userChatMessageListList, imageStorageProperties);
+    }
+
+    @Override
+    public List<ChatMessageDto> getChatMessageListBlock(Long chatId, String beforeTimeStr) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        UserChat userChat = userChatService.findById(chatId);
+        if (userChat != null && isChatMember(userChat, userDbi.getId())) {
+            Timestamp beforeTime = null;
+            if (beforeTimeStr != null) {
+                try {
+                    beforeTime = new Timestamp(Mapper.DATE_FORMAT.parse(beforeTimeStr).getTime());
+                } catch (ParseException e) {
+                    LOGGER.error(e);
+                }
+            }
+            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, 5);
+            List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChat);
+            List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
+            Map<Long, User> chatMemberMap = new HashMap<>();
+            for (User chatMember : chatMemberList) {
+                chatMemberMap.put(chatMember.getId(), chatMember);
+            }
+            Collections.reverse(userChatMessageList);
+            return Mapper.mapToChatMessageDtoList(chatMemberMap, userChatMessageList, imageStorageProperties);
+        }
+        return null;
+    }
+
+    @Override
+    public WebSocketSessionKeyDto getWebSocketSessionKey() {
+        org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(userRequester.getUsername());
+        return new WebSocketSessionKeyDto(webSocketSessionsStorage.generateWebSocketRequestKey(userDbi.getId()));
+    }
+
     public void addErrorToResponse(HttpServletResponse response, int status, String errorMessage) {
         response.setStatus(status);
         Map<String, String> error = new HashMap<>();
@@ -568,12 +636,61 @@ public class MainLibImpl implements MainLib {
         }
     }
 
+    private void createNewChat(String chatWith, User ownerUser) {
+        User targetUser = userService.findByUsername(chatWith);
+        if (targetUser != null) {
+            List<UserChat> userChatList = userChatService.findByChatMembers(ownerUser.getId(), targetUser.getId());
+            if (userChatList.size() == 0) {
+                UserChat userChat = new UserChat();
+                userChat.setFirstUserId(ownerUser.getId());
+                userChat.setSecondUserId(targetUser.getId());
+                userChatService.save(userChat);
+            }
+        }
+    }
+
+    private List<Long> getUsersIdList(List<UserChatMessage> userChatMessageList) {
+        List<Long> usersIdList = new ArrayList<>();
+        for (UserChatMessage userChatMessage : userChatMessageList) {
+            usersIdList.add(userChatMessage.getUserId());
+        }
+        return usersIdList;
+    }
+
     private List<Long> getFriendsIdList(Long userId, List<Friends> friendsList) {
         List<Long> friendsIdList = new ArrayList<>();
         for (Friends friends : friendsList) {
-            friendsIdList.add((Objects.equals(friends.getFirstUserId(), userId)) ? friends.getSecondUserId() : friends.getFirstUserId());
+            friendsIdList.add(Objects.equals(friends.getFirstUserId(), userId) ? friends.getSecondUserId() : friends.getFirstUserId());
         }
         return friendsIdList;
+    }
+
+    private List<Long> getChatMemberIdList(Long userId, List<UserChat> userChatList) {
+        List<Long> chatMemberIdList = new ArrayList<>();
+        for (UserChat userChat : userChatList) {
+            chatMemberIdList.add(getChatMemberId(userId, userChat));
+        }
+        chatMemberIdList.add(userId);
+        return chatMemberIdList;
+    }
+
+    private List<Long> getChatMemberIdList(Long userId, UserChat userChat) {
+        List<Long> chatMemberIdList = new ArrayList<>();
+        chatMemberIdList.add(getChatMemberId(userId, userChat));
+        chatMemberIdList.add(userId);
+        return chatMemberIdList;
+    }
+
+    private Long getChatMemberId(Long userId, UserChat userChat) {
+        return Objects.equals(userChat.getFirstUserId(), userId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
+    }
+
+    private List<Long> getUserChatIdList(List<UserChat> userChatList) {
+        List<Long> userChatIdList = new ArrayList<>();
+        for (UserChat userChat : userChatList) {
+            userChatIdList.add(userChat.getId());
+        }
+        return userChatIdList;
     }
 
     private List<Long> getFriendRequestsIdList(List<Friends> friendsList) {
@@ -598,6 +715,10 @@ public class MainLibImpl implements MainLib {
             postIdList.add(userPost.getId());
         }
         return postIdList;
+    }
+
+    private boolean isChatMember(UserChat userChat, Long userId) {
+        return userChat.getFirstUserId().equals(userId) || userChat.getSecondUserId().equals(userId);
     }
 
     @Autowired
@@ -646,6 +767,11 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
+    public void setUserChatMessageService(UserChatMessageService userChatMessageService) {
+        this.userChatMessageService = userChatMessageService;
+    }
+
+    @Autowired
     public void setImageStorageProperties(ImageStorageProperties imageStorageProperties) {
         this.imageStorageProperties = imageStorageProperties;
     }
@@ -686,8 +812,17 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
+    public void setWebSocketSessionsStorage(WebSocketSessionsStorage webSocketSessionsStorage) {
+        this.webSocketSessionsStorage = webSocketSessionsStorage;
+    }
+
+    @Autowired
     public void setRestoreService(RestoreService restoreService) {
         this.restoreService = restoreService;
     }
 
+    @Autowired
+    public void setUserChatService(UserChatService userChatService) {
+        this.userChatService = userChatService;
+    }
 }

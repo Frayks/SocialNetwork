@@ -6,6 +6,7 @@ public class GeneratorUtil {
 
     private static final String CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     public static final int DEFAULT_KEY_LENGTH = 64;
+    public static final int SHORT_KEY_LENGTH = 32;
 
     public static String genRandStr(int length) {
         SecureRandom random = new SecureRandom();

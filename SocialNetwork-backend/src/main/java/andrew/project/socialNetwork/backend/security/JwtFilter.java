@@ -38,7 +38,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 SecurityConfig.REFRESH_TOKEN_ENDPOINTS.equals(request.getServletPath()) ||
                 SecurityConfig.CONFIRM_ENDPOINTS.equals(request.getServletPath()) ||
                 SecurityConfig.RESTORE_ENDPOINTS.equals(request.getServletPath()) ||
-                SecurityConfig.RESET_PASSWORD_ENDPOINTS.equals(request.getServletPath())
+                SecurityConfig.RESET_PASSWORD_ENDPOINTS.equals(request.getServletPath()) ||
+                SecurityConfig.WS_ENDPOINTS.equals(request.getServletPath())
         ) {
             filterChain.doFilter(request, response);
         } else {
