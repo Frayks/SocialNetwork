@@ -1,13 +1,10 @@
 package andrew.project.socialNetwork.backend.services;
 
-import andrew.project.socialNetwork.backend.api.entities.UserChat;
 import andrew.project.socialNetwork.backend.api.entities.UserChatMessage;
 import andrew.project.socialNetwork.backend.api.repositories.UserChatMessageRepository;
 import andrew.project.socialNetwork.backend.api.services.UserChatMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,11 +39,6 @@ public class UserChatMessageServiceImpl implements UserChatMessageService {
     @Override
     public List<UserChatMessage> findByIdInAndChatIdAndUserIdAndRevised(List<Long> idList, Long chatId, Long userId, Boolean revised) {
         return userChatMessageRepository.findByIdInAndChatIdAndUserIdAndRevised(idList, chatId, userId, revised);
-    }
-
-    @Override
-    public int countByChatIdInAndUserIdIsNotAndRevised(List<Long> chatIdList, Long userId, Boolean revised) {
-        return userChatMessageRepository.countByChatIdInAndUserIdIsNotAndRevised(chatIdList, userId, revised);
     }
 
     @Override

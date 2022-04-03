@@ -14,8 +14,6 @@ public interface UserChatMessageService {
 
     List<UserChatMessage> findByIdInAndChatIdAndUserIdAndRevised(List<Long> idList, Long chatId, Long userId, Boolean revised);
 
-    int countByChatIdInAndUserIdIsNotAndRevised(List<Long> chatIdList, Long userId, Boolean revised);
-
     UserChatMessage setCreationTimeAndSave(UserChatMessage userChatMessage);
 
     List<UserChatMessage> saveAll(List<UserChatMessage> userChatMessageList);

@@ -5,9 +5,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Getter
 @Setter
 @ToString
@@ -19,7 +16,7 @@ public class UserChatInfoDto {
     private String firstName;
     private String lastName;
     private String avatarUri;
-    private List<ChatMessageDto> chatMessageList = new ArrayList<>();
     private Long numOfUnreadMessages;
+    private String textInput;
 
 }

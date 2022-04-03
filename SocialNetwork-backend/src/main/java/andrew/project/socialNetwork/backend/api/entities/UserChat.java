@@ -20,12 +20,12 @@ public class UserChat {
     private Long id;
     @Column(nullable = false)
     private Long firstUserId;
-    @Column(nullable = false, columnDefinition = "integer default 0")
-    private Long firstUserNumOfUnreadMessages;
     @Column(nullable = false)
-    private Long secondUserId;
-    @Column(nullable = false, columnDefinition = "integer default 0")
-    private Long secondUserNumOfUnreadMessages;
+    private Long firstUserNumOfUnreadMessages = 0L;
+    @Column(nullable = false)
+    private Long secondUserId = 0L;
+    @Column(nullable = false)
+    private Long secondUserNumOfUnreadMessages = 0L;
 
 
 }

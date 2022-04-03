@@ -17,6 +17,4 @@ public interface UserChatMessageRepository extends JpaRepository<UserChatMessage
 
     List<UserChatMessage> findByIdInAndChatIdAndUserIdAndRevised(List<Long> idList, Long chatId, Long userId, Boolean revised);
 
-    int countByChatIdInAndUserIdIsNotAndRevised(List<Long> chatIdList, Long userId, Boolean revised);
-
 }

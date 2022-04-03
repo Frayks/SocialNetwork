@@ -222,7 +222,7 @@ public class MainController {
     }
 
     @GetMapping("/getChatMessageListBlock")
-    public ResponseEntity<List<ChatMessageDto>> getChatMessageListBlock(@RequestParam() Long chatId, @RequestParam() String beforeTime) {
+    public ResponseEntity<List<ChatMessageDto>> getChatMessageListBlock(@RequestParam() Long chatId, @RequestParam(required = false) String beforeTime) {
         LOGGER.debug("Method getChatMessageListBlock called!");
         List<ChatMessageDto> chatMessageDtoList = mainLib.getChatMessageListBlock(chatId, beforeTime);
         if (chatMessageDtoList == null) {

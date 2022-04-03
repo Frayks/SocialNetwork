@@ -264,29 +264,28 @@ public class Mapper {
         return userChatMessage;
     }
 
-    public static ChatInfoDataDto mapToChatInfoDataDto(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, List<List<UserChatMessage>> userChatMessageListList, ImageStorageProperties properties) {
+    public static ChatInfoDataDto mapToChatInfoDataDto(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, ImageStorageProperties properties) {
         ChatInfoDataDto chatInfoDataDto = new ChatInfoDataDto();
         chatInfoDataDto.setUserId(targetUserId);
-        chatInfoDataDto.setUserChatInfoList(mapToUserChatInfoDtoList(targetUserId, userChatList, chatMemberList, userChatMessageListList, properties));
+        chatInfoDataDto.setUserChatInfoList(mapToUserChatInfoDtoList(targetUserId, userChatList, chatMemberList, properties));
         return chatInfoDataDto;
     }
 
-    public static List<UserChatInfoDto> mapToUserChatInfoDtoList(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, List<List<UserChatMessage>> userChatMessageListList, ImageStorageProperties properties) {
+    public static List<UserChatInfoDto> mapToUserChatInfoDtoList(Long targetUserId, List<UserChat> userChatList, List<User> chatMemberList, ImageStorageProperties properties) {
         List<UserChatInfoDto> userChatInfoDtoList = new ArrayList<>();
-
         Map<Long, User> chatMemberMap = new HashMap<>();
         for (User chatMember : chatMemberList) {
             chatMemberMap.put(chatMember.getId(), chatMember);
         }
-        for (int i = 0; i < userChatList.size(); i++) {
-            UserChat userChat = userChatList.get(i);
-            List<UserChatMessage> userChatMessageList = userChatMessageListList.get(i);
-            userChatInfoDtoList.add(mapToUserChatInfoDto(targetUserId, userChat, chatMemberMap, userChatMessageList, properties));
+        for (UserChat userChat : userChatList) {
+            Long memberId = userChat.getFirstUserId().equals(targetUserId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
+            User chatMember = chatMemberMap.get(memberId);
+            userChatInfoDtoList.add(mapToUserChatInfoDto(targetUserId, userChat, chatMember, properties));
         }
         return userChatInfoDtoList;
     }
 
-    public static UserChatInfoDto mapToUserChatInfoDto(Long targetUserId, UserChat userChat, Map<Long, User> chatMemberMap, List<UserChatMessage> userChatMessageList, ImageStorageProperties properties) {
+    public static UserChatInfoDto mapToUserChatInfoDto(Long targetUserId, UserChat userChat, User chatMember, ImageStorageProperties properties) {
         UserChatInfoDto userChatInfoDto = new UserChatInfoDto();
         userChatInfoDto.setId(userChat.getId());
         if (userChat.getFirstUserId().equals(targetUserId)) {
@@ -294,15 +293,13 @@ public class Mapper {
         } else {
             userChatInfoDto.setNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages());
         }
-        Long memberId = userChat.getFirstUserId().equals(targetUserId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
-        User chatMember = chatMemberMap.get(memberId);
         userChatInfoDto.setUserId(chatMember.getId());
         userChatInfoDto.setUsername(chatMember.getUsername());
         userChatInfoDto.setFirstName(chatMember.getFirstName());
         userChatInfoDto.setLastName(chatMember.getLastName());
+        userChatInfoDto.setTextInput("");
         UserInfo chatMemberInfo = chatMember.getUserInfo();
         userChatInfoDto.setAvatarUri(mapToImageUri(chatMemberInfo.getAvatarName(), properties));
-        userChatInfoDto.setChatMessageList(mapToChatMessageDtoList(chatMemberMap, userChatMessageList, properties));
         return userChatInfoDto;
     }
 

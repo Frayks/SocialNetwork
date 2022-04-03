@@ -3,6 +3,7 @@ package andrew.project.socialNetwork.backend.handlers;
 import andrew.project.socialNetwork.backend.api.constants.WebSocketMessageType;
 import andrew.project.socialNetwork.backend.api.data.*;
 import andrew.project.socialNetwork.backend.api.dtos.ChatMessageDto;
+import andrew.project.socialNetwork.backend.api.dtos.UserChatInfoDto;
 import andrew.project.socialNetwork.backend.api.entities.User;
 import andrew.project.socialNetwork.backend.api.entities.UserChat;
 import andrew.project.socialNetwork.backend.api.entities.UserChatMessage;
@@ -66,12 +67,8 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
                     userChatMessage = userChatMessageService.setCreationTimeAndSave(userChatMessage);
 
                     ChatMessageDto chatMessage = Mapper.mapToChatMessageDto(userChatMessage, owner, imageStorageProperties);
-
-                    List<WebSocketSession> ownerSessions = getUserWebSocketSessionList(owner.getId());
-                    sendMessage(ownerSessions, chatMessage);
-
-                    List<WebSocketSession> recipientSessions = getUserWebSocketSessionList(recipientId);
-                    sendMessage(recipientSessions, chatMessage);
+                    sendMessage(owner.getId(), chatMessage);
+                    sendMessage(recipientId, chatMessage);
                 }
             }
         } catch (Exception e) {
@@ -109,11 +106,10 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
                         confirmedViewedMessagesData.setChatId(userChat.getId());
                         confirmedViewedMessagesData.setViewedMessagesIdsList(confirmedViewedMessagesIdsList);
 
-                        List<WebSocketSession> ownerSessions = getUserWebSocketSessionList(owner.getId());
-                        sendInfoAboutViewedMessages(ownerSessions, confirmedViewedMessagesData);
 
-                        List<WebSocketSession> recipientSessions = getUserWebSocketSessionList(recipientId);
-                        sendInfoAboutViewedMessages(recipientSessions, confirmedViewedMessagesData);
+                        sendInfoAboutViewedMessages(owner.getId(), confirmedViewedMessagesData);
+
+                        sendInfoAboutViewedMessages(recipientId, confirmedViewedMessagesData);
                     }
                 }
             }
@@ -122,7 +118,19 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
         }
     }
 
-    private void sendInfoAboutViewedMessages(List<WebSocketSession> webSocketSessionList, ViewedMessagesData viewedMessagesData) {
+    @Override
+    public void sendInfoAboutNewChat(Long userId, UserChatInfoDto userChatInfoDto) {
+        List<WebSocketSession> webSocketSessionList = getUserWebSocketSessionList(userId);
+        WebSocketUserChatInfo webSocketUserChatInfo = new WebSocketUserChatInfo();
+        webSocketUserChatInfo.setType(WebSocketMessageType.NEW_CHAT.name());
+        webSocketUserChatInfo.setBody(userChatInfoDto);
+        TextMessage textMessage = new TextMessage(gson.toJson(webSocketUserChatInfo));
+        sendTextMessage(webSocketSessionList, textMessage);
+    }
+
+    @Override
+    public void sendInfoAboutViewedMessages(Long userId, ViewedMessagesData viewedMessagesData) {
+        List<WebSocketSession> webSocketSessionList = getUserWebSocketSessionList(userId);
         WebSocketViewedMessages webSocketViewedMessages = new WebSocketViewedMessages();
         webSocketViewedMessages.setType(WebSocketMessageType.VIEWED_MESSAGES.name());
         webSocketViewedMessages.setBody(viewedMessagesData);
@@ -130,7 +138,9 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
         sendTextMessage(webSocketSessionList, textMessage);
     }
 
-    private void sendMessage(List<WebSocketSession> webSocketSessionList, ChatMessageDto chatMessage) {
+    @Override
+    public void sendMessage(Long userId, ChatMessageDto chatMessage) {
+        List<WebSocketSession> webSocketSessionList = getUserWebSocketSessionList(userId);
         WebSocketChatMessage webSocketChatMessage = new WebSocketChatMessage();
         webSocketChatMessage.setType(WebSocketMessageType.MESSAGE.name());
         webSocketChatMessage.setBody(chatMessage);

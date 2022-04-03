@@ -3,6 +3,7 @@ package andrew.project.socialNetwork.backend.libraries;
 import andrew.project.socialNetwork.backend.api.constants.*;
 import andrew.project.socialNetwork.backend.api.dtos.*;
 import andrew.project.socialNetwork.backend.api.entities.*;
+import andrew.project.socialNetwork.backend.api.handlers.ChatMessagesHandler;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
 import andrew.project.socialNetwork.backend.api.mappers.Mapper;
 import andrew.project.socialNetwork.backend.api.properties.ImageStorageProperties;
@@ -50,13 +51,14 @@ public class MainLibImpl implements MainLib {
     private PostLikeService postLikeService;
     private UserChatService userChatService;
     private UserChatMessageService userChatMessageService;
-    private WebSocketSessionsStorage webSocketSessionsStorage;
 
     private JwtProvider jwtProvider;
     private RegFormValidator regFormValidator;
     private ResetPasswordValidator resetPasswordValidator;
     private PasswordEncoder passwordEncoder;
     private SettingsValidator settingsValidator;
+    private WebSocketSessionsStorage webSocketSessionsStorage;
+    private ChatMessagesHandler chatMessagesHandler;
 
     private ImageStorageProperties imageStorageProperties;
     private SystemProperties systemProperties;
@@ -187,8 +189,11 @@ public class MainLibImpl implements MainLib {
         MenuDataDto menuDataDto = new MenuDataDto();
         menuDataDto.setNumOfMessages(0);
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
-        List<Long> userChatIdList = getUserChatIdList(userChatList);
-        menuDataDto.setNumOfMessages(userChatMessageService.countByChatIdInAndUserIdIsNotAndRevised(userChatIdList, userDbi.getId(), false));
+        int numOfUnreadMessages = 0;
+        for (UserChat userChat : userChatList) {
+            numOfUnreadMessages += userChat.getFirstUserId().equals(userDbi.getId()) ? userChat.getFirstUserNumOfUnreadMessages() : userChat.getSecondUserNumOfUnreadMessages();
+        }
+        menuDataDto.setNumOfMessages(numOfUnreadMessages);
         menuDataDto.setNumOfRequestsToFriends(friendsService.findNumOfRequestsToFriends(userDbi.getId()));
         return menuDataDto;
     }
@@ -568,26 +573,12 @@ public class MainLibImpl implements MainLib {
         org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(userRequester.getUsername());
         if (chatWith != null) {
-            createNewChat(chatWith, userDbi);
+            createNewChatAndNotify(chatWith, userDbi);
         }
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
-        List<List<UserChatMessage>> userChatMessageListList = new ArrayList<>();
-        for (UserChat userChat : userChatList) {
-            int count = 50;
-            int numOfUnreadMessages;
-            if (userChat.getFirstUserId().equals(userDbi.getId())) {
-                numOfUnreadMessages = Math.toIntExact(userChat.getFirstUserNumOfUnreadMessages());
-            } else {
-                numOfUnreadMessages = Math.toIntExact(userChat.getSecondUserNumOfUnreadMessages());
-            }
-            count = Math.max(numOfUnreadMessages, count);
-            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(userChat.getId(), null, count);
-            Collections.reverse(userChatMessageList);
-            userChatMessageListList.add(userChatMessageList);
-        }
         List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChatList);
         List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
-        return Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, userChatMessageListList, imageStorageProperties);
+        return Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, imageStorageProperties);
     }
 
     @Override
@@ -596,6 +587,7 @@ public class MainLibImpl implements MainLib {
         User userDbi = userService.findByUsername(user.getUsername());
         UserChat userChat = userChatService.findById(chatId);
         if (userChat != null && isChatMember(userChat, userDbi.getId())) {
+            int count = 50;
             Timestamp beforeTime = null;
             if (beforeTimeStr != null) {
                 try {
@@ -603,8 +595,16 @@ public class MainLibImpl implements MainLib {
                 } catch (ParseException e) {
                     LOGGER.error(e);
                 }
+            } else {
+                int numOfUnreadMessages;
+                if (userChat.getFirstUserId().equals(userDbi.getId())) {
+                    numOfUnreadMessages = Math.toIntExact(userChat.getFirstUserNumOfUnreadMessages());
+                } else {
+                    numOfUnreadMessages = Math.toIntExact(userChat.getSecondUserNumOfUnreadMessages());
+                }
+                count = Math.max(numOfUnreadMessages, count);
             }
-            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, 50);
+            List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, count);
             List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChat);
             List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
             Map<Long, User> chatMemberMap = new HashMap<>();
@@ -636,7 +636,7 @@ public class MainLibImpl implements MainLib {
         }
     }
 
-    private void createNewChat(String chatWith, User ownerUser) {
+    private void createNewChatAndNotify(String chatWith, User ownerUser) {
         User targetUser = userService.findByUsername(chatWith);
         if (targetUser != null) {
             List<UserChat> userChatList = userChatService.findByChatMembers(ownerUser.getId(), targetUser.getId());
@@ -645,6 +645,8 @@ public class MainLibImpl implements MainLib {
                 userChat.setFirstUserId(ownerUser.getId());
                 userChat.setSecondUserId(targetUser.getId());
                 userChatService.save(userChat);
+                UserChatInfoDto userChatInfoDto = Mapper.mapToUserChatInfoDto(targetUser.getId(), userChat, ownerUser, imageStorageProperties);
+                chatMessagesHandler.sendInfoAboutNewChat(targetUser.getId(), userChatInfoDto);
             }
         }
     }
@@ -789,6 +791,11 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setResetPasswordValidator(ResetPasswordValidator resetPasswordValidator) {
         this.resetPasswordValidator = resetPasswordValidator;
+    }
+
+    @Autowired
+    public void setChatMessagesHandler(ChatMessagesHandler chatMessagesHandler) {
+        this.chatMessagesHandler = chatMessagesHandler;
     }
 
     @Autowired
