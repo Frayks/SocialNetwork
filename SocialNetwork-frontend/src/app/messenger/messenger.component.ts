@@ -83,6 +83,10 @@ export class MessengerComponent implements OnInit, OnDestroy {
 
   async selectChat(userChatInfo: UserChatInfo) {
     this.selectedChat = userChatInfo
+    if (!this.selectedChat.chatMessageList) {
+      let data = <ChatMessage[]>await this.messengerService.loadChatMessageList(this.selectedChat.id).toPromise()
+      this.selectedChat.chatMessageList = data
+    }
     this.setChatOnFirstPosition(userChatInfo)
     let newMessagesList = this.selectedChat.chatMessageList.filter(x => !x.revised && x.userId != this.chatInfoData.userId)
     if (newMessagesList.length > 0) {
@@ -130,7 +134,9 @@ export class MessengerComponent implements OnInit, OnDestroy {
       case WebSocketMessageType.MESSAGE: {
         let chatMessage: ChatMessage = webSocketMessage.body
         let targetChat: UserChatInfo = this.chatInfoData.userChatInfoList.filter(x => x.id == chatMessage.chatId)[0]
-        targetChat.chatMessageList.push(chatMessage)
+        if (targetChat.chatMessageList) {
+          targetChat.chatMessageList.push(chatMessage)
+        }
         if (targetChat == this.selectedChat) {
           if (!chatMessage.revised && chatMessage.userId != this.chatInfoData.userId) {
             this.sendViewedMessagesIdsList(targetChat.id, [chatMessage.id])
@@ -147,14 +153,24 @@ export class MessengerComponent implements OnInit, OnDestroy {
         let viewedMessagesData: ViewedMessagesData = webSocketMessage.body
         let viewedMessagesIdsList: Number[] = viewedMessagesData.viewedMessagesIdsList
         let targetChat: UserChatInfo = this.chatInfoData.userChatInfoList.filter(x => x.id == viewedMessagesData.chatId)[0]
-        let chatMessageMap = new Map<Number, ChatMessage>(targetChat.chatMessageList.map(x => [x.id, x]))
-        viewedMessagesIdsList.forEach(viewedMessageId => {
-          let chatMessage = chatMessageMap.get(viewedMessageId)
-          if (chatMessage) {
-            chatMessage.revised = true
-          }
-        })
+        if (targetChat.chatMessageList) {
+          let chatMessageMap = new Map<Number, ChatMessage>(targetChat.chatMessageList.map(x => [x.id, x]))
+          viewedMessagesIdsList.forEach(viewedMessageId => {
+            let chatMessage = chatMessageMap.get(viewedMessageId)
+            if (chatMessage) {
+              chatMessage.revised = true
+            }
+          })
+        }
         break
+      }
+      case WebSocketMessageType.NEW_CHAT: {
+        let userChatInfo: UserChatInfo = webSocketMessage.body
+        this.chatInfoData.userChatInfoList.push(userChatInfo)
+        if (!this.selectedChat) {
+          this.selectedChat = userChatInfo
+          this.selectedChat.chatMessageList = []
+        }
       }
     }
   }

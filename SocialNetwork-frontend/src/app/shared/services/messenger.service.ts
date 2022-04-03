@@ -29,4 +29,13 @@ export class MessengerService {
       params: params
     })
   }
+
+  loadChatMessageList(chatId: number) {
+    let params = new HttpParams()
+      .set('chatId', chatId);
+    return this.httpClient.get<ChatMessage[]>(environment.server_url + EndpointConstants.GET_CHAT_MESSAGE_LIST_BLOCK_ENDPOINT, {
+      params: params
+    })
+  }
+
 }
