@@ -84,13 +84,10 @@ public class MainController {
     }
 
     @PostMapping("/createPost")
-    public ResponseEntity<UserPostDto> createPost(@RequestParam(value = "photo", required = false) MultipartFile file, @RequestParam(value = "text", required = false) String text) {
+    public ResponseEntity<FormStatusDto> createPost(@RequestParam(value = "postPhoto", required = false) MultipartFile postPhoto, @RequestParam(value = "postText", required = false) String postText) {
         LOGGER.debug("Method createPost called!");
-        UserPostDto userPostDto = mainLib.createPost(file, text);
-        if (userPostDto == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok().body(userPostDto);
+        FormStatusDto formStatusDto = mainLib.createPost(postPhoto, postText);
+        return ResponseEntity.ok().body(formStatusDto);
     }
 
     @GetMapping("/deletePost")
@@ -268,7 +265,6 @@ public class MainController {
     @PostMapping("/resetPassword")
     public ResponseEntity<FormStatusDto> resetPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
         LOGGER.debug("Method resetPassword called!");
-        LOGGER.info(resetPasswordRequestDto);
         FormStatusDto formStatusDto = mainLib.resetPassword(resetPasswordRequestDto);
         return ResponseEntity.ok().body(formStatusDto);
     }
@@ -282,7 +278,6 @@ public class MainController {
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         LOGGER.debug("Method logout called!");
-        // TODO Необхідно реалізувати чорний список для токенів
     }
 
     @Autowired

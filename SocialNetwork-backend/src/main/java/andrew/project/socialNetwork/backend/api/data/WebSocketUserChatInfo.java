@@ -12,4 +12,5 @@ import lombok.ToString;
 @NoArgsConstructor
 public class WebSocketUserChatInfo extends WebSocketMessage {
     private UserChatInfoDto body;
+
 }

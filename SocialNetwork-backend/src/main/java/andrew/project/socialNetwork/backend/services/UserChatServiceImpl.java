@@ -49,4 +49,5 @@ public class UserChatServiceImpl implements UserChatService {
     public void setUserChatRepository(UserChatRepository userChatRepository) {
         this.userChatRepository = userChatRepository;
     }
+
 }

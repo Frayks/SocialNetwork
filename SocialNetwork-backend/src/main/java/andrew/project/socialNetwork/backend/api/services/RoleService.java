@@ -6,6 +6,7 @@ import andrew.project.socialNetwork.backend.api.entities.Role;
 import java.util.List;
 
 public interface RoleService {
+
     List<Role> findAll();
 
     Role findById(Long id);
@@ -15,4 +16,5 @@ public interface RoleService {
     Role save(Role role);
 
     void delete(Role role);
+
 }

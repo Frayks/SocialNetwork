@@ -3,7 +3,6 @@ package andrew.project.socialNetwork.backend.security;
 import andrew.project.socialNetwork.backend.api.constants.JwtConstants;
 import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import andrew.project.socialNetwork.backend.api.constants.TokenType;
-import andrew.project.socialNetwork.backend.api.entities.Role;
 import andrew.project.socialNetwork.backend.api.properties.JwtProperties;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,7 +12,6 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -99,4 +97,5 @@ public class JwtProvider implements InitializingBean {
     public void setJwtProperties(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
     }
+
 }

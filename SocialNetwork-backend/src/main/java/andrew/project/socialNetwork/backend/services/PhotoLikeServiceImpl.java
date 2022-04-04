@@ -58,4 +58,5 @@ public class PhotoLikeServiceImpl implements PhotoLikeService {
     public void setPhotoLikeRepository(PhotoLikeRepository photoLikeRepository) {
         this.photoLikeRepository = photoLikeRepository;
     }
+
 }

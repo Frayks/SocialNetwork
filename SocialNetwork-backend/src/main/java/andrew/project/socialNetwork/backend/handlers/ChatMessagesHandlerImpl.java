@@ -1,8 +1,10 @@
 package andrew.project.socialNetwork.backend.handlers;
 
+import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import andrew.project.socialNetwork.backend.api.constants.WebSocketMessageType;
 import andrew.project.socialNetwork.backend.api.data.*;
 import andrew.project.socialNetwork.backend.api.dtos.ChatMessageDto;
+import andrew.project.socialNetwork.backend.api.dtos.FormStatusDto;
 import andrew.project.socialNetwork.backend.api.dtos.UserChatInfoDto;
 import andrew.project.socialNetwork.backend.api.entities.User;
 import andrew.project.socialNetwork.backend.api.entities.UserChat;
@@ -16,6 +18,7 @@ import andrew.project.socialNetwork.backend.api.services.UserChatService;
 import andrew.project.socialNetwork.backend.api.services.UserService;
 import andrew.project.socialNetwork.backend.api.services.UserWsSessionService;
 import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
+import andrew.project.socialNetwork.backend.api.validators.ChatMessageValidator;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -44,31 +47,35 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
     private UserChatMessageService userChatMessageService;
     private UserService userService;
     private ImageStorageProperties imageStorageProperties;
+    private ChatMessageValidator chatMessageValidator;
 
     @Override
     public void handleNewMessage(String sessionId, WebSocketNewChatMessage webSocketNewChatMessage) {
         try {
             NewChatMessage newChatMessage = webSocketNewChatMessage.getBody();
             if (newChatMessage != null && StringUtils.hasText(newChatMessage.getText())) {
-                UserWsSession userWsSession = userWsSessionService.findBySessionId(sessionId);
-                UserChat userChat = userChatService.findById(newChatMessage.getChatId());
-                if (userChat != null && isChatMember(userChat, userWsSession.getUserId())) {
-                    User owner = userService.findById(userWsSession.getUserId());
-                    Long recipientId = getAnotherMember(userChat, owner.getId());
+                FormStatusDto formStatusDto = chatMessageValidator.validate(newChatMessage);
+                if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+                    UserWsSession userWsSession = userWsSessionService.findBySessionId(sessionId);
+                    UserChat userChat = userChatService.findById(newChatMessage.getChatId());
+                    if (userChat != null && isChatMember(userChat, userWsSession.getUserId())) {
+                        User owner = userService.findById(userWsSession.getUserId());
+                        Long recipientId = getAnotherMember(userChat, owner.getId());
 
-                    if (userChat.getFirstUserId().equals(recipientId)) {
-                        userChat.setFirstUserNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages() + 1);
-                    } else {
-                        userChat.setSecondUserNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages() + 1);
+                        if (userChat.getFirstUserId().equals(recipientId)) {
+                            userChat.setFirstUserNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages() + 1);
+                        } else {
+                            userChat.setSecondUserNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages() + 1);
+                        }
+                        userChatService.save(userChat);
+
+                        UserChatMessage userChatMessage = Mapper.mapToUserChatMessage(userChat, owner, newChatMessage);
+                        userChatMessage = userChatMessageService.setCreationTimeAndSave(userChatMessage);
+
+                        ChatMessageDto chatMessage = Mapper.mapToChatMessageDto(userChatMessage, owner, imageStorageProperties);
+                        sendMessage(owner.getId(), chatMessage);
+                        sendMessage(recipientId, chatMessage);
                     }
-                    userChatService.save(userChat);
-
-                    UserChatMessage userChatMessage = Mapper.mapToUserChatMessage(userChat, owner, newChatMessage);
-                    userChatMessage = userChatMessageService.setCreationTimeAndSave(userChatMessage);
-
-                    ChatMessageDto chatMessage = Mapper.mapToChatMessageDto(userChatMessage, owner, imageStorageProperties);
-                    sendMessage(owner.getId(), chatMessage);
-                    sendMessage(recipientId, chatMessage);
                 }
             }
         } catch (Exception e) {
@@ -207,4 +214,10 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
     public void setImageStorageProperties(ImageStorageProperties imageStorageProperties) {
         this.imageStorageProperties = imageStorageProperties;
     }
+
+    @Autowired
+    public void setChatMessageValidator(ChatMessageValidator chatMessageValidator) {
+        this.chatMessageValidator = chatMessageValidator;
+    }
+
 }

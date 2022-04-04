@@ -11,4 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 public class WebSocketMessage {
     private String type;
+
 }

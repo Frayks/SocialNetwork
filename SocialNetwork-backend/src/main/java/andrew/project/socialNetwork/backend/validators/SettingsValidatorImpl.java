@@ -63,4 +63,5 @@ public class SettingsValidatorImpl implements SettingsValidator {
     public void setValidator(Validator validator) {
         this.validator = validator;
     }
+
 }

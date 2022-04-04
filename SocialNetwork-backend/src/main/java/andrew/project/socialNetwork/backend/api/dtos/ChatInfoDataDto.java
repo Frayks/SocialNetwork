@@ -14,4 +14,5 @@ import java.util.List;
 public class ChatInfoDataDto {
     private Long userId;
     private List<UserChatInfoDto> userChatInfoList;
+
 }

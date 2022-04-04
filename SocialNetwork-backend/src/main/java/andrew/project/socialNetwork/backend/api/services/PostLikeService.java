@@ -5,6 +5,7 @@ import andrew.project.socialNetwork.backend.api.entities.PostLike;
 import java.util.List;
 
 public interface PostLikeService {
+    
     PostLike findById(Long id);
 
     List<PostLike> findAll();
@@ -18,4 +19,5 @@ public interface PostLikeService {
     void delete(PostLike postLike);
 
     int deleteByPostIdAndUserId(Long postId, Long userId);
+
 }

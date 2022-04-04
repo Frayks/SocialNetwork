@@ -10,9 +10,7 @@ import andrew.project.socialNetwork.backend.api.properties.ImageStoragePropertie
 import andrew.project.socialNetwork.backend.api.properties.SystemProperties;
 import andrew.project.socialNetwork.backend.api.services.*;
 import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
-import andrew.project.socialNetwork.backend.api.validators.RegFormValidator;
-import andrew.project.socialNetwork.backend.api.validators.ResetPasswordValidator;
-import andrew.project.socialNetwork.backend.api.validators.SettingsValidator;
+import andrew.project.socialNetwork.backend.api.validators.*;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,6 +56,8 @@ public class MainLibImpl implements MainLib {
     private ResetPasswordValidator resetPasswordValidator;
     private PasswordEncoder passwordEncoder;
     private SettingsValidator settingsValidator;
+    private ImageValidator imageValidator;
+    private PostValidator postValidator;
     private WebSocketSessionsStorage webSocketSessionsStorage;
     private ChatMessagesHandler chatMessagesHandler;
 
@@ -287,7 +287,7 @@ public class MainLibImpl implements MainLib {
             List<User> userList = userService.findUsersByFirstNameAndLastName(searchParams[0] + "%", searchParams[1] + "%", user.getUsername(), 20);
             userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
         }
-        for (ShortUserInfoDto shortUserInfoDto: userDtoList) {
+        for (ShortUserInfoDto shortUserInfoDto : userDtoList) {
             shortUserInfoDto.setOnline(userWsSessionService.findByUserId(shortUserInfoDto.getId()).size() > 0);
         }
         searchResultDto.setUserList(userDtoList);
@@ -297,14 +297,17 @@ public class MainLibImpl implements MainLib {
     @Override
     public UserPhotoDto addPhoto(MultipartFile file) {
         try {
-            SaveImageResponseDto response = imageStorageService.saveImage(file);
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User userDbi = userService.findByUsername(user.getUsername());
-            UserPhoto userPhoto = new UserPhoto();
-            userPhoto.setUserId(userDbi.getId());
-            userPhoto.setName(response.getName());
-            userPhoto = userPhotoService.save(userPhoto);
-            return Mapper.mapToPhotoDto(userPhoto, imageStorageProperties);
+            FormStatusDto formStatusDto = imageValidator.validate(file);
+            if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+                SaveImageResponseDto response = imageStorageService.saveImage(file);
+                org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                User userDbi = userService.findByUsername(user.getUsername());
+                UserPhoto userPhoto = new UserPhoto();
+                userPhoto.setUserId(userDbi.getId());
+                userPhoto.setName(response.getName());
+                userPhoto = userPhotoService.save(userPhoto);
+                return Mapper.mapToPhotoDto(userPhoto, imageStorageProperties);
+            }
         } catch (Exception e) {
             LOGGER.error(e);
         }
@@ -353,12 +356,14 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public UserPostDto createPost(MultipartFile file, String text) {
+    public FormStatusDto createPost(MultipartFile image, String text) {
+        FormStatusDto formStatusDto = new FormStatusDto();
         try {
-            if (file != null || text != null) {
+            formStatusDto = postValidator.validate(image, text);
+            if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
                 SaveImageResponseDto response = null;
-                if (file != null) {
-                    response = imageStorageService.saveImage(file);
+                if (image != null) {
+                    response = imageStorageService.saveImage(image);
                 }
                 org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 User userDbi = userService.findByUsername(user.getUsername());
@@ -368,14 +373,12 @@ public class MainLibImpl implements MainLib {
                 if (response != null) {
                     userPost.setPhotoName(response.getName());
                 }
-                userPost = userPostService.save(userPost);
-                return Mapper.mapToUserPostDto(userPost, imageStorageProperties);
+                userPostService.save(userPost);
             }
-
         } catch (Exception e) {
             LOGGER.error(e);
         }
-        return null;
+        return formStatusDto;
     }
 
     @Override
@@ -463,7 +466,7 @@ public class MainLibImpl implements MainLib {
         List<Long> postsIdList = getPostsIdList(userPostList);
         List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
         List<PostDto> postDtoList = Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
-        for (PostDto postDto: postDtoList) {
+        for (PostDto postDto : postDtoList) {
             if (postDto.getShortUserInfo().getId().equals(userDbi.getId())) {
                 postDto.getShortUserInfo().setOnline(true);
             } else {
@@ -837,6 +840,16 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
+    public void setImageValidator(ImageValidator imageValidator) {
+        this.imageValidator = imageValidator;
+    }
+
+    @Autowired
+    public void setPostValidator(PostValidator postValidator) {
+        this.postValidator = postValidator;
+    }
+
+    @Autowired
     public void setRegistrationRequestService(RegistrationRequestService registrationRequestService) {
         this.registrationRequestService = registrationRequestService;
     }
@@ -870,4 +883,5 @@ public class MainLibImpl implements MainLib {
     public void setUserChatService(UserChatService userChatService) {
         this.userChatService = userChatService;
     }
+
 }

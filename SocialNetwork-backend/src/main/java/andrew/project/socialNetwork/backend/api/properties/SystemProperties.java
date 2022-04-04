@@ -16,4 +16,5 @@ public class SystemProperties {
     private String clientServerUrl;
     private String defaultUserAvatarName;
     private boolean initMainData;
+
 }

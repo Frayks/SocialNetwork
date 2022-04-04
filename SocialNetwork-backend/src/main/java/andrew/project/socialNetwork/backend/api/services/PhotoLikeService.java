@@ -1,11 +1,11 @@
 package andrew.project.socialNetwork.backend.api.services;
 
 import andrew.project.socialNetwork.backend.api.entities.PhotoLike;
-import andrew.project.socialNetwork.backend.api.entities.PostLike;
 
 import java.util.List;
 
 public interface PhotoLikeService {
+
     PhotoLike findById(Long id);
 
     List<PhotoLike> findAll();
@@ -19,4 +19,5 @@ public interface PhotoLikeService {
     void delete(PhotoLike photoLike);
 
     int deleteByPhotoIdAndUserId(Long photoId, Long userId);
+
 }

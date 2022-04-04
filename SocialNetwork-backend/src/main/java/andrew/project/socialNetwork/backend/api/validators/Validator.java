@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Map;
 
 public interface Validator {
+
     Map<FormField, String> validateFirstName(String firstName);
 
     Map<FormField, String> validateLastName(String lastName);
@@ -33,4 +34,7 @@ public interface Validator {
     Map<FormField, String> validatePostText(String postText);
 
     Map<FormField, String> validateImage(MultipartFile image);
+
+    Map<FormField, String> validateChatMessageText(String messageText);
+
 }

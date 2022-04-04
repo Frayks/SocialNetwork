@@ -67,4 +67,5 @@ public class FriendsServiceImpl implements FriendsService {
     public void setFriendsRepository(FriendsRepository friendsRepository) {
         this.friendsRepository = friendsRepository;
     }
+
 }

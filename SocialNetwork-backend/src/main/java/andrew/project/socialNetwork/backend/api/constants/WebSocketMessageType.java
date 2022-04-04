@@ -4,4 +4,5 @@ public enum WebSocketMessageType {
     MESSAGE,
     VIEWED_MESSAGES,
     NEW_CHAT
+
 }

@@ -1,6 +1,5 @@
 package andrew.project.socialNetwork.backend.api.dtos;
 
-import andrew.project.socialNetwork.backend.api.constants.Sex;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

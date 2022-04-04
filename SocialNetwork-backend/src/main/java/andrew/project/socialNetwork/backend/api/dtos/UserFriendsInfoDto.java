@@ -16,4 +16,5 @@ public class UserFriendsInfoDto {
     private ShortUserInfoDto shortUserInfo;
     private List<ShortUserInfoDto> userFriendList = new ArrayList<>();
     private List<ShortUserInfoDto> userFriendRequestList = new ArrayList<>();
+
 }

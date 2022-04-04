@@ -14,4 +14,5 @@ import java.util.List;
 @NoArgsConstructor
 public class SearchResultDto {
     private List<ShortUserInfoDto> userList = new ArrayList<>();
+
 }

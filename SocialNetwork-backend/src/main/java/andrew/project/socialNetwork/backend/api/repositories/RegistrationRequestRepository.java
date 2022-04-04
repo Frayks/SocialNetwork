@@ -13,6 +13,6 @@ public interface RegistrationRequestRepository extends JpaRepository<Registratio
 
     RegistrationRequest findByConfirmKey(String confirmKey);
 
-    void deleteByEmail (String email);
+    void deleteByEmail(String email);
 
 }

@@ -43,4 +43,5 @@ public class RegFormValidatorImpl implements RegFormValidator {
     public void setValidator(Validator validator) {
         this.validator = validator;
     }
+
 }

@@ -8,12 +8,14 @@ public enum FormField {
     PASSWORD,
     DATE_OF_BIRTH,
     SEX,
-    RESTORE_KEY,
     ABOUT_YOURSELF,
     CITY,
     SCHOOL,
     UNIVERSITY,
+    RESTORE_KEY,
     POST_TEXT,
-    IMAGE
+    CHAT_MESSAGE_TEXT,
+    IMAGE,
+    ALL_FIELDS
 
 }

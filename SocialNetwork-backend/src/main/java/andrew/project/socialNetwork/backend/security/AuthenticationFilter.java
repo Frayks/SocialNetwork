@@ -1,6 +1,5 @@
 package andrew.project.socialNetwork.backend.security;
 
-import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -59,4 +58,5 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
+
 }

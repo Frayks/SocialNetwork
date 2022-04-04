@@ -35,7 +35,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateFirstName(String firstName) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!firstName.matches(fieldsValidationProperties.getFirstNameRegEx())) {
+        if (firstName == null) {
+            invalidFieldsMap.put(FormField.FIRST_NAME, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!firstName.matches(fieldsValidationProperties.getFirstNameRegEx())) {
             invalidFieldsMap.put(FormField.FIRST_NAME, resourcesProperties.getForbiddenFirstNameErrorMsg());
         }
         return invalidFieldsMap;
@@ -44,7 +46,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateLastName(String lastName) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!lastName.matches(fieldsValidationProperties.getLastNameRegEx())) {
+        if (lastName == null) {
+            invalidFieldsMap.put(FormField.LAST_NAME, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!lastName.matches(fieldsValidationProperties.getLastNameRegEx())) {
             invalidFieldsMap.put(FormField.LAST_NAME, resourcesProperties.getForbiddenLastNameErrorMsg());
         }
         return invalidFieldsMap;
@@ -53,7 +57,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateEmail(String email) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!email.contains("@")) {
+        if (email == null) {
+            invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!email.contains("@")) {
             invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getInvalidEmailErrorMsg());
         } else if (userService.findByEmail(email) != null) {
             invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getBusyEmailErrorMsg());
@@ -64,7 +70,11 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateUsername(String username, String previousUsername, String email) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!username.equals(previousUsername)) {
+        if (username == null) {
+            invalidFieldsMap.put(FormField.USERNAME, resourcesProperties.getNullFieldErrorMsg());
+        } else if (email == null) {
+            invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!username.equals(previousUsername)) {
             if (!username.matches(fieldsValidationProperties.getUsernameRegEx())) {
                 invalidFieldsMap.put(FormField.USERNAME, resourcesProperties.getForbiddenUsernameErrorMsg());
             } else if (getSplitValues(fieldsValidationProperties.getReservedUsernames()).contains(username)) {
@@ -84,7 +94,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validatePassword(String password) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!password.matches(fieldsValidationProperties.getPasswordRegEx())) {
+        if (password == null) {
+            invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!password.matches(fieldsValidationProperties.getPasswordRegEx())) {
             invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getForbiddenPasswordErrorMsg());
         }
         return invalidFieldsMap;
@@ -106,7 +118,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateSex(String sex) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!(sex.equals(Sex.MALE.name()) || sex.equals(Sex.FEMALE.name()))) {
+        if (sex == null) {
+            invalidFieldsMap.put(FormField.SEX, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!(sex.equals(Sex.MALE.name()) || sex.equals(Sex.FEMALE.name()))) {
             invalidFieldsMap.put(FormField.SEX, resourcesProperties.getSexUnknownErrorMsg());
         }
         return invalidFieldsMap;
@@ -125,8 +139,10 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateAboutYourself(String aboutYourself) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (aboutYourself.length() > fieldsValidationProperties.getMaxAboutYourselfTextSize()) {
-            String tooLongTextErrorMsg = String.format(resourcesProperties.getTooLongTextErrorMsg(), fieldsValidationProperties.getMaxAboutYourselfTextSize());
+        if (aboutYourself == null) {
+            invalidFieldsMap.put(FormField.ABOUT_YOURSELF, resourcesProperties.getNullFieldErrorMsg());
+        } else if (aboutYourself.length() > fieldsValidationProperties.getMaxAboutYourselfTextLength()) {
+            String tooLongTextErrorMsg = String.format(resourcesProperties.getTooLongTextErrorMsg(), fieldsValidationProperties.getMaxAboutYourselfTextLength());
             invalidFieldsMap.put(FormField.ABOUT_YOURSELF, tooLongTextErrorMsg);
         }
         return invalidFieldsMap;
@@ -135,7 +151,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateCity(String city) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!city.matches(fieldsValidationProperties.getCityRegEx())) {
+        if (city == null) {
+            invalidFieldsMap.put(FormField.CITY, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!city.matches(fieldsValidationProperties.getCityRegEx())) {
             invalidFieldsMap.put(FormField.CITY, resourcesProperties.getForbiddenCityNameErrorMsg());
         }
         return invalidFieldsMap;
@@ -144,7 +162,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateSchool(String school) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!school.matches(fieldsValidationProperties.getSchoolRegEx())) {
+        if (school == null) {
+            invalidFieldsMap.put(FormField.SCHOOL, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!school.matches(fieldsValidationProperties.getSchoolRegEx())) {
             invalidFieldsMap.put(FormField.SCHOOL, resourcesProperties.getForbiddenSchoolNameErrorMsg());
         }
         return invalidFieldsMap;
@@ -153,7 +173,9 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validateUniversity(String university) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (!university.matches(fieldsValidationProperties.getUniversityRegEx())) {
+        if (university == null) {
+            invalidFieldsMap.put(FormField.UNIVERSITY, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!university.matches(fieldsValidationProperties.getUniversityRegEx())) {
             invalidFieldsMap.put(FormField.UNIVERSITY, resourcesProperties.getForbiddenUniversityNameErrorMsg());
         }
         return invalidFieldsMap;
@@ -162,8 +184,8 @@ public class ValidatorImpl implements Validator {
     @Override
     public Map<FormField, String> validatePostText(String postText) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
-        if (postText.length() > fieldsValidationProperties.getMaxPostTextSize()) {
-            String tooLongTextErrorMsg = String.format(resourcesProperties.getTooLongTextErrorMsg(), fieldsValidationProperties.getMaxPostTextSize());
+        if (postText != null && postText.length() > fieldsValidationProperties.getMaxPostTextLength()) {
+            String tooLongTextErrorMsg = String.format(resourcesProperties.getTooLongTextErrorMsg(), fieldsValidationProperties.getMaxPostTextLength());
             invalidFieldsMap.put(FormField.POST_TEXT, tooLongTextErrorMsg);
         }
         return invalidFieldsMap;
@@ -180,6 +202,18 @@ public class ValidatorImpl implements Validator {
                 String wrongImageTypeErrorMsg = String.format(resourcesProperties.getWrongImageTypeErrorMsg(), fieldsValidationProperties.getAllowedImageTypes());
                 invalidFieldsMap.put(FormField.IMAGE, wrongImageTypeErrorMsg);
             }
+        }
+        return invalidFieldsMap;
+    }
+
+    @Override
+    public Map<FormField, String> validateChatMessageText(String messageText) {
+        Map<FormField, String> invalidFieldsMap = new HashMap<>();
+        if (messageText == null) {
+            invalidFieldsMap.put(FormField.CHAT_MESSAGE_TEXT, resourcesProperties.getNullFieldErrorMsg());
+        } else if (messageText.length() > fieldsValidationProperties.getMaxChatMessageTextLength()) {
+            String tooLongTextErrorMsg = String.format(resourcesProperties.getTooLongChatMessageTextErrorMsg(), fieldsValidationProperties.getMaxChatMessageTextLength());
+            invalidFieldsMap.put(FormField.CHAT_MESSAGE_TEXT, tooLongTextErrorMsg);
         }
         return invalidFieldsMap;
     }
@@ -212,4 +246,5 @@ public class ValidatorImpl implements Validator {
     public void setResourcesProperties(ResourcesProperties resourcesProperties) {
         this.resourcesProperties = resourcesProperties;
     }
+
 }

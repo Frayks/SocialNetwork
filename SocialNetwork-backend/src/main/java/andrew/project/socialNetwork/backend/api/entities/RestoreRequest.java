@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "restore_requests")
 public class RestoreRequest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -9,7 +9,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Component
 public class WebSocketSessionsStorageImpl implements WebSocketSessionsStorage {

@@ -9,4 +9,5 @@ public interface EmailSenderService {
 
     @Async
     void sendEmailAsync(String toEmail, String subject, String body);
+
 }

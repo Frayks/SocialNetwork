@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "post_likes")
 public class PostLike {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

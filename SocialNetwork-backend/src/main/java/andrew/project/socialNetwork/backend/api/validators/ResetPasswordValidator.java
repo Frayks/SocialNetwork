@@ -6,4 +6,5 @@ import andrew.project.socialNetwork.backend.api.dtos.ResetPasswordRequestDto;
 public interface ResetPasswordValidator {
 
     FormStatusDto validate(ResetPasswordRequestDto resetPasswordRequestDto);
+
 }

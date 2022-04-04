@@ -15,7 +15,7 @@ import java.util.Map;
 @ToString
 @NoArgsConstructor
 public class FormStatusDto {
-    private StatusCode status;
+    private StatusCode status = StatusCode.FAILURE;
     private Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
 }

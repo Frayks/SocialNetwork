@@ -1,10 +1,8 @@
 package andrew.project.socialNetwork.backend.api.repositories;
 
 import andrew.project.socialNetwork.backend.api.entities.UserPost;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;

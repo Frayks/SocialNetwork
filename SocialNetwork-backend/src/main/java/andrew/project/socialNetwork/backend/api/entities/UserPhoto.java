@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "users_photos")
 public class UserPhoto {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

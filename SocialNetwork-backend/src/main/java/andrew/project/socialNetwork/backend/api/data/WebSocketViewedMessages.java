@@ -11,4 +11,5 @@ import lombok.ToString;
 @NoArgsConstructor
 public class WebSocketViewedMessages extends WebSocketMessage {
     private ViewedMessagesData body;
+
 }

@@ -73,4 +73,5 @@ public class RegistrationServiceImpl implements RegistrationService {
     public void setResourcesProperties(ResourcesProperties resourcesProperties) {
         this.resourcesProperties = resourcesProperties;
     }
+
 }

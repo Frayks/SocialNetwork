@@ -14,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users_chats")
 public class UserChat {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

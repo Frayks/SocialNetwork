@@ -5,6 +5,7 @@ import andrew.project.socialNetwork.backend.api.entities.UserWsSession;
 import java.util.List;
 
 public interface UserWsSessionService {
+
     List<UserWsSession> findAll();
 
     UserWsSession findById(Long id);
@@ -22,4 +23,5 @@ public interface UserWsSessionService {
     int deleteBySessionId(String sessionId);
 
     void deleteAll();
+
 }

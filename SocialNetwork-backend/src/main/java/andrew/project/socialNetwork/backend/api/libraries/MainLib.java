@@ -38,7 +38,7 @@ public interface MainLib {
 
     int deletePhoto(Long photoId);
 
-    UserPostDto createPost(MultipartFile file, String text);
+    FormStatusDto createPost(MultipartFile image, String text);
 
     int deletePost(Long postId);
 
@@ -65,4 +65,5 @@ public interface MainLib {
     List<ChatMessageDto> getChatMessageListBlock(Long chatId, String beforeTime);
 
     WebSocketSessionKeyDto getWebSocketSessionKey();
+
 }

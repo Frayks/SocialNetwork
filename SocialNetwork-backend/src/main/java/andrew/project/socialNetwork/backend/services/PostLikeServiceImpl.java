@@ -58,4 +58,5 @@ public class PostLikeServiceImpl implements PostLikeService {
     public void setPostLikeRepository(PostLikeRepository postLikeRepository) {
         this.postLikeRepository = postLikeRepository;
     }
+
 }

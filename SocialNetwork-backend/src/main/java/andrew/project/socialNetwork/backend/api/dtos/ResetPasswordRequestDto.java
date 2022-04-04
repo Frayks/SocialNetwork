@@ -12,4 +12,5 @@ import lombok.ToString;
 public class ResetPasswordRequestDto {
     private String restoreKey;
     private String newPassword;
+
 }

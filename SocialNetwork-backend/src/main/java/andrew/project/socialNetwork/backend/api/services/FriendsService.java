@@ -19,4 +19,5 @@ public interface FriendsService {
     Friends save(Friends friends);
 
     void delete(Friends friends);
+
 }

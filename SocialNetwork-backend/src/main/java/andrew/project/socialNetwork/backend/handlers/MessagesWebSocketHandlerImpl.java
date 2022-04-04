@@ -12,29 +12,20 @@ import andrew.project.socialNetwork.backend.api.services.UserWsSessionService;
 import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.google.common.base.Splitter;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Component

@@ -1,6 +1,5 @@
 package andrew.project.socialNetwork.backend.api.entities;
 
-import andrew.project.socialNetwork.backend.api.constants.RoleName;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,7 +14,6 @@ import javax.persistence.*;
 @Entity
 @Table(name = "friends")
 public class Friends {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

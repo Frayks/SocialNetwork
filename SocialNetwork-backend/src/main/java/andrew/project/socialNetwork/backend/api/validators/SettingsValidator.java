@@ -10,4 +10,5 @@ public interface SettingsValidator {
     FormStatusDto validateBasicSettings(MultipartFile image, BasicSettingsDto basicSettingsDto, String previousUsername, String email);
 
     FormStatusDto validateAdditionalSettings(AdditionalSettingsDto additionalSettingsDto);
+    
 }

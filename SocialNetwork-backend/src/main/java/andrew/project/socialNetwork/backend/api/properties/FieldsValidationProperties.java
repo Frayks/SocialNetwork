@@ -23,8 +23,9 @@ public class FieldsValidationProperties {
     private String allowedImageTypes;
     private String separator;
     private int maxImageSize;
-    private int maxPostTextSize;
-    private int maxAboutYourselfTextSize;
+    private int maxPostTextLength;
+    private int maxAboutYourselfTextLength;
+    private int maxChatMessageTextLength;
     private int maxDateDiff;
 
 }

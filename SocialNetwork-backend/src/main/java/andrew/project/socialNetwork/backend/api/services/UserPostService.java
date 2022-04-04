@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface UserPostService {
+
     List<UserPost> findAll();
 
     UserPost findById(Long id);

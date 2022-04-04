@@ -69,4 +69,5 @@ public class RegistrationRequestServiceImpl implements RegistrationRequestServic
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
 }

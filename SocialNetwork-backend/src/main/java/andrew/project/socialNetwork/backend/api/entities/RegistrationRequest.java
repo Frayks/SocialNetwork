@@ -16,7 +16,6 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "registration_requests")
 public class RegistrationRequest {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

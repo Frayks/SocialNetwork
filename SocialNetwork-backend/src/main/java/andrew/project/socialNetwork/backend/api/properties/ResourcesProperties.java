@@ -24,14 +24,19 @@ public class ResourcesProperties {
     private String sexUnknownErrorMsg;
     private String invalidRestoreKeyErrorMsg;
     private String tooLongTextErrorMsg;
+    private String tooLongChatMessageTextErrorMsg;
     private String tooLargeImageSizeErrorMsg;
     private String wrongImageTypeErrorMsg;
     private String forbiddenCityNameErrorMsg;
     private String forbiddenSchoolNameErrorMsg;
     private String forbiddenUniversityNameErrorMsg;
+    private String oneFilledFieldIsRequiredErrorMsg;
+    private String nullFieldErrorMsg;
+    private String zeroValueErrorMsg;
 
     private String confirmMailSubjectText;
     private String confirmMailBodyText;
     private String restoreMailSubjectText;
     private String restoreMailBodyText;
+
 }

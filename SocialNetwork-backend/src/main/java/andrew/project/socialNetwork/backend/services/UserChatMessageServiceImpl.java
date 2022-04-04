@@ -61,4 +61,5 @@ public class UserChatMessageServiceImpl implements UserChatMessageService {
     public void setUserChatMessageRepository(UserChatMessageRepository userChatMessageRepository) {
         this.userChatMessageRepository = userChatMessageRepository;
     }
+
 }

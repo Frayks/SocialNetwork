@@ -5,6 +5,7 @@ import andrew.project.socialNetwork.backend.api.entities.RegistrationRequest;
 import java.util.List;
 
 public interface RegistrationRequestService {
+
     List<RegistrationRequest> findAll();
 
     RegistrationRequest findById(Long id);

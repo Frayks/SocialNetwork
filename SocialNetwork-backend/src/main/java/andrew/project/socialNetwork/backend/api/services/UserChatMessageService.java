@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 public interface UserChatMessageService {
+
     List<UserChatMessage> findAll();
 
     UserChatMessage findById(Long id);
@@ -19,4 +20,5 @@ public interface UserChatMessageService {
     List<UserChatMessage> saveAll(List<UserChatMessage> userChatMessageList);
 
     void delete(UserChatMessage userChatMessage);
+
 }

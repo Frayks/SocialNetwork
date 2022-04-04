@@ -6,6 +6,7 @@ import andrew.project.socialNetwork.backend.api.entities.User;
 import java.util.List;
 
 public interface UserService {
+
     List<User> findAll();
 
     List<User> findByIdIn(List<Long> idList);
@@ -25,4 +26,5 @@ public interface UserService {
     void delete(User user);
 
     void addRoleToUser(String username, RoleName roleName);
+
 }

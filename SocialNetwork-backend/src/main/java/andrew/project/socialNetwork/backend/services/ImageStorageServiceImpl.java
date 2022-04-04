@@ -64,4 +64,5 @@ public class ImageStorageServiceImpl implements ImageStorageService {
     public void setImageStorageProperties(ImageStorageProperties imageStorageProperties) {
         this.imageStorageProperties = imageStorageProperties;
     }
+
 }

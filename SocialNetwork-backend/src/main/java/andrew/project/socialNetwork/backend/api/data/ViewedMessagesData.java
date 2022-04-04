@@ -14,4 +14,5 @@ import java.util.List;
 public class ViewedMessagesData {
     private Long chatId;
     private List<Long> viewedMessagesIdsList;
+
 }

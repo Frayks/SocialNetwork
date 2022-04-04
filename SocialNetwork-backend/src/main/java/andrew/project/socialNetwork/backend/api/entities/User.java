@@ -17,7 +17,6 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -35,7 +34,7 @@ public class User {
     @JoinTable(joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_info_id",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "user_info_id", referencedColumnName = "id", nullable = false)
     private UserInfo userInfo;
     @Column(nullable = false)
     private Timestamp registrationTime;

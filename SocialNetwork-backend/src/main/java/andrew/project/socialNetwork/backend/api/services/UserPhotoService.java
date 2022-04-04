@@ -5,6 +5,7 @@ import andrew.project.socialNetwork.backend.api.entities.UserPhoto;
 import java.util.List;
 
 public interface UserPhotoService {
+
     List<UserPhoto> findAll();
 
     UserPhoto findById(Long id);
@@ -18,6 +19,5 @@ public interface UserPhotoService {
     void delete(UserPhoto userPhoto);
 
     int deleteByIdAndUserId(Long id, Long userId);
-
 
 }
