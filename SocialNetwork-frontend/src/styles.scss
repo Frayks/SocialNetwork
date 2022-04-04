@@ -285,6 +285,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
 .inner-container {
   height: 100%;
   display: flex;
@@ -345,13 +346,13 @@ body {
 .chat-message-user {
   border: 1.5px solid $color-gray-5;
   background-color: $color-gray-5;
-  border-radius:1rem 1rem 1rem 0.1rem;
+  border-radius: 1rem 1rem 1rem 0.1rem;
 }
 
 .chat-message-my {
   border: 1.5px solid $color-def-6;
   background-color: $color-def-6;
-  border-radius:1rem 1rem 0.1rem 1rem;
+  border-radius: 1rem 1rem 0.1rem 1rem;
   align-content: end;
 }
 
@@ -821,11 +822,16 @@ body {
   color: $color-def-1;
   font-size: 1.3rem;
   position: absolute;
-  top:63%;
-  left: 63%;
+  top: 50%;
+  left: 62%;
 }
-.a {
-  height: 30px;
+
+.online-symbol-user-info-icon {
+  color: $color-def-1;
+  font-size: 1.3rem;
+  position: absolute;
+  top: 63%;
+  left: 63%;
 }
 
 .material-icons-size-1 {

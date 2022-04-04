@@ -8,9 +8,8 @@
             <div class="chat-info-box"
                  *ngFor="let userChatInfo of chatInfoData?.userChatInfoList"
                  [class.chat-info-box-selected]="userChatInfo == selectedChat"
-                 (click)="selectChat(userChatInfo)"
-            >
-              <div class="d-inline-block a position-relative">
+                 (click)="selectChat(userChatInfo)">
+              <div class="d-inline-block position-relative">
                 <img [src]="userChatInfo.avatarUri" class="chat-info-icon">
                 <span *ngIf="userChatInfo.online"
                       class="online-symbol-chat-info-icon material-icons">noise_control_off</span>
@@ -33,7 +32,7 @@
                 <div class="d-inline-block position-relative">
                   <img [src]="selectedChat.avatarUri" class="user-info-icon">
                   <span *ngIf="selectedChat.online"
-                        class="online-symbol-chat-info-icon material-icons">noise_control_off</span>
+                        class="online-symbol-user-info-icon material-icons">noise_control_off</span>
                 </div>
                 <span>{{selectedChat.firstName}} {{selectedChat.lastName}}</span>
               </a>

@@ -9,5 +9,5 @@ export const environment = {
   maxChatMessageTextLength: 1000,
   minPasswordLength: 8,
   maxDateDiff: 100
-  
+
 };
