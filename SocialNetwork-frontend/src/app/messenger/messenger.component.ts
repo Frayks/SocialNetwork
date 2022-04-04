@@ -12,6 +12,8 @@ import {Message} from "../shared/models/message";
 import {ViewedMessagesData} from "../shared/models/viewed-messages-data";
 import {ChatMessage} from "../shared/models/chat-message";
 import {ChatInfoData} from "../shared/models/chat-info-data";
+import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-messenger',
@@ -87,7 +89,6 @@ export class MessengerComponent implements OnInit, OnDestroy {
       let data = <ChatMessage[]>await this.messengerService.loadChatMessageList(this.selectedChat.id).toPromise()
       this.selectedChat.showLoadOldMessagesBtn = data.length > 0
       this.selectedChat.chatMessageList = data
-      console.dir(data)
     }
     this.setChatOnFirstPosition(userChatInfo)
     let newMessagesList = this.selectedChat.chatMessageList.filter(x => !x.revised && x.userId != this.chatInfoData.userId)
@@ -127,8 +128,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
         this.selectedChat.chatMessageList = data.concat(this.selectedChat.chatMessageList)
         this.selectedChat.showLoadOldMessagesBtn = data.length > 0
       },
-      error: error => {
-
+      error: () => {
       }
     })
   }
@@ -196,6 +196,15 @@ export class MessengerComponent implements OnInit, OnDestroy {
     viewedMessagesData.viewedMessagesIdsList = viewedMessagesIdsList;
     webSocketMessage.body = viewedMessagesData
     this.webSocketService.sendMessage(webSocketMessage)
+  }
+
+
+  getDateFormat(creationTime: string) {
+    return CommonUtilCst.getDateFormat(creationTime)
+  }
+
+  getMaxChatMessageTextLength() {
+    return environment.maxChatMessageTextLength
   }
 
 }

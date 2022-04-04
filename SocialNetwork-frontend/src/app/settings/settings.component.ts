@@ -7,10 +7,11 @@ import {Router} from "@angular/router";
 import {BasicSettings} from "../shared/models/basic-settings";
 import {AdditionalSettings} from "../shared/models/additional-settings";
 import {StatusCode} from "../shared/constants/status-code";
-import {CommonUtil} from "../shared/Utils/common-util";
 import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 import {WebSocketService} from "../shared/services/web-socket.service";
+import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-settings',
@@ -19,9 +20,9 @@ import {WebSocketService} from "../shared/services/web-socket.service";
 })
 export class SettingsComponent implements OnInit, OnDestroy {
 
-  readonly days = CommonUtil.DAYS
-  readonly months = CommonUtil.MONTHS
-  readonly years = CommonUtil.YEARS
+  readonly days = CommonUtilCst.DAYS
+  readonly months = CommonUtilCst.MONTHS
+  readonly years = CommonUtilCst.YEARS
 
   menuData = new MenuData()
   @ViewChild('photoFile')
@@ -55,7 +56,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.additionalSettings = data.additionalSettings
       },
       error: () => {
-
       }
     })
     this.userService.loadMenuData().subscribe({
@@ -63,7 +63,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
           this.menuData = data
         },
         error: () => {
-
         }
       }
     )
@@ -96,7 +95,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.settingsService.changeBasicSettings(payload).subscribe({
           next: data => {
             if (data.status == StatusCode.FAILURE) {
-              this.errorMessages = CommonUtil.updateForm(form, data)
+              this.errorMessages = CommonUtilCst.updateForm(form, data)
               if (this.errorMessages.has('fileInput')) {
                 this.selectedPhotoValid = false
               }
@@ -107,7 +106,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
             }
           },
           error: () => {
-
           }
         })
       } else {
@@ -122,7 +120,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.settingsService.changeAdditionalSettings(this.additionalSettings).subscribe({
           next: data => {
             if (data.status == StatusCode.FAILURE) {
-              this.errorMessages = CommonUtil.updateForm(form, data)
+              this.errorMessages = CommonUtilCst.updateForm(form, data)
             } else if (data.status == StatusCode.SUCCESS) {
               this.additionalSettingsFormStatus = 1;
             } else {
@@ -130,7 +128,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
             }
           },
           error: () => {
-
           }
         })
       } else {
@@ -158,13 +155,13 @@ export class SettingsComponent implements OnInit, OnDestroy {
   }
 
   validateDateOfBirth(form: any) {
-    CommonUtil.validateDateOfBirth(form, this.errorMessages)
+    CommonUtilCst.validateDateOfBirth(form, this.errorMessages)
     this.basicSettingsChanged()
   }
 
   photoSelected(event: any) {
     this.selectedPhoto = event.target.files[0]
-    this.selectedPhotoValid = CommonUtil.mapToMb(this.selectedPhoto.size) < 2
+    this.selectedPhotoValid = CommonUtilCst.mapToMb(this.selectedPhoto.size) < environment.maxImageSize
     const reader = new FileReader()
     reader.readAsDataURL(this.selectedPhoto)
     reader.onload = () => {
@@ -194,6 +191,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   switchToAdditionalSettings() {
     this.displaySwitch = 2
+  }
+
+  getMaxAboutYourselfTextLength() {
+    return environment.maxAboutYourselfTextLength
   }
 
 }

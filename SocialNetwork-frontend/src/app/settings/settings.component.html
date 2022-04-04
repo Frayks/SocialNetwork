@@ -26,13 +26,13 @@
                 <div class="py-2 text-center">
                   <input type="file" class="d-none" name="fileInput" accept="image/gif, image/jpeg, image/png"
                          ngModel (change)="photoSelected($event)"
-                         #fileInput="ngModel" #photoFile >
+                         #fileInput="ngModel" #photoFile>
                   <div class="icon-preview-item">
                     <img class="icon-preview"
                          [src]="photoURL ? photoURL : basicSettings.avatarUri"
                          [class.border-invalid]="selectedPhoto && !selectedPhotoValid"
                          [class.border-valid]="selectedPhoto && selectedPhotoValid"
-                         (click)="photoFile.click()" >
+                         (click)="photoFile.click()">
                     <button class="btn-on-photo-preview" type="button" *ngIf="photoURL" (click)="clearSelectedPhoto()">
                       <span class="material-icons align-middle">clear</span>
                     </button>
@@ -178,7 +178,7 @@
                             [class.is-invalid]="aboutYourself.touched && aboutYourself.invalid"
                             [class.is-valid]="aboutYourself.touched && aboutYourself.valid"
                             (change)="additionalSettingsChanged()"
-                            #aboutYourself="ngModel" maxlength="50">
+                            #aboutYourself="ngModel" [maxLength]="getMaxAboutYourselfTextLength()">
                   </textarea>
                   <div class="invalid-feedback px-2"
                        [class.d-block]="errorMessages.has(aboutYourself.name) && aboutYourself.invalid">{{errorMessages.get(aboutYourself.name)}}</div>

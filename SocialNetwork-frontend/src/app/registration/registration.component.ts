@@ -2,11 +2,10 @@ import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {RegForm} from "../shared/models/reg-form";
 import {AuthService} from "../shared/services/auth.service";
-import {FormFields} from "../shared/constants/form-fields";
 import {MessageDataService} from "../shared/services/message-data.service";
 import {StatusCode} from "../shared/constants/status-code";
-import {FormStatus} from "../shared/models/form-status";
-import {CommonUtil} from "../shared/Utils/common-util";
+import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-registration',
@@ -15,9 +14,9 @@ import {CommonUtil} from "../shared/Utils/common-util";
 })
 export class RegistrationComponent implements OnInit {
 
-  readonly days = CommonUtil.DAYS
-  readonly months = CommonUtil.MONTHS
-  readonly years = CommonUtil.YEARS
+  readonly days = CommonUtilCst.DAYS
+  readonly months = CommonUtilCst.MONTHS
+  readonly years = CommonUtilCst.YEARS
   passwordVisibility = false
   regForm = new RegForm()
   errorMessages = new Map<string, string>();
@@ -40,7 +39,7 @@ export class RegistrationComponent implements OnInit {
       this.authService.registration(this.regForm).subscribe({
         next: data => {
           if (data.status == StatusCode.FAILURE) {
-            this.errorMessages = CommonUtil.updateForm(form, data)
+            this.errorMessages = CommonUtilCst.updateForm(form, data)
           } else if (data.status == StatusCode.SUCCESS) {
             this.messageDataService.title = "Привіт, " + this.regForm.firstName + "!"
             this.messageDataService.text = "Для завершення реєстрації, перейдіть за посиланням відправленим на вказану вами адресу електронної пошти."
@@ -49,7 +48,7 @@ export class RegistrationComponent implements OnInit {
             this.router.navigate([''])
           }
         },
-        error: error => {
+        error: () => {
           this.router.navigate([''])
         }
       })
@@ -75,7 +74,7 @@ export class RegistrationComponent implements OnInit {
       form.controls.dayOfBirth.touched = true
       form.controls.monthOfBirth.touched = true
       form.controls.yearOfBirth.touched = true
-      if (!CommonUtil.checkDateOfBirth(CommonUtil.getDateString(form.value.monthOfBirth, form.value.dayOfBirth, form.value.yearOfBirth))) {
+      if (!CommonUtilCst.checkDateOfBirth(CommonUtilCst.getDateString(form.value.monthOfBirth, form.value.dayOfBirth, form.value.yearOfBirth))) {
         form.controls.dayOfBirth.setErrors({"failed_validation": true})
         form.controls.monthOfBirth.setErrors({"failed_validation": true})
         form.controls.yearOfBirth.setErrors({"failed_validation": true})
@@ -96,4 +95,7 @@ export class RegistrationComponent implements OnInit {
     this.router.navigate([''])
   }
 
+  getMinPasswordLength() {
+    return environment.minPasswordLength
+  }
 }

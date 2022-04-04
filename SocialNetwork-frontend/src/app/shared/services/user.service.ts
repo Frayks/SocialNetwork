@@ -3,11 +3,11 @@ import {HttpClient, HttpParams} from "@angular/common/http";
 import {environment} from "../../../environments/environment";
 import {EndpointConstants} from "../constants/endpoint-constants";
 import {UserProfileInfo} from "../models/user-profile-info";
-import {UserPost} from "../models/user-post";
 import {UserPhoto} from "../models/user-photo";
 import {MenuData} from "../models/menu-data";
 import {SearchResult} from "../models/search-result";
 import {Post} from "../models/post";
+import {FormStatus} from "../models/form-status";
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +67,7 @@ export class UserService {
   }
 
   createPost(payload: FormData) {
-    return this.httpClient.post<UserPost>(environment.server_url + EndpointConstants.CREATE_POST_ENDPOINT, payload);
+    return this.httpClient.post<FormStatus>(environment.server_url + EndpointConstants.CREATE_POST_ENDPOINT, payload);
   }
 
   deletePost(postId: number) {

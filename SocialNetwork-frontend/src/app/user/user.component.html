@@ -8,7 +8,8 @@
         </div>
         <div class="text-center">
           <span>{{userProfileInfo.firstName}} {{userProfileInfo.lastName}}</span>
-          <span *ngIf="userProfileInfo.online" class="online-symbol material-icons align-middle" >noise_control_off</span>
+          <span *ngIf="userProfileInfo.online"
+                class="online-symbol material-icons align-middle">noise_control_off</span>
         </div>
         <hr class="hr-def">
         <div *ngIf="!myProfile" class="pb-3 px-3">
@@ -128,8 +129,10 @@
           </div>
           <div>
             <div class="row">
-              <div class="col">
-                <span class="ms-2">{{post.creationTime | date: 'dd.MM.yyyy'}}</span>
+              <div class="col post-date-box">
+                <div class="post-date">
+                  <span class="ms-2">{{post.creationTime | date: getDateFormat(post.creationTime)}}</span>
+                </div>
               </div>
               <div class="col">
                 <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePostLike(post)">
@@ -151,7 +154,8 @@
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages"
+                    [numOfRequestsToFriends]="menuData.numOfRequestsToFriends"></app-menu>
         </div>
         <div class="container-def mb-3">
           <div class="p-3">
@@ -165,7 +169,7 @@
                 <a [routerLink]="['/users', friend.username]" class="link-def">
                   <div class="position-relative">
                     <img [src]="friend.avatarUri" class="icon-super-small">
-                    <span *ngIf="friend.online" class="online-symbol-icon-super-small  material-icons align-middle" >noise_control_off</span>
+                    <span *ngIf="friend.online" class="online-symbol-icon-super-small  material-icons align-middle">noise_control_off</span>
                   </div>
                   <div class="text-center">
                     <p class="form-label icon-text">{{friend.firstName}}</p>

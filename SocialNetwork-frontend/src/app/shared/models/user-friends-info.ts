@@ -4,4 +4,5 @@ export class UserFriendsInfo {
   shortUserInfo!: ShortUserInfo
   userFriendList!: ShortUserInfo[]
   userFriendRequestList!: ShortUserInfo[]
+
 }

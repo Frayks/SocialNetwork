@@ -1,19 +1,16 @@
 import {FormStatus} from "../models/form-status";
 import {FormFields} from "../constants/form-fields";
+import {environment} from "../../../environments/environment";
 
-export class CommonUtil {
+export default class CommonUtilCst {
 
   public static readonly DAYS = Array.from({length: 31}, (_, i) => i + 1)
   public static readonly MONTHS = ['Січня', 'Лютого', 'Березня', 'Квітня', 'Травня', 'Червня', 'Липня', 'Серпня', 'Вересня', 'Жовтня', 'Листопада', 'Грудня']
-  public static readonly YEARS = Array.from({length: 101}, (_, i) => i + new Date().getFullYear() - 100).reverse()
+  public static readonly YEARS = Array.from({length: environment.maxDateDiff + 1}, (_, i) => i + new Date().getFullYear() - environment.maxDateDiff).reverse()
 
   public static updateForm(form: any, formStatus: FormStatus) {
     let errorMessages = new Map<string, string>();
     if (formStatus.invalidFieldsMap) {
-      if (formStatus.invalidFieldsMap[FormFields.IMAGE]) {
-        form.controls.fileInput.setErrors({"failed_validation": true})
-        errorMessages.set('fileInput', formStatus.invalidFieldsMap[FormFields.IMAGE])
-      }
       if (formStatus.invalidFieldsMap[FormFields.FIRST_NAME]) {
         form.controls.firstName.setErrors({"failed_validation": true})
         errorMessages.set('firstName', formStatus.invalidFieldsMap[FormFields.FIRST_NAME])
@@ -60,6 +57,26 @@ export class CommonUtil {
         form.controls.university.setErrors({"failed_validation": true})
         errorMessages.set('university', formStatus.invalidFieldsMap[FormFields.UNIVERSITY])
       }
+      if (formStatus.invalidFieldsMap[FormFields.RESTORE_KEY]) {
+        form.controls.restoreKey.setErrors({"failed_validation": true})
+        errorMessages.set('restoreKey', formStatus.invalidFieldsMap[FormFields.RESTORE_KEY])
+      }
+      if (formStatus.invalidFieldsMap[FormFields.POST_TEXT]) {
+        form.controls.postText.setErrors({"failed_validation": true})
+        errorMessages.set('postText', formStatus.invalidFieldsMap[FormFields.POST_TEXT])
+      }
+      if (formStatus.invalidFieldsMap[FormFields.CHAT_MESSAGE_TEXT]) {
+        form.controls.chatMessageText.setErrors({"failed_validation": true})
+        errorMessages.set('chatMessageText', formStatus.invalidFieldsMap[FormFields.CHAT_MESSAGE_TEXT])
+      }
+      if (formStatus.invalidFieldsMap[FormFields.IMAGE]) {
+        form.controls.fileInput.setErrors({"failed_validation": true})
+        errorMessages.set('fileInput', formStatus.invalidFieldsMap[FormFields.IMAGE])
+      }
+      if (formStatus.invalidFieldsMap[FormFields.ALL_FIELDS]) {
+        form.controls.fileInput.setErrors({"failed_validation": true})
+        errorMessages.set('allFields', formStatus.invalidFieldsMap[FormFields.ALL_FIELDS])
+      }
     }
     return errorMessages
   }
@@ -85,7 +102,7 @@ export class CommonUtil {
   public static checkDateOfBirth(dateOfBirth: string) {
     let date = new Date(dateOfBirth)
     let dateNow = new Date()
-    return !isNaN(date.getDate()) && date.getTime() < dateNow.getTime() && dateNow.getFullYear() - date.getFullYear() <= 100
+    return !isNaN(date.getDate()) && date.getTime() < dateNow.getTime() && dateNow.getFullYear() - date.getFullYear() <= environment.maxDateDiff
   }
 
   public static getDateString(monthOfBirth: string, dayOfBirth: string, yearOfBirth: string) {
@@ -94,6 +111,14 @@ export class CommonUtil {
 
   public static mapToMb(size: number): number {
     return size / 1024 / 1024
+  }
+
+  public static getDateFormat(creationTime: string) {
+    let date = new Date(creationTime)
+    date.setHours(0, 0, 0, 0);
+    let dateNow = new Date()
+    dateNow.setHours(0, 0, 0, 0);
+    return date.getTime() < dateNow.getTime() ? 'dd.MM.yyyy H:mm' : 'H:mm'
   }
 
 }

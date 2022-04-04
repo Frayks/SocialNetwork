@@ -4,7 +4,6 @@ import {EndpointConstants} from "../constants/endpoint-constants";
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {ChatMessage} from "../models/chat-message";
 import {ChatInfoData} from "../models/chat-info-data";
-import {Post} from "../models/post";
 
 @Injectable({
   providedIn: 'root'

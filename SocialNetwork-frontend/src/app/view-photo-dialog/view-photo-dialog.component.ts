@@ -1,7 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
 import {UserPhoto} from "../shared/models/user-photo";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {Post} from "../shared/models/post";
 import {UserService} from "../shared/services/user.service";
 
 @Component({
@@ -27,7 +26,7 @@ export class ViewPhotoDialogComponent implements OnInit {
   changePhotoLike() {
     this.userService.changePhotoLike(this.photo.id).subscribe({
       next: () => {
-        if(this.photo.like) {
+        if (this.photo.like) {
           this.photo.like = false;
           this.photo.numOfLikes = this.photo.numOfLikes - 1;
         } else {

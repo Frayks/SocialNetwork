@@ -20,7 +20,8 @@
             </div>
           </div>
           <ng-template #anotherUser>
-            <div class="menu-item-box menu-item-hover" [routerLink]="['/users', userFriendsInfo.shortUserInfo.username]">
+            <div class="menu-item-box menu-item-hover"
+                 [routerLink]="['/users', userFriendsInfo.shortUserInfo.username]">
               <span class="material-icons menu-item-icon align-middle">group</span>
               <span
                 class="menu-item-name">{{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</span>
@@ -43,7 +44,7 @@
                 <a [routerLink]="['/users', friend.username]" class="link-def">
                   <div class="position-relative">
                     <img [src]="friend.avatarUri" class="icon-middle">
-                    <span *ngIf="friend.online" class="online-symbol-icon-middle  material-icons align-middle" >noise_control_off</span>
+                    <span *ngIf="friend.online" class="online-symbol-icon-middle  material-icons align-middle">noise_control_off</span>
                   </div>
                 </a>
               </div>
@@ -82,10 +83,12 @@
               </div>
               <div class="col-20pr">
                 <div *ngIf="myProfile">
-                  <button class="inp-small-form btn-hidden float-end mt-1 mb-2 me-3" (click)="agreeFriendRequest(friendRequest.id)">
+                  <button class="inp-small-form btn-hidden float-end mt-1 mb-2 me-3"
+                          (click)="agreeFriendRequest(friendRequest.id)">
                     <span class="material-icons align-middle">done</span>
                   </button>
-                  <button class="inp-small-form btn-hidden float-end me-3" (click)="rejectFriendRequest(friendRequest.id)">
+                  <button class="inp-small-form btn-hidden float-end me-3"
+                          (click)="rejectFriendRequest(friendRequest.id)">
                     <span class="material-icons align-middle">clear</span>
                   </button>
                 </div>
@@ -98,7 +101,8 @@
     <div class="col-22pr px-def">
       <div class="block-side-panel">
         <div class="mb-3">
-          <app-menu [numOfMessages]="menuData.numOfMessages" [numOfRequestsToFriends]="userFriendsInfo.userFriendRequestList ? userFriendsInfo.userFriendRequestList.length : 0"></app-menu>
+          <app-menu [numOfMessages]="menuData.numOfMessages"
+                    [numOfRequestsToFriends]="userFriendsInfo.userFriendRequestList ? userFriendsInfo.userFriendRequestList.length : 0"></app-menu>
         </div>
       </div>
     </div>

@@ -44,7 +44,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
           this.userFriendsInfo = data
           this.myProfile = username === this.authService.getUsername()
         },
-        error: error => {
+        error: () => {
           this.router.navigate(["/"])
         }
       })
@@ -88,7 +88,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
 
   agreeFriendRequest(userId: number) {
     this.friendsService.agreeFriendRequest(userId).subscribe({
-      next: data => {
+      next: () => {
         let friends = this.userFriendsInfo.userFriendRequestList.filter(item => item.id == userId)
         this.userFriendsInfo.userFriendList = this.userFriendsInfo.userFriendList.concat(friends)
         this.userFriendsInfo.userFriendRequestList = this.userFriendsInfo.userFriendRequestList.filter(item => item.id !== userId)

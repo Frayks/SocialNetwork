@@ -69,7 +69,7 @@ export class NewsComponent implements OnInit, OnDestroy {
   }
 
   viewPostPhoto(post: UserPost) {
-    let dialogRef = this.dialog.open(ViewPostPhotoDialogComponent, {
+    this.dialog.open(ViewPostPhotoDialogComponent, {
       panelClass: 'dialog-container-cst',
       data: post
     });
@@ -97,8 +97,7 @@ export class NewsComponent implements OnInit, OnDestroy {
         this.hideMoreButton = data.length == 0
         this.postList = data
       },
-      error: error => {
-
+      error: () => {
       }
     })
   }
@@ -110,8 +109,7 @@ export class NewsComponent implements OnInit, OnDestroy {
         this.hideMoreButton = data.length == 0
         this.postList = this.postList.concat(data)
       },
-      error: error => {
-
+      error: () => {
       }
     })
   }

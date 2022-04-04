@@ -5,4 +5,5 @@ export class ShortUserInfo {
   lastName!: string
   avatarUri!: string
   online!: boolean
+
 }

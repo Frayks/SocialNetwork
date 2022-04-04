@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.authCredentials) {
+    if (this.authService.authCredentials) {
       this.router.navigate([`users/${this.authService.getUsername()}`])
     }
   }
@@ -31,21 +31,21 @@ export class LoginComponent implements OnInit {
   onSubmit(form: NgForm) {
     if (form.valid) {
       this.authService.login(form.value.username, form.value.password).subscribe({
-          next: () => {
-            this.router.navigate([`users/${this.authService.getUsername()}`])
-          },
-          error: error => {
-            switch (error.status) {
-              case 403: {
-                this.errorMessage = "Неправильний логін або пароль!"
-                break
-              }
-              default: {
-                this.errorMessage = "Непередбачувана помилка!"
-              }
+        next: () => {
+          this.router.navigate([`users/${this.authService.getUsername()}`])
+        },
+        error: error => {
+          switch (error.status) {
+            case 403: {
+              this.errorMessage = "Неправильний логін або пароль!"
+              break
+            }
+            default: {
+              this.errorMessage = "Непередбачувана помилка!"
             }
           }
-        })
+        }
+      })
     } else {
 
     }

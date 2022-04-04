@@ -1,23 +1,36 @@
 <div class="container-def p-3">
   <form #form="ngForm" (ngSubmit)="onSubmit(form)">
     <div class="pb-3">
-      <input #photoFile name="photo" ngModel type="file" class="d-none" accept="image/gif, image/jpeg, image/png"
-             (change)="photoSelected($event)">
+      <input type="file" class="d-none" name="fileInput" accept="image/gif, image/jpeg, image/png"
+             ngModel (change)="photoSelected($event)"
+             #fileInput="ngModel" #photoFile>
       <button type="button" class="btn-add-photo" *ngIf="!photoURL" (click)="photoFile.click()">
         <span class="material-icons align-middle btn-add-photo-icon">add</span>
       </button>
       <div class="text-center" *ngIf="photoURL">
         <div class="photo-preview-item">
-          <img class="photo-preview" [src]="photoURL" (click)="photoFile.click()">
+          <img class="photo-preview"
+               [src]="photoURL"
+               [class.border-invalid]="selectedPhoto && !selectedPhotoValid"
+               [class.border-valid]="selectedPhoto && selectedPhotoValid"
+               (click)="photoFile.click()">
           <button class="btn-on-photo-preview" type="button" (click)="clearSelectedPhoto()">
             <span class="material-icons align-middle">clear</span>
           </button>
         </div>
       </div>
-
+      <div class="invalid-feedback px-2"
+           [class.d-block]="errorMessages.has(fileInput.name) && !selectedPhotoValid">{{errorMessages.get(fileInput.name)}}</div>
     </div>
     <div class="pb-2">
-      <textarea name="text" ngModel class="textarea-def"></textarea>
+      <textarea name="postText" ngModel class="form-control textarea-def"
+                [class.is-invalid]="postText.touched && postText.invalid"
+                [class.is-valid]="postText.touched && postText.valid"
+                #postText="ngModel" [maxLength]="getMaxPostTextLength()"></textarea>
+      <div class="invalid-feedback px-2"
+           [class.d-block]="errorMessages.has(postText.name) && postText.invalid">{{errorMessages.get(postText.name)}}</div>
+      <div class="invalid-feedback px-2 text-center"
+           [class.d-block]="errorMessages.has('allFields')">{{errorMessages.get('allFields')}}</div>
     </div>
     <div class="text-center">
       <button class="inp-def-form btn-def me-4" type="button" (click)="cancelCreate()">

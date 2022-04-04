@@ -15,7 +15,7 @@
           <div class="ms-2">
             <div class="d-inline-block pe-2 position-relative">
               <img [src]="post.shortUserInfo.avatarUri" class="icon-super-small">
-              <span *ngIf="post.shortUserInfo.online" class="online-symbol-post-user-icon  material-icons align-middle" >noise_control_off</span>
+              <span *ngIf="post.shortUserInfo.online" class="online-symbol-post-user-icon  material-icons align-middle">noise_control_off</span>
             </div>
             <div class="d-inline-block">
               <p class="form-label">{{post.shortUserInfo.firstName}} {{post.shortUserInfo.lastName}}</p>
@@ -40,7 +40,7 @@
               <span class="ms-2">{{post.creationTime | date: 'dd.MM.yyyy'}}</span>
             </div>
             <div class="col">
-              <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePostLike(post)" >
+              <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePostLike(post)">
                 <span class="material-icons align-middle"
                       [class.text-red]="post.like"
                       [class.text-gray]="!post.like"

@@ -12,10 +12,11 @@ import {ViewPostPhotoDialogComponent} from "../view-post-photo-dialog/view-post-
 import {FriendsService} from "../shared/services/friends.service";
 import {AddToFriendsStatusCode} from "../shared/constants/add-to-friends-status-code";
 import {MenuData} from "../shared/models/menu-data";
-import {CommonUtil} from "../shared/Utils/common-util";
 import {WebSocketService} from "../shared/services/web-socket.service";
 import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
+import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-user',
@@ -128,7 +129,7 @@ export class UserComponent implements OnInit, OnDestroy {
 
   addPhoto(input: any) {
     let photo = input.files[0];
-    if (CommonUtil.mapToMb(photo.size) < 2) {
+    if (CommonUtilCst.mapToMb(photo.size) < environment.maxImageSize) {
       let payload = new FormData()
       payload.append("photo", photo, photo.name)
       this.userService.addPhoto(payload).subscribe({
@@ -136,9 +137,10 @@ export class UserComponent implements OnInit, OnDestroy {
           this.userProfileInfo.userPhotoList.unshift(data)
         },
         error: () => {
-
         }
       })
+    } else {
+      alert("Розмір зображення перевищує: " + environment.maxImageSize + "MB")
     }
   }
 
@@ -160,17 +162,8 @@ export class UserComponent implements OnInit, OnDestroy {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.userService.createPost(result).subscribe(
-          {
-            next: data => {
-              this.userPostList.unshift(data)
-              this.userProfileInfo.numOfPosts += 1
-            },
-            error: () => {
-
-            }
-          }
-        )
+        this.loadUserPostList()
+        this.userProfileInfo.numOfPosts += 1
       }
     })
   }
@@ -261,4 +254,7 @@ export class UserComponent implements OnInit, OnDestroy {
     window.scroll(0, 0);
   }
 
+  getDateFormat(creationTime: string) {
+    return CommonUtilCst.getDateFormat(creationTime)
+  }
 }

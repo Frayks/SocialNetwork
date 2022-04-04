@@ -8,7 +8,7 @@
       </div>
       <div class="col-56pr px-def">
         <input #inputSearch type="text" class="inp-def-form inp-search" maxlength="100" placeholder="Пошук"
-               (input)="search(inputSearch)" (focusout)="clearSearchState(inputSearch)" >
+               (input)="search(inputSearch)" (focusout)="clearSearchState(inputSearch)">
         <div class="container-def block-search-result" *ngIf="searchResult && searchResult.userList.length > 0">
           <div *ngFor="let user of searchResult.userList">
             <a [routerLink]="['/users', user.username]" class="link-def" (click)="clearSearchState(inputSearch)">

@@ -1,5 +1,5 @@
 export class UserPhoto {
-  id!:number
+  id!: number
   photoUri!: string
   numOfLikes!: number
   like!: boolean

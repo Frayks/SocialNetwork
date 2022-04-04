@@ -22,9 +22,9 @@ import {ViewPhotoDialogComponent} from './view-photo-dialog/view-photo-dialog.co
 import {ViewPostPhotoDialogComponent} from './view-post-photo-dialog/view-post-photo-dialog.component';
 import {FriendsComponent} from './friends/friends.component';
 import {NewsComponent} from './news/news.component';
-import { SettingsComponent } from './settings/settings.component';
-import { ConfirmComponent } from './confirm/confirm.component';
-import { MessengerComponent } from './messenger/messenger.component';
+import {SettingsComponent} from './settings/settings.component';
+import {ConfirmComponent} from './confirm/confirm.component';
+import {MessengerComponent} from './messenger/messenger.component';
 
 @NgModule({
   declarations: [

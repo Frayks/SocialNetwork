@@ -18,7 +18,7 @@ export class RestoreComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.authCredentials) {
+    if (this.authService.authCredentials) {
       this.router.navigate([`users/${this.authService.getUsername()}`])
     }
   }
@@ -26,7 +26,7 @@ export class RestoreComponent implements OnInit {
   onSubmit(form: any) {
     if (form.valid) {
       this.authService.restore(form.value.email).subscribe({
-        next: data => {
+        next: () => {
           this.messageDataService.title = "Зміна паролю"
           this.messageDataService.text = "Для зміни паролю, перейдіть за посиланням відправленим на вказану вами адресу електронної пошти та вкажіть новий пароль"
           this.router.navigate(['/message'])

@@ -1,7 +1,11 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {MatDialogRef} from "@angular/material/dialog";
 import {NgForm} from "@angular/forms";
-import {CommonUtil} from "../shared/Utils/common-util";
+import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
+import {UserService} from "../shared/services/user.service";
+import {StatusCode} from "../shared/constants/status-code";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-create-post-dialog',
@@ -13,10 +17,14 @@ export class CreatePostDialogComponent implements OnInit {
   @ViewChild('photoFile')
   private photoFileElement!: ElementRef
   selectedPhoto: any
+  selectedPhotoValid = false
   photoURL: any
+  errorMessages = new Map<string, string>();
 
   constructor(
-    private dialogRef: MatDialogRef<CreatePostDialogComponent>
+    private dialogRef: MatDialogRef<CreatePostDialogComponent>,
+    private userService: UserService,
+    private router: Router
   ) {
   }
 
@@ -25,6 +33,7 @@ export class CreatePostDialogComponent implements OnInit {
 
   photoSelected(event: any) {
     this.selectedPhoto = event.target.files[0]
+    this.selectedPhotoValid = this.selectedPhoto && CommonUtilCst.mapToMb(this.selectedPhoto.size) < environment.maxImageSize
     const reader = new FileReader()
     reader.readAsDataURL(this.selectedPhoto)
     reader.onload = () => {
@@ -39,16 +48,38 @@ export class CreatePostDialogComponent implements OnInit {
   }
 
   onSubmit(form: NgForm) {
-    let photoValid = this.selectedPhoto && CommonUtil.mapToMb(this.selectedPhoto.size) < 2
-    if (photoValid || form.value.text) {
-      let payload = new FormData()
-      if (photoValid) {
-        payload.append("photo", this.selectedPhoto, this.selectedPhoto.name)
+    if (this.selectedPhoto || form.value.postText) {
+      if (this.selectedPhotoValid && form.valid) {
+        let payload = new FormData()
+        if (this.selectedPhotoValid) {
+          payload.append("postPhoto", this.selectedPhoto, this.selectedPhoto.name)
+        }
+        if (form.value.postText) {
+          payload.append("postText", form.value.postText)
+        }
+        this.userService.createPost(payload).subscribe({
+          next: data => {
+            console.dir(data)
+            if (data.status == StatusCode.FAILURE) {
+              this.errorMessages = CommonUtilCst.updateForm(form, data)
+              console.dir(this.errorMessages)
+            } else if (data.status == StatusCode.SUCCESS) {
+              this.dialogRef.close(true)
+            } else {
+              this.router.navigate([''])
+            }
+          },
+          error: () => {
+          }
+        })
+      } else {
+        if (!this.selectedPhotoValid) {
+          this.errorMessages.set('fileInput', "Розмір зображення надто великий. Максимальний розмір зображення: " + environment.maxImageSize + "MB")
+        }
+        this.setFormFieldsTouched(form, true)
       }
-      if (form.value.text) {
-        payload.append("text", form.value.text)
-      }
-      this.dialogRef.close(payload)
+    } else {
+      this.errorMessages.set('allFields', "Необхідно заповнити хоча б одне поле форми!")
     }
   }
 
@@ -56,4 +87,12 @@ export class CreatePostDialogComponent implements OnInit {
     this.dialogRef.close()
   }
 
+  getMaxPostTextLength() {
+    return environment.maxPostTextLength
+  }
+
+  setFormFieldsTouched(form: any, type: boolean) {
+    form.controls.fileInput.touched = type
+    form.controls.postText.touched = type
+  }
 }

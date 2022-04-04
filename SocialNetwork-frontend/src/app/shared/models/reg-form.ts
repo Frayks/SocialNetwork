@@ -8,4 +8,5 @@ export class RegForm {
   monthOfBirth!: number
   yearOfBirth!: number
   sex!: string
+  
 }

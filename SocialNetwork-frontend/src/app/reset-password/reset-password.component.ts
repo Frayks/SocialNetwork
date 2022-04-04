@@ -6,6 +6,7 @@ import {ResetPasswordRequest} from "../shared/models/reset-password-request";
 import {StatusCode} from "../shared/constants/status-code";
 import {FormStatus} from "../shared/models/form-status";
 import {FormFields} from "../shared/constants/form-fields";
+import CommonUtilCst from "../shared/utils/common-util-cst";
 
 @Component({
   selector: 'app-reset-password',
@@ -28,7 +29,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if(this.authService.authCredentials) {
+    if (this.authService.authCredentials) {
       this.router.navigate([`users/${this.authService.getUsername()}`])
     }
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -42,7 +43,12 @@ export class ResetPasswordComponent implements OnInit {
       this.authService.resetPassword(this.resetPasswordRequest).subscribe({
         next: data => {
           if (data.status == StatusCode.FAILURE) {
-            this.updateForm(form, data)
+            this.errorMessages = CommonUtilCst.updateForm(form, data)
+            if (this.errorMessages.has('password')) {
+              this.resetPasswordRequest.newPassword = ''
+              form.value.repeatPassword = ''
+              form.controls.repeatPassword.touched = false
+            }
           } else if (data.status == StatusCode.SUCCESS) {
             this.messageDataService.title = "Вітаю!"
             this.messageDataService.text = "Пароль успішно змінено."
@@ -57,23 +63,6 @@ export class ResetPasswordComponent implements OnInit {
       })
     } else {
       this.setFormFieldsTouched(form, true)
-    }
-  }
-
-  private updateForm(form: any, formStatus: FormStatus) {
-    if (formStatus.invalidFieldsMap) {
-      this.errorMessages.clear()
-      if (formStatus.invalidFieldsMap[FormFields.RESTORE_KEY]) {
-        form.controls.restoreKey.setErrors({"failed_validation": true})
-        this.errorMessages.set('restoreKey', formStatus.invalidFieldsMap[FormFields.RESTORE_KEY])
-      }
-      if (formStatus.invalidFieldsMap[FormFields.PASSWORD]) {
-        form.controls.password.setErrors({"failed_validation": true})
-        this.errorMessages.set('password', formStatus.invalidFieldsMap[FormFields.PASSWORD])
-        this.resetPasswordRequest.newPassword = ''
-        form.value.repeatPassword = ''
-        form.controls.repeatPassword.touched = false
-      }
     }
   }
 
