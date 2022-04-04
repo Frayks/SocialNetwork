@@ -15,4 +15,5 @@ public class ShortUserInfoDto {
     private String firstName;
     private String lastName;
     private String avatarUri;
+    private boolean online;
 }

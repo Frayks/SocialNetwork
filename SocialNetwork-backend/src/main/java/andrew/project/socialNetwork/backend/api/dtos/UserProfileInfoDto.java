@@ -26,6 +26,7 @@ public class UserProfileInfoDto {
     private String school;
     private String university;
     private String aboutYourself;
+    private boolean online;
     private int numOfPosts;
     private List<UserPhotoDto> userPhotoList = new ArrayList<>();
     private List<ShortUserInfoDto> userFriendList = new ArrayList<>();

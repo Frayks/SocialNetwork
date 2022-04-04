@@ -20,7 +20,7 @@ public class Mapper {
 
     public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
 
-    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, List<UserPhoto> userPhotoList, List<PhotoLike> photoLikeList, List<User> userFriendList, int numOfPosts, Friends friends, ImageStorageProperties properties) {
+    public static UserProfileInfoDto mapToUserProfileInfoDto(User user, boolean online, List<UserPhoto> userPhotoList, List<PhotoLike> photoLikeList, List<User> userFriendList, int numOfPosts, Friends friends, ImageStorageProperties properties) {
         UserProfileInfoDto userProfileInfoDto = new UserProfileInfoDto();
         UserInfo userInfo = user.getUserInfo();
         userProfileInfoDto.setId(user.getId());
@@ -34,6 +34,7 @@ public class Mapper {
         userProfileInfoDto.setSchool(userInfo.getSchool());
         userProfileInfoDto.setUniversity(userInfo.getUniversity());
         userProfileInfoDto.setAboutYourself(userInfo.getAboutYourself());
+        userProfileInfoDto.setOnline(online);
         userProfileInfoDto.setNumOfPosts(numOfPosts);
         if (friends != null) {
             userProfileInfoDto.setFriend(friends.getAccepted());

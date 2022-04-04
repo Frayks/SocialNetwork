@@ -2,7 +2,6 @@ package andrew.project.socialNetwork.backend.controllers;
 
 import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.*;
-import andrew.project.socialNetwork.backend.api.entities.UserChatMessage;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -18,5 +18,6 @@ public class UserChatInfoDto {
     private String avatarUri;
     private Long numOfUnreadMessages;
     private String textInput;
+    private boolean online;
 
 }

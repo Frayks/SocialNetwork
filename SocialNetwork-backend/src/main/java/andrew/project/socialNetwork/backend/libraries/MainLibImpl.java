@@ -51,6 +51,7 @@ public class MainLibImpl implements MainLib {
     private PostLikeService postLikeService;
     private UserChatService userChatService;
     private UserChatMessageService userChatMessageService;
+    private UserWsSessionService userWsSessionService;
 
     private JwtProvider jwtProvider;
     private RegFormValidator regFormValidator;
@@ -155,7 +156,16 @@ public class MainLibImpl implements MainLib {
                 List<Long> friendsIdList = getFriendsIdList(targetUser.getId(), friendsList);
                 List<User> userFriendList = userService.findByIdIn(friendsIdList);
                 Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), targetUser.getId());
-                return Mapper.mapToUserProfileInfoDto(targetUser, userPhotoList, photoLikeList, userFriendList, numOfPosts, friends, imageStorageProperties);
+                boolean online = targetUser.getId().equals(userDbi.getId()) || userWsSessionService.findByUserId(targetUser.getId()).size() > 0;
+                UserProfileInfoDto userProfileInfoDto = Mapper.mapToUserProfileInfoDto(targetUser, online, userPhotoList, photoLikeList, userFriendList, numOfPosts, friends, imageStorageProperties);
+                for (ShortUserInfoDto shortUserInfoDto : userProfileInfoDto.getUserFriendList()) {
+                    if (shortUserInfoDto.getId().equals(userDbi.getId())) {
+                        shortUserInfoDto.setOnline(true);
+                    } else {
+                        shortUserInfoDto.setOnline(userWsSessionService.findByUserId(shortUserInfoDto.getId()).size() > 0);
+                    }
+                }
+                return userProfileInfoDto;
             }
         } catch (Exception e) {
             LOGGER.error(e);
@@ -177,7 +187,15 @@ public class MainLibImpl implements MainLib {
                 List<Long> friendRequestsIdList = getFriendRequestsIdList(friendRequestList);
                 userFriendRequestList = userService.findByIdIn(friendRequestsIdList);
             }
-            return Mapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList, imageStorageProperties);
+            UserFriendsInfoDto userProfileInfoDto = Mapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList, imageStorageProperties);
+            for (ShortUserInfoDto shortUserInfoDto : userProfileInfoDto.getUserFriendList()) {
+                if (shortUserInfoDto.getId().equals(user.getId())) {
+                    shortUserInfoDto.setOnline(true);
+                } else {
+                    shortUserInfoDto.setOnline(userWsSessionService.findByUserId(shortUserInfoDto.getId()).size() > 0);
+                }
+            }
+            return userProfileInfoDto;
         }
         return null;
     }
@@ -261,15 +279,18 @@ public class MainLibImpl implements MainLib {
         }
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String[] searchParams = searchRequest.split(" ");
+        List<ShortUserInfoDto> userDtoList = new ArrayList<>();
         if (searchParams.length == 1) {
             List<User> userList = userService.findUsersByText(searchParams[0] + "%", user.getUsername(), 20);
-            List<ShortUserInfoDto> userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
-            searchResultDto.setUserList(userDtoList);
+            userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
         } else if (searchParams.length > 1) {
             List<User> userList = userService.findUsersByFirstNameAndLastName(searchParams[0] + "%", searchParams[1] + "%", user.getUsername(), 20);
-            List<ShortUserInfoDto> userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
-            searchResultDto.setUserList(userDtoList);
+            userDtoList = Mapper.mapShortUserInfoDtoList(userList, imageStorageProperties);
         }
+        for (ShortUserInfoDto shortUserInfoDto: userDtoList) {
+            shortUserInfoDto.setOnline(userWsSessionService.findByUserId(shortUserInfoDto.getId()).size() > 0);
+        }
+        searchResultDto.setUserList(userDtoList);
         return searchResultDto;
     }
 
@@ -441,7 +462,15 @@ public class MainLibImpl implements MainLib {
         List<UserPost> userPostList = userPostService.findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(friendsIdList, beforeTime, 10);
         List<Long> postsIdList = getPostsIdList(userPostList);
         List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
-        return Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
+        List<PostDto> postDtoList = Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
+        for (PostDto postDto: postDtoList) {
+            if (postDto.getShortUserInfo().getId().equals(userDbi.getId())) {
+                postDto.getShortUserInfo().setOnline(true);
+            } else {
+                postDto.getShortUserInfo().setOnline(userWsSessionService.findByUserId(postDto.getShortUserInfo().getId()).size() > 0);
+            }
+        }
+        return postDtoList;
     }
 
     @Override
@@ -578,7 +607,11 @@ public class MainLibImpl implements MainLib {
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
         List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChatList);
         List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
-        return Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, imageStorageProperties);
+        ChatInfoDataDto chatInfoDataDto = Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, imageStorageProperties);
+        for (UserChatInfoDto userChatInfoDto : chatInfoDataDto.getUserChatInfoList()) {
+            userChatInfoDto.setOnline(userWsSessionService.findByUserId(userChatInfoDto.getUserId()).size() > 0);
+        }
+        return chatInfoDataDto;
     }
 
     @Override
@@ -816,6 +849,11 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setRestoreRequestService(RestoreRequestService restoreRequestService) {
         this.restoreRequestService = restoreRequestService;
+    }
+
+    @Autowired
+    public void setUserWsSessionService(UserWsSessionService userWsSessionService) {
+        this.userWsSessionService = userWsSessionService;
     }
 
     @Autowired
