@@ -85,13 +85,16 @@ export class MessengerComponent implements OnInit, OnDestroy {
     this.selectedChat = userChatInfo
     if (!this.selectedChat.chatMessageList) {
       let data = <ChatMessage[]>await this.messengerService.loadChatMessageList(this.selectedChat.id).toPromise()
+      this.selectedChat.showLoadOldMessagesBtn = data.length > 0
       this.selectedChat.chatMessageList = data
+      console.dir(data)
     }
     this.setChatOnFirstPosition(userChatInfo)
     let newMessagesList = this.selectedChat.chatMessageList.filter(x => !x.revised && x.userId != this.chatInfoData.userId)
     if (newMessagesList.length > 0) {
       let viewedMessagesIdsList: Number[] = []
       newMessagesList.forEach(newMessage => {
+        newMessage.newAndNotRevised = true
         newMessage.revised = true
         viewedMessagesIdsList.push(newMessage.id)
       })
@@ -122,6 +125,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
     this.messengerService.loadChatMessageListBeforeTime(this.selectedChat.id, beforeTime).subscribe({
       next: data => {
         this.selectedChat.chatMessageList = data.concat(this.selectedChat.chatMessageList)
+        this.selectedChat.showLoadOldMessagesBtn = data.length > 0
       },
       error: error => {
 

@@ -13,8 +13,9 @@
       <div class="container-def p-3 mb-3" *ngFor="let post of postList">
         <a [routerLink]="['/users', post.shortUserInfo.username]" class="link-def">
           <div class="ms-2">
-            <div class="d-inline-block pe-2">
+            <div class="d-inline-block pe-2 position-relative">
               <img [src]="post.shortUserInfo.avatarUri" class="icon-super-small">
+              <span *ngIf="post.shortUserInfo.online" class="online-symbol-post-user-icon  material-icons align-middle" >noise_control_off</span>
             </div>
             <div class="d-inline-block">
               <p class="form-label">{{post.shortUserInfo.firstName}} {{post.shortUserInfo.lastName}}</p>

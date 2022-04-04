@@ -10,5 +10,7 @@ export class UserChatInfo {
   chatMessageList!: ChatMessage[]
   textInput!: string
   numOfUnreadMessages!: number
+  showLoadOldMessagesBtn!: boolean
+  online!: boolean
 
 }

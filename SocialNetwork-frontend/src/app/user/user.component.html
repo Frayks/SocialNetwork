@@ -8,6 +8,7 @@
         </div>
         <div class="text-center">
           <span>{{userProfileInfo.firstName}} {{userProfileInfo.lastName}}</span>
+          <span *ngIf="userProfileInfo.online" class="online-symbol material-icons align-middle" >noise_control_off</span>
         </div>
         <hr class="hr-def">
         <div *ngIf="!myProfile" class="pb-3 px-3">
@@ -162,8 +163,9 @@
             <div class="user-friends-list">
               <div *ngFor="let friend of userProfileInfo.userFriendList" class="icon-super-small-box">
                 <a [routerLink]="['/users', friend.username]" class="link-def">
-                  <div>
+                  <div class="position-relative">
                     <img [src]="friend.avatarUri" class="icon-super-small">
+                    <span *ngIf="friend.online" class="online-symbol-icon-super-small  material-icons align-middle" >noise_control_off</span>
                   </div>
                   <div class="text-center">
                     <p class="form-label icon-text">{{friend.firstName}}</p>

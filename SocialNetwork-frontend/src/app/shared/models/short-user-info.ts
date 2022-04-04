@@ -4,4 +4,5 @@ export class ShortUserInfo {
   firstName!: string
   lastName!: string
   avatarUri!: string
+  online!: boolean
 }

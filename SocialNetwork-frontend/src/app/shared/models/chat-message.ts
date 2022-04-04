@@ -9,5 +9,6 @@ export class ChatMessage {
   text!: string
   creationTime!: string
   revised!: boolean
+  newAndNotRevised!: boolean
 
 }

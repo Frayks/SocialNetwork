@@ -1,27 +1,83 @@
 <app-header></app-header>
-<div class="block-main">
+<div class="block-messenger">
   <div class="row">
     <div class="col-22pr px-def">
       <div class="container-def">
-        <div *ngFor="let userChatInfo of chatInfoData?.userChatInfoList" (click)="selectChat(userChatInfo)">
-          <span>{{userChatInfo.username}} | {{userChatInfo.numOfUnreadMessages}}</span>
-          <hr class="hr-min-full">
+        <div class="py-2">
+          <div class="container-chat-list">
+            <div class="chat-info-box"
+                 *ngFor="let userChatInfo of chatInfoData?.userChatInfoList"
+                 [class.chat-info-box-selected]="userChatInfo == selectedChat"
+                 (click)="selectChat(userChatInfo)"
+            >
+              <div class="d-inline-block a position-relative">
+                <img [src]="userChatInfo.avatarUri" class="chat-info-icon">
+                <span *ngIf="userChatInfo.online"
+                      class="online-symbol-chat-info-icon material-icons">noise_control_off</span>
+              </div>
+              <span>{{userChatInfo.firstName}} {{userChatInfo.lastName}}</span>
+              <span class="counter" *ngIf="userChatInfo.numOfUnreadMessages > 0">
+                {{userChatInfo.numOfUnreadMessages}}
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="col-56pr px-def">
-      <div class="container-def p-3">
-        <input type="button" (click)="loadChatMessageListBeforeTime()" value="Завантажити старіші повідомлення">
-        <div *ngIf="selectedChat && selectedChat.chatMessageList">
-          <div *ngFor="let chatMessage of selectedChat.chatMessageList">
-            <span>{{chatMessage.username}}: {{chatMessage.text}}</span>
-            <br>
-            <span>{{chatMessage.creationTime}}|{{chatMessage.revised}}</span>
-            <hr class="hr-min-full">
+    <div class="col-56pr px-def pb-3_5">
+      <div class="container-chat">
+        <div class="inner-container" *ngIf="selectedChat">
+          <div class="chat-info-panel">
+            <div class="user-info-box">
+              <a [routerLink]="['/users', selectedChat.username]" class="link-def">
+                <div class="d-inline-block position-relative">
+                  <img [src]="selectedChat.avatarUri" class="user-info-icon">
+                  <span *ngIf="selectedChat.online"
+                        class="online-symbol-chat-info-icon material-icons">noise_control_off</span>
+                </div>
+                <span>{{selectedChat.firstName}} {{selectedChat.lastName}}</span>
+              </a>
+            </div>
           </div>
-          <div>
-            <input type="text" class="w-100" name="textInput" [(ngModel)]="selectedChat.textInput"
-                   (keyup.enter)="sendMessage(selectedChat.id, selectedChat.textInput)" autocomplete="off">
+          <div class="messages-panel">
+            <div *ngIf="selectedChat.chatMessageList">
+              <div class="d-flex"
+                   [class.justify-content-end]="chatMessage.userId == chatInfoData.userId"
+                   *ngFor="let chatMessage of selectedChat.chatMessageList">
+                <div class="chat-message"
+                     [class.chat-message-user]="chatMessage.userId != chatInfoData.userId"
+                     [class.chat-message-my]="chatMessage.userId == chatInfoData.userId">
+                  <div class="chat-message-text"
+                       [class.text-bold]="chatMessage.newAndNotRevised"
+                  >
+                    <span>{{chatMessage.text}}</span>
+                  </div>
+                  <div class="chat-message-info">
+                    <span class="chat-message-date">{{chatMessage.creationTime | date: 'h:mm'}}</span>
+                    <span class="material-icons chat-message-revised material-icons-size-3">
+                      {{chatMessage.revised ? 'done_all' : 'done'}}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div *ngIf="selectedChat.showLoadOldMessagesBtn">
+              <input type="button" class="load-old-messages-btn" (click)="loadChatMessageListBeforeTime()"
+                     value="Завантажити старіші повідомлення">
+            </div>
+          </div>
+          <div class="input-panel">
+            <div class="chat-input-box">
+              <div class="input-group">
+                <input type="text" class="chat-input" name="textInput" [(ngModel)]="selectedChat.textInput"
+                       (keyup.enter)="sendMessage(selectedChat.id, selectedChat.textInput)" autocomplete="off">
+                <button class="chat-input-btn" type="button"
+                        (click)="sendMessage(selectedChat.id, selectedChat.textInput)">
+                  <span class="material-icons align-middle material-icons-size-2">send</span>
+                </button>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>

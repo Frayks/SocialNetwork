@@ -41,7 +41,10 @@
             <div class="row px-def py-2">
               <div class="col-20pr ps-4 pb-1">
                 <a [routerLink]="['/users', friend.username]" class="link-def">
-                  <img [src]="friend.avatarUri" class="icon-middle">
+                  <div class="position-relative">
+                    <img [src]="friend.avatarUri" class="icon-middle">
+                    <span *ngIf="friend.online" class="online-symbol-icon-middle  material-icons align-middle" >noise_control_off</span>
+                  </div>
                 </a>
               </div>
               <div class="col-60pr ps-0 pt-2">

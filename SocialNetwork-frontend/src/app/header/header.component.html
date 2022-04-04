@@ -13,8 +13,10 @@
           <div *ngFor="let user of searchResult.userList">
             <a [routerLink]="['/users', user.username]" class="link-def" (click)="clearSearchState(inputSearch)">
               <div class="user-item-box">
-                <div class="user-item-icon-box">
+                <div class="user-item-icon-box position-relative">
                   <img [src]="user.avatarUri" class="user-item-icon">
+                  <span *ngIf="user.online"
+                        class="online-symbol-icon-middle material-icons">noise_control_off</span>
                 </div>
                 <div class="user-item-name-box">
                   <span>{{user.firstName}} {{user.lastName}}</span>

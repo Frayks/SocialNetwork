@@ -19,4 +19,5 @@ export class UserProfileInfo {
   userFriendList!: ShortUserInfo[]
   friend!: boolean
   requestToFriends!: boolean
+  online!: boolean
 }
