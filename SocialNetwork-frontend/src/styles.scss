@@ -834,6 +834,24 @@ body {
   left: 63%;
 }
 
+.advertising-box {
+  position: relative;
+}
+
+.advertising {
+  width: 13.75rem;
+}
+
+.advertising-watermark {
+  position: absolute;
+  padding: 0 0.5rem;
+  border-radius: 0.3rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  bottom: 1rem;
+  right: 1rem;
+}
+
 .material-icons-size-1 {
   font-size: 1rem;
 }

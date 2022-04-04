@@ -257,4 +257,5 @@ export class UserComponent implements OnInit, OnDestroy {
   getDateFormat(creationTime: string) {
     return CommonUtilCst.getDateFormat(creationTime)
   }
+
 }

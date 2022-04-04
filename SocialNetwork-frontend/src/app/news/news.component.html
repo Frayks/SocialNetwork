@@ -3,8 +3,13 @@
   <div class="row">
     <div class="col-22pr px-def">
       <div class="block-side-panel">
-        <div class="container-def p-3 mb-3" style="height: 40rem">
-          <p class="text-center" style="font-size: 3rem; padding-top: 5rem">Тут може бути ваша реклама!!!</p>
+        <div class="container-def advertising-box p-2">
+          <a href="https://electronics.lnu.edu.ua/" target="_blank">
+            <img class="advertising" src="assets/images/lnu.jpg">
+          </a>
+          <div class="advertising-watermark">
+            Реклама
+          </div>
         </div>
       </div>
     </div>
@@ -36,8 +41,10 @@
         </div>
         <div>
           <div class="row">
-            <div class="col">
-              <span class="ms-2">{{post.creationTime | date: 'dd.MM.yyyy'}}</span>
+            <div class="col post-date-box">
+              <div class="post-date">
+                <span class="ms-2">{{post.creationTime | date: getDateFormat(post.creationTime)}}</span>
+              </div>
             </div>
             <div class="col">
               <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePostLike(post)">

@@ -11,6 +11,7 @@ import {Post} from "../shared/models/post";
 import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 import {WebSocketService} from "../shared/services/web-socket.service";
+import CommonUtilCst from "../shared/utils/common-util-cst";
 
 @Component({
   selector: 'app-news',
@@ -123,4 +124,9 @@ export class NewsComponent implements OnInit, OnDestroy {
   goUp() {
     window.scroll(0, 0);
   }
+
+  getDateFormat(creationTime: string) {
+    return CommonUtilCst.getDateFormat(creationTime)
+  }
+
 }
