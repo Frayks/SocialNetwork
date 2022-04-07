@@ -16,6 +16,7 @@ public class ResourcesProperties {
     private String forbiddenLastNameErrorMsg;
     private String invalidEmailErrorMsg;
     private String busyEmailErrorMsg;
+    private String missingAccountByEmailErrorMsg;
     private String forbiddenUsernameErrorMsg;
     private String reservedUsernameErrorMsg;
     private String busyUsernameErrorMsg;

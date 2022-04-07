@@ -110,7 +110,7 @@ export default class CommonUtilCst {
   }
 
   public static mapToMb(size: number): number {
-    return size / 1024 / 1024
+    return size / 1048576
   }
 
   public static getDateFormat(creationTime: string) {

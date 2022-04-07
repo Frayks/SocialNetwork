@@ -254,12 +254,10 @@ public class MainController {
     }
 
     @GetMapping("/restore")
-    public ResponseEntity<Void> restore(@RequestParam String email) {
+    public ResponseEntity<FormStatusDto> restore(@RequestParam String email) {
         LOGGER.debug("Method restore called!");
-        if (mainLib.restore(email)) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        FormStatusDto formStatusDto = mainLib.restore(email);
+        return ResponseEntity.ok().body(formStatusDto);
     }
 
     @PostMapping("/resetPassword")

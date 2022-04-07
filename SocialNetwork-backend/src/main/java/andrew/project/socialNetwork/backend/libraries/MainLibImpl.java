@@ -58,6 +58,7 @@ public class MainLibImpl implements MainLib {
     private SettingsValidator settingsValidator;
     private ImageValidator imageValidator;
     private PostValidator postValidator;
+    private RestoreValidator restoreValidator;
     private WebSocketSessionsStorage webSocketSessionsStorage;
     private ChatMessagesHandler chatMessagesHandler;
 
@@ -115,13 +116,13 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
-    public boolean restore(String email) {
-        User user = userService.findByEmail(email);
-        if (user == null) {
-            return false;
+    public FormStatusDto restore(String email) {
+        FormStatusDto formStatusDto = restoreValidator.validate(email);
+        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+            User user = userService.findByEmail(email);
+            restoreService.restore(user);
         }
-        restoreService.restore(user);
-        return true;
+        return formStatusDto;
     }
 
     @Override
@@ -304,6 +305,7 @@ public class MainLibImpl implements MainLib {
                 User userDbi = userService.findByUsername(user.getUsername());
                 UserPhoto userPhoto = new UserPhoto();
                 userPhoto.setUserId(userDbi.getId());
+                userPhoto.setLoadTime(new Timestamp(System.currentTimeMillis()));
                 userPhoto.setName(response.getName());
                 userPhoto = userPhotoService.save(userPhoto);
                 return Mapper.mapToPhotoDto(userPhoto, imageStorageProperties);
@@ -369,6 +371,7 @@ public class MainLibImpl implements MainLib {
                 User userDbi = userService.findByUsername(user.getUsername());
                 UserPost userPost = new UserPost();
                 userPost.setUserId(userDbi.getId());
+                userPost.setCreationTime(new Timestamp(System.currentTimeMillis()));
                 userPost.setText(text);
                 if (response != null) {
                     userPost.setPhotoName(response.getName());
@@ -847,6 +850,11 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setPostValidator(PostValidator postValidator) {
         this.postValidator = postValidator;
+    }
+
+    @Autowired
+    public void setRestoreValidator(RestoreValidator restoreValidator) {
+        this.restoreValidator = restoreValidator;
     }
 
     @Autowired

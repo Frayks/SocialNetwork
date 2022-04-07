@@ -4,8 +4,6 @@ import {MessageDataService} from "../shared/services/message-data.service";
 import {AuthService} from "../shared/services/auth.service";
 import {ResetPasswordRequest} from "../shared/models/reset-password-request";
 import {StatusCode} from "../shared/constants/status-code";
-import {FormStatus} from "../shared/models/form-status";
-import {FormFields} from "../shared/constants/form-fields";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 
 @Component({
@@ -38,7 +36,6 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   onSubmit(form: any) {
-    console.dir(form)
     if (form.valid) {
       this.authService.resetPassword(this.resetPasswordRequest).subscribe({
         next: data => {

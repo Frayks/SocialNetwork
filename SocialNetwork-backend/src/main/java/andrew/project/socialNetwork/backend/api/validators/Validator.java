@@ -11,7 +11,7 @@ public interface Validator {
 
     Map<FormField, String> validateLastName(String lastName);
 
-    Map<FormField, String> validateEmail(String email);
+    Map<FormField, String> validateEmail(String email, boolean mustExist);
 
     Map<FormField, String> validateUsername(String username, String previousUsername, String email);
 

@@ -42,7 +42,6 @@ public class UserPhotoServiceImpl implements UserPhotoService {
 
     @Override
     public UserPhoto save(UserPhoto userPhoto) {
-        userPhoto.setLoadTime(new Timestamp(System.currentTimeMillis()));
         return userPhotoRepository.save(userPhoto);
     }
 

@@ -44,7 +44,7 @@ export class AuthService {
   restore(email: string) {
     let params = new HttpParams()
       .set('email', email);
-    return this.httpClient.get(environment.server_url + EndpointConstants.RESTORE_ENDPOINT, {
+    return this.httpClient.get<FormStatus>(environment.server_url + EndpointConstants.RESTORE_ENDPOINT, {
       params: params
     });
   }

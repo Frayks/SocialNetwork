@@ -23,7 +23,7 @@ public class ValidatorImpl implements Validator {
 
     private static final Logger LOGGER = LogManager.getLogger(ValidatorImpl.class);
 
-    private static final long BYTES_IN_MB = 1000000;
+    private static final long BYTES_IN_MB = 1048576;
 
     private UserService userService;
     private RegistrationRequestService registrationRequestService;
@@ -55,14 +55,22 @@ public class ValidatorImpl implements Validator {
     }
 
     @Override
-    public Map<FormField, String> validateEmail(String email) {
+    public Map<FormField, String> validateEmail(String email, boolean mustExist) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
         if (email == null) {
             invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getNullFieldErrorMsg());
         } else if (!email.contains("@")) {
             invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getInvalidEmailErrorMsg());
-        } else if (userService.findByEmail(email) != null) {
-            invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getBusyEmailErrorMsg());
+        } else {
+            if (userService.findByEmail(email) != null) {
+                if (!mustExist) {
+                    invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getBusyEmailErrorMsg());
+                }
+            } else {
+                if (mustExist) {
+                    invalidFieldsMap.put(FormField.EMAIL, resourcesProperties.getMissingAccountByEmailErrorMsg());
+                }
+            }
         }
         return invalidFieldsMap;
     }
@@ -108,7 +116,6 @@ public class ValidatorImpl implements Validator {
         Calendar calendar = Calendar.getInstance();
         calendar.set(yearOfBirth, monthOfBirth - 1, dayOfBirth);
         Calendar calendarNow = Calendar.getInstance();
-        Date date = new Date();
         if (calendar.getTimeInMillis() > calendarNow.getTimeInMillis() || calendarNow.get(Calendar.YEAR) - calendar.get(Calendar.YEAR) > fieldsValidationProperties.getMaxDateDiff()) {
             invalidFieldsMap.put(FormField.DATE_OF_BIRTH, resourcesProperties.getWrongDateOfBirthErrorMsg());
         }

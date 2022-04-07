@@ -52,7 +52,6 @@ public class UserPostServiceImpl implements UserPostService {
 
     @Override
     public UserPost save(UserPost userPost) {
-        userPost.setCreationTime(new Timestamp(System.currentTimeMillis()));
         return userPostRepository.save(userPost);
     }
 

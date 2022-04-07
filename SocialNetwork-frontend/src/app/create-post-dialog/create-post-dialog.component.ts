@@ -32,12 +32,14 @@ export class CreatePostDialogComponent implements OnInit {
   }
 
   photoSelected(event: any) {
-    this.selectedPhoto = event.target.files[0]
-    this.selectedPhotoValid = this.selectedPhoto && CommonUtilCst.mapToMb(this.selectedPhoto.size) < environment.maxImageSize
-    const reader = new FileReader()
-    reader.readAsDataURL(this.selectedPhoto)
-    reader.onload = () => {
-      this.photoURL = reader.result
+    if (event.target.files.length == 1) {
+      this.selectedPhoto = event.target.files[0]
+      this.selectedPhotoValid = this.selectedPhoto && CommonUtilCst.mapToMb(this.selectedPhoto.size) < environment.maxImageSize
+      const reader = new FileReader()
+      reader.readAsDataURL(this.selectedPhoto)
+      reader.onload = () => {
+        this.photoURL = reader.result
+      }
     }
   }
 
@@ -59,10 +61,8 @@ export class CreatePostDialogComponent implements OnInit {
         }
         this.userService.createPost(payload).subscribe({
           next: data => {
-            console.dir(data)
             if (data.status == StatusCode.FAILURE) {
               this.errorMessages = CommonUtilCst.updateForm(form, data)
-              console.dir(this.errorMessages)
             } else if (data.status == StatusCode.SUCCESS) {
               this.dialogRef.close(true)
             } else {

@@ -14,7 +14,7 @@ public interface MainLib {
 
     boolean confirm(String key);
 
-    boolean restore(String email);
+    FormStatusDto restore(String email);
 
     FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto);
 
