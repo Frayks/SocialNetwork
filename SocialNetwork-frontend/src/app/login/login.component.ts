@@ -18,9 +18,10 @@ export class LoginComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.authService.authCredentials) {
-      this.router.navigate([`users/${this.authService.getUsername()}`])
+      await this.router.navigate([`users/${this.authService.getUsername()}`])
+      return
     }
   }
 

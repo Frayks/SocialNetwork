@@ -18,9 +18,10 @@ export class ConfirmComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.authService.authCredentials) {
-      this.router.navigate([`users/${this.authService.getUsername()}`])
+      await this.router.navigate([`users/${this.authService.getUsername()}`])
+      return
     }
     this.activatedRoute.params.subscribe((params: Params) => {
       this.authService.confirm(params['key']).subscribe({

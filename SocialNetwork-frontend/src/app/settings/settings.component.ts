@@ -49,6 +49,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.authService.authCredentials) {
       await this.router.navigate(["/"])
+      return
     }
     this.settingsService.loadSettings().subscribe({
       next: data => {

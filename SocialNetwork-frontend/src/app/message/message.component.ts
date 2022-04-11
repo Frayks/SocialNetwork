@@ -17,12 +17,14 @@ export class MessageComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.authService.authCredentials) {
-      this.router.navigate([`users/${this.authService.getUsername()}`])
+      await this.router.navigate([`users/${this.authService.getUsername()}`])
+      return
     }
     if (this.title == undefined || this.text == undefined) {
-      this.router.navigate([''])
+      await this.router.navigate([''])
+      return
     }
   }
 

@@ -26,9 +26,10 @@ export class ResetPasswordComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     if (this.authService.authCredentials) {
-      this.router.navigate([`users/${this.authService.getUsername()}`])
+      await this.router.navigate([`users/${this.authService.getUsername()}`])
+      return
     }
     this.activatedRoute.params.subscribe((params: Params) => {
       this.resetPasswordRequest.restoreKey = params['key']

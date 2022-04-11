@@ -39,6 +39,7 @@ export class NewsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.authService.authCredentials) {
       await this.router.navigate(["/"])
+      return
     }
     this.username = this.authService.getUsername()
     this.loadPostList()
@@ -47,7 +48,6 @@ export class NewsComponent implements OnInit, OnDestroy {
           this.menuData = data
         },
         error: () => {
-
         }
       }
     )

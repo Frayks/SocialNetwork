@@ -38,10 +38,11 @@ export class MessengerComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.authService.authCredentials) {
       await this.router.navigate(["/"])
+      return
     }
     let urlTree = this.router.parseUrl(this.router.url);
     let chatWith = urlTree.queryParams["chatWith"]
-    this.userService.loadMenuData().subscribe({
+    await this.userService.loadMenuData().subscribe({
         next: data => {
           this.menuData = data
         },
@@ -49,7 +50,6 @@ export class MessengerComponent implements OnInit, OnDestroy {
         }
       }
     )
-
     this.messengerService.loadChatInfoData(chatWith).subscribe({
       next: data => {
         this.chatInfoData = data

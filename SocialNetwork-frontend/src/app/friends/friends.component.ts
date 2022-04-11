@@ -36,6 +36,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     if (!this.authService.authCredentials) {
       await this.router.navigate(["/"])
+      return
     }
     this.activatedRoute.params.subscribe((params: Params) => {
       let username = params['username']
