@@ -5,6 +5,7 @@ import {AuthService} from "../shared/services/auth.service";
 import {ResetPasswordRequest} from "../shared/models/reset-password-request";
 import {StatusCode} from "../shared/constants/status-code";
 import CommonUtilCst from "../shared/utils/common-util-cst";
+import {environment} from "../../environments/environment";
 
 @Component({
   selector: 'app-reset-password',
@@ -83,6 +84,10 @@ export class ResetPasswordComponent implements OnInit {
 
   toggleRepeatPasswordVisibility() {
     this.repeatPasswordVisibility = !this.repeatPasswordVisibility;
+  }
+
+  getMinPasswordLength() {
+    return environment.minPasswordLength
   }
 
 }

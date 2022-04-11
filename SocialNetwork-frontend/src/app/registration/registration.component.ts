@@ -99,4 +99,29 @@ export class RegistrationComponent implements OnInit {
   getMinPasswordLength() {
     return environment.minPasswordLength
   }
+
+  getMinFirstNameLength() {
+    return environment.minFirstNameLength
+  }
+
+  getMaxFirstNameLength() {
+    return environment.maxFirstNameLength
+  }
+
+  getMinLastNameLength() {
+    return environment.minLastNameLength
+  }
+
+  getMaxLastNameLength() {
+    return environment.maxLastNameLength
+  }
+
+  getMinUsernameLength() {
+    return environment.minUsernameLength
+  }
+
+  getMaxUsernameLength() {
+    return environment.maxUsernameLength
+  }
+
 }

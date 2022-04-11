@@ -194,8 +194,44 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.displaySwitch = 2
   }
 
+  getMinFirstNameLength() {
+    return environment.minFirstNameLength
+  }
+
+  getMaxFirstNameLength() {
+    return environment.maxFirstNameLength
+  }
+
+  getMinLastNameLength() {
+    return environment.minLastNameLength
+  }
+
+  getMaxLastNameLength() {
+    return environment.maxLastNameLength
+  }
+
+  getMinUsernameLength() {
+    return environment.minUsernameLength
+  }
+
+  getMaxUsernameLength() {
+    return environment.maxUsernameLength
+  }
+
   getMaxAboutYourselfTextLength() {
     return environment.maxAboutYourselfTextLength
+  }
+
+  getMaxCityTextLength() {
+    return environment.maxCityTextLength
+  }
+
+  getMaxSchoolTextLength() {
+    return environment.maxSchoolTextLength
+  }
+
+  getMaxUniversityTextLength() {
+    return environment.maxUniversityTextLength
   }
 
 }
