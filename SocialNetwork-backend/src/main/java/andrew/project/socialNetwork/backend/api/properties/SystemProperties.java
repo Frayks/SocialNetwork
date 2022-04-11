@@ -12,7 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 @PropertySource("classpath:system.properties")
 @ConfigurationProperties(prefix = "system")
 public class SystemProperties {
-    private String serverUrl;
     private String clientServerUrl;
     private String defaultUserAvatarName;
     private boolean initMainData;

@@ -2,6 +2,7 @@ import {Component, Inject, OnInit} from '@angular/core';
 import {UserPhoto} from "../shared/models/user-photo";
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {UserService} from "../shared/services/user.service";
+import CommonUtilCst from "../shared/utils/common-util-cst";
 
 @Component({
   selector: 'app-view-photo-dialog',
@@ -37,6 +38,10 @@ export class ViewPhotoDialogComponent implements OnInit {
       error: () => {
       }
     })
+  }
+
+  getDateFormat(creationTime: string) {
+    return CommonUtilCst.getDateFormat(creationTime)
   }
 
 }

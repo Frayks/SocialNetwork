@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
         },
         error: error => {
           switch (error.status) {
+            case 401:
             case 403: {
               this.errorMessage = "Неправильний логін або пароль!"
               break

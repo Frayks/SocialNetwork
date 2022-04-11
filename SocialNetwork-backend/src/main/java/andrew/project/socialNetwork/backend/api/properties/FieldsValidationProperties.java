@@ -9,7 +9,7 @@ import org.springframework.context.annotation.PropertySource;
 @Setter
 @Getter
 @Configuration
-@PropertySource("classpath:fieldsValidation.properties")
+@PropertySource(value = "classpath:fieldsValidation.properties", encoding = "UTF-8")
 @ConfigurationProperties(prefix = "fields-validation")
 public class FieldsValidationProperties {
     private String firstNameRegEx;

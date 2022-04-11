@@ -3,7 +3,7 @@
   <div>
     <div class="row">
       <div class="col">
-        <span class="ms-2">{{photo.loadTime | date: 'dd.MM.yyyy'}}</span>
+        <span class="ms-2">{{photo.loadTime | date: getDateFormat(photo.loadTime)}}</span>
       </div>
       <div class="col">
         <button class="inp-small-form btn-hidden float-end me-2" type="button" (click)="changePhotoLike()">

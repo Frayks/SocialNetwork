@@ -17,7 +17,7 @@ export class CreatePostDialogComponent implements OnInit {
   @ViewChild('photoFile')
   private photoFileElement!: ElementRef
   selectedPhoto: any
-  selectedPhotoValid = false
+  selectedPhotoValid = true
   photoURL: any
   errorMessages = new Map<string, string>();
 
@@ -35,6 +35,9 @@ export class CreatePostDialogComponent implements OnInit {
     if (event.target.files.length == 1) {
       this.selectedPhoto = event.target.files[0]
       this.selectedPhotoValid = this.selectedPhoto && CommonUtilCst.mapToMb(this.selectedPhoto.size) < environment.maxImageSize
+      if (!this.selectedPhotoValid) {
+        this.errorMessages.set('fileInput', "Розмір зображення надто великий. Максимальний розмір зображення: " + environment.maxImageSize + "MB")
+      }
       const reader = new FileReader()
       reader.readAsDataURL(this.selectedPhoto)
       reader.onload = () => {
@@ -45,15 +48,17 @@ export class CreatePostDialogComponent implements OnInit {
 
   clearSelectedPhoto() {
     this.photoFileElement.nativeElement.value = ""
+    this.selectedPhotoValid = true
     this.selectedPhoto = null
     this.photoURL = null
+    this.errorMessages.delete("fileInput")
   }
 
   onSubmit(form: NgForm) {
     if (this.selectedPhoto || form.value.postText) {
       if (this.selectedPhotoValid && form.valid) {
         let payload = new FormData()
-        if (this.selectedPhotoValid) {
+        if (this.selectedPhoto) {
           payload.append("postPhoto", this.selectedPhoto, this.selectedPhoto.name)
         }
         if (form.value.postText) {
@@ -73,9 +78,6 @@ export class CreatePostDialogComponent implements OnInit {
           }
         })
       } else {
-        if (!this.selectedPhotoValid) {
-          this.errorMessages.set('fileInput', "Розмір зображення надто великий. Максимальний розмір зображення: " + environment.maxImageSize + "MB")
-        }
         this.setFormFieldsTouched(form, true)
       }
     } else {
