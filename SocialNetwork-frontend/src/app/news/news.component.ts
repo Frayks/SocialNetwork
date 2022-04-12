@@ -12,6 +12,7 @@ import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 import {WebSocketService} from "../shared/services/web-socket.service";
 import CommonUtilCst from "../shared/utils/common-util-cst";
+import {NotifyService} from "../shared/services/notify.service";
 
 @Component({
   selector: 'app-news',
@@ -32,7 +33,8 @@ export class NewsComponent implements OnInit, OnDestroy {
     private newsService: NewsService,
     private dialog: MatDialog,
     private userService: UserService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private notifyService: NotifyService
   ) {
   }
 
@@ -57,6 +59,7 @@ export class NewsComponent implements OnInit, OnDestroy {
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages)
           break
         }
       }

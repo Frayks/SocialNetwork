@@ -14,6 +14,7 @@ import {ChatMessage} from "../shared/models/chat-message";
 import {ChatInfoData} from "../shared/models/chat-info-data";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 import {environment} from "../../environments/environment";
+import {NotifyService} from "../shared/services/notify.service";
 
 @Component({
   selector: 'app-messenger',
@@ -31,7 +32,8 @@ export class MessengerComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService,
     private webSocketService: WebSocketService,
-    private messengerService: MessengerService
+    private messengerService: MessengerService,
+    private notifyService: NotifyService
   ) {
   }
 
@@ -101,6 +103,12 @@ export class MessengerComponent implements OnInit, OnDestroy {
       })
       this.sendViewedMessagesIdsList(this.selectedChat.id, viewedMessagesIdsList)
       this.menuData.numOfMessages = this.menuData.numOfMessages - viewedMessagesIdsList.length
+
+      if (this.menuData.numOfMessages > 0) {
+        this.notifyService.notifyTitle(this.menuData.numOfMessages)
+      } else {
+        this.notifyService.clearTitle()
+      }
     }
     this.selectedChat.numOfUnreadMessages = 0
   }
@@ -144,10 +152,12 @@ export class MessengerComponent implements OnInit, OnDestroy {
         if (targetChat == this.selectedChat) {
           if (!chatMessage.revised && chatMessage.userId != this.chatInfoData.userId) {
             this.sendViewedMessagesIdsList(targetChat.id, [chatMessage.id])
+            this.notifyService.notifySound();
           }
         } else {
           targetChat.numOfUnreadMessages = targetChat.numOfUnreadMessages ? targetChat.numOfUnreadMessages + 1 : 1
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages);
           this.sortUserChatInfoListByNumOfUnreadMessages()
           this.setChatOnFirstPosition(this.selectedChat)
         }

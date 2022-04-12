@@ -2,6 +2,7 @@ export const environment = {
   production: true,
   server_url: 'http://localhost:8080',
   server_ws_url: 'ws://localhost:8080',
+  title: 'SocialNetwork',
 
   maxImageSize: 2,
   minFirstNameLength: 2,

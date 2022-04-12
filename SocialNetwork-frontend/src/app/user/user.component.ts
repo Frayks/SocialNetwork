@@ -17,6 +17,8 @@ import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 import {environment} from "../../environments/environment";
+import {Title} from "@angular/platform-browser";
+import {NotifyService} from "../shared/services/notify.service";
 
 @Component({
   selector: 'app-user',
@@ -42,7 +44,9 @@ export class UserComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private friendsService: FriendsService,
     private dialog: MatDialog,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private notifyService: NotifyService,
+
   ) {
   }
 
@@ -78,6 +82,7 @@ export class UserComponent implements OnInit, OnDestroy {
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages)
           break
         }
       }

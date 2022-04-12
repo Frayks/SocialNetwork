@@ -9,6 +9,7 @@ import {UserService} from "../shared/services/user.service";
 import {WebSocketService} from "../shared/services/web-socket.service";
 import {WebSocketMessage} from "../shared/models/web-socket-message";
 import {WebSocketMessageType} from "../shared/constants/web-socket-message-type";
+import {NotifyService} from "../shared/services/notify.service";
 
 @Component({
   selector: 'app-friends',
@@ -28,7 +29,8 @@ export class FriendsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private friendsService: FriendsService,
     private userService: UserService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private notifyService: NotifyService
   ) {
     this.userFriendsInfo.shortUserInfo = new ShortUserInfo();
   }
@@ -64,6 +66,7 @@ export class FriendsComponent implements OnInit, OnDestroy {
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages)
           break
         }
       }

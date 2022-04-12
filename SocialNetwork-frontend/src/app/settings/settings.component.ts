@@ -12,6 +12,7 @@ import {WebSocketMessageType} from "../shared/constants/web-socket-message-type"
 import {WebSocketService} from "../shared/services/web-socket.service";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 import {environment} from "../../environments/environment";
+import {NotifyService} from "../shared/services/notify.service";
 
 @Component({
   selector: 'app-settings',
@@ -42,7 +43,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private userService: UserService,
     private settingsService: SettingsService,
-    private webSocketService: WebSocketService
+    private webSocketService: WebSocketService,
+    private notifyService: NotifyService
   ) {
   }
 
@@ -73,6 +75,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages)
           break
         }
       }
