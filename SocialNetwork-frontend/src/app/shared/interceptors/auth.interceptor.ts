@@ -25,7 +25,7 @@ export class AuthInterceptor implements HttpInterceptor {
       request = this.authService.addAuthHeader(request)
       return next.handle(request).pipe(
         catchError(error => {
-          if (error.status === HttpStatusCode.Forbidden) {
+          if (error.status == HttpStatusCode.Forbidden) {
             return this.authService.refreshToken().pipe(
               switchMap(() => {
                 request = this.authService.addAuthHeader(request)

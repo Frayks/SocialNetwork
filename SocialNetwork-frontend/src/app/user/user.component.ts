@@ -19,6 +19,7 @@ import CommonUtilCst from "../shared/utils/common-util-cst";
 import {environment} from "../../environments/environment";
 import {Title} from "@angular/platform-browser";
 import {NotifyService} from "../shared/services/notify.service";
+import {HttpStatusCode} from "@angular/common/http";
 
 @Component({
   selector: 'app-user',
@@ -62,8 +63,10 @@ export class UserComponent implements OnInit, OnDestroy {
           this.userProfileInfo = data
           this.myProfile = data.username === this.authService.getUsername()
         },
-        error: () => {
-          this.router.navigate([`users/${this.authService.getUsername()}`])
+        error: error => {
+          if (error.status !== HttpStatusCode.Forbidden) {
+            this.router.navigate([`users/${this.authService.getUsername()}`])
+          }
         }
       })
       this.loadUserPostList()

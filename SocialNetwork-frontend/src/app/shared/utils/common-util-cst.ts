@@ -121,4 +121,8 @@ export default class CommonUtilCst {
     return date.getTime() < dateNow.getTime() ? 'dd.MM.yyyy H:mm' : 'H:mm'
   }
 
+  static getExpirationTime(jwt: string) {
+    return (JSON.parse(atob(jwt.split('.')[1]))).exp
+  }
+
 }
