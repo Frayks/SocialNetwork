@@ -152,12 +152,12 @@ export class MessengerComponent implements OnInit, OnDestroy {
         if (targetChat == this.selectedChat) {
           if (!chatMessage.revised && chatMessage.userId != this.chatInfoData.userId) {
             this.sendViewedMessagesIdsList(targetChat.id, [chatMessage.id])
-            this.notifyService.notifySound();
+            this.notifyService.notifySound(NotifyService.SOUND_TYPE_2);
           }
         } else {
           targetChat.numOfUnreadMessages = targetChat.numOfUnreadMessages ? targetChat.numOfUnreadMessages + 1 : 1
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
-          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages);
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1);
           this.sortUserChatInfoListByNumOfUnreadMessages()
           this.setChatOnFirstPosition(this.selectedChat)
         }

@@ -75,7 +75,7 @@ export class SettingsComponent implements OnInit, OnDestroy {
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
           this.menuData.numOfMessages = this.menuData.numOfMessages + 1
-          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages)
+          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1)
           break
         }
       }
