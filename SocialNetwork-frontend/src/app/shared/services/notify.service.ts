@@ -12,14 +12,16 @@ export class NotifyService {
   ) {
   }
 
+  private soundPath = "assets/sounds/sound.mp3"
+
   notifySoundAndTitle(num: number) {
-    let audio = new Audio("assets/sounds/sound.mp3")
+    let audio = new Audio(this.soundPath)
     audio.play()
     this.title.setTitle("(" + num + ") Нове повідомлення")
   }
 
   notifySound() {
-    let audio = new Audio("assets/sounds/sound.mp3")
+    let audio = new Audio(this.soundPath)
     audio.play()
   }
 
