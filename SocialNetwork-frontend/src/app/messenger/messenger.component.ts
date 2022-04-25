@@ -91,6 +91,7 @@ export class MessengerComponent implements OnInit, OnDestroy {
   }
 
   async selectChat(userChatInfo: UserChatInfo) {
+    this.emojiTableVisible = false
     this.selectedChat = userChatInfo
     if (!this.selectedChat.chatMessageList) {
       let data = <ChatMessage[]>await this.messengerService.loadChatMessageList(this.selectedChat.id).toPromise()
@@ -235,5 +236,5 @@ export class MessengerComponent implements OnInit, OnDestroy {
       this.chatInput.nativeElement.setSelectionRange(curPos + emoji.length, curPos + emoji.length)
     })
   }
-  
+
 }
