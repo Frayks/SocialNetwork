@@ -22,7 +22,7 @@ public class UserChatMessage {
     private Long chatId;
     @Column(nullable = false)
     private Long userId;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 1000)
     private String text;
     @Column(nullable = false)
     private Timestamp creationTime;
