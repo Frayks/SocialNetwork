@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {WebSocketService} from "../shared/services/web-socket.service";
 import {MessengerService} from "../shared/services/messenger.service";
 import {UserChatInfo} from "../shared/models/user-chat-info";
@@ -26,6 +26,11 @@ export class MessengerComponent implements OnInit, OnDestroy {
   selectedChat!: UserChatInfo
   chatInfoData!: ChatInfoData
   menuData = new MenuData()
+  emojiList = environment.emojiList.split(",");
+
+  @ViewChild('chatInput')
+  private chatInput!: ElementRef
+  emojiTableVisible = false;
 
   constructor(
     private router: Router,
@@ -217,4 +222,18 @@ export class MessengerComponent implements OnInit, OnDestroy {
     return environment.maxChatMessageTextLength
   }
 
+  switchEmojiTableVisible() {
+    this.emojiTableVisible = !this.emojiTableVisible
+    this.chatInput.nativeElement.focus();
+  }
+
+  addEmojiToInput(emoji: string) {
+    let curPos = this.chatInput.nativeElement.selectionStart
+    this.selectedChat.textInput = this.selectedChat.textInput.slice(0, curPos) + emoji + this.selectedChat.textInput.slice(curPos)
+    this.chatInput.nativeElement.focus()
+    setTimeout(() => {
+      this.chatInput.nativeElement.setSelectionRange(curPos + emoji.length, curPos + emoji.length)
+    })
+  }
+  
 }

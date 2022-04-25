@@ -17,6 +17,7 @@ $color-gray-7: #eeecec;
 $color-gray-8: #fafbfc;
 $color-gray-9: #4f4f4f;
 $color-transparent-black-0: rgba(0, 0, 0, 0.3);
+$color-transparent-black-1: rgba(0, 0, 0, 0.1);
 $color-def-0: #85a2cc;
 $color-def-1: #5081c4;
 $color-def-2: #2a5885;
@@ -379,18 +380,17 @@ body {
   border-radius: 0 0 0.25rem 0.25rem;
   border-top: 1.5px solid $color-gray-1;
   background-color: $color-gray-8;
-  padding-inline: 1rem;
   flex-shrink: 0;
   display: table;
+  padding-bottom: 0.5rem;
 }
 
 .chat-input-box {
-  display: table-cell;
-  vertical-align: middle;
+  margin: 1rem 1rem 0.5rem 1rem;
 }
 
 .chat-input {
-  width: 92%;
+  width: 85%;
   border-left: 1px solid $color-gray-1;
   border-top: 1px solid $color-gray-1;
   border-bottom: 1px solid $color-gray-1;
@@ -417,6 +417,43 @@ body {
 
 .chat-input-btn:hover {
   color: $color-def-2;
+}
+
+.emoji-btn {
+  width: 7%;
+  border-right: 0 solid $color-gray-1;
+  border-top: 1px solid $color-gray-1;
+  border-bottom: 1px solid $color-gray-1;
+  border-left: 0 solid $color-gray-1;
+  background-color: white;
+  color: $color-def-1;
+}
+
+.emoji-btn:hover {
+  color: $color-def-2;
+}
+
+.emoji-table {
+  margin: 0 1.3rem 0 1.3rem;
+  overflow-y: auto;
+  height: 7.5rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.emoji-table::-webkit-scrollbar {
+  width: 0.3rem;
+}
+
+.emoji-table::-webkit-scrollbar-thumb {
+  background: $color-gray-1;
+  border-radius: 1rem;
+}
+
+.emoji-box:hover {
+  cursor: default;
+  background-color: $color-transparent-black-1;
+  border-radius: 0.2rem;
 }
 
 /* --- Images --- */

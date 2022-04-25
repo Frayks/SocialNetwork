@@ -71,14 +71,22 @@
               <div class="input-group">
                 <input type="text" class="chat-input" name="textInput" [(ngModel)]="selectedChat.textInput"
                        (keyup.enter)="sendMessage(selectedChat.id, selectedChat.textInput)"
-                       autocomplete="off" [maxLength]="getMaxChatMessageTextLength()"
+                       autocomplete="off" [maxLength]="getMaxChatMessageTextLength()" #chatInput
                 >
+                <button class="emoji-btn" type="button"
+                        (click)="switchEmojiTableVisible()">
+                  <span class="material-icons align-middle material-icons-size-2">mood</span>
+                </button>
                 <button class="chat-input-btn" type="button"
                         (click)="sendMessage(selectedChat.id, selectedChat.textInput)">
                   <span class="material-icons align-middle material-icons-size-2">send</span>
                 </button>
               </div>
-
+            </div>
+            <div class="emoji-table" *ngIf="emojiTableVisible">
+              <div class="emoji-box" *ngFor="let emoji of emojiList" (click)="addEmojiToInput(emoji)">
+                {{emoji}}
+              </div>
             </div>
           </div>
         </div>
