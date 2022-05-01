@@ -9,7 +9,7 @@
           <input type="text" class="form-control" placeholder="Ім'я" name="firstName" [(ngModel)]="regForm.firstName"
                  [class.is-invalid]="firstName.touched && firstName.invalid"
                  [class.is-valid]="firstName.touched && firstName.valid"
-                 #firstName="ngModel" [minlength]="getMinFirstNameLength()" [maxlength]="getMaxFirstNameLength()">
+                 #firstName="ngModel" required [minlength]="getMinFirstNameLength()" [maxlength]="getMaxFirstNameLength()">
           <div class="invalid-feedback px-2"
                [class.d-block]="errorMessages.has(firstName.name) && firstName.invalid">{{errorMessages.get(firstName.name)}}</div>
         </div>
@@ -18,7 +18,7 @@
                  [(ngModel)]="regForm.lastName"
                  [class.is-invalid]="lastName.touched && lastName.invalid"
                  [class.is-valid]="lastName.touched && lastName.valid"
-                 #lastName="ngModel" [minlength]="getMinLastNameLength()" [maxlength]="getMaxLastNameLength()">
+                 #lastName="ngModel" required [minlength]="getMinLastNameLength()" [maxlength]="getMaxLastNameLength()">
           <div class="invalid-feedback px-2"
                [class.d-block]="errorMessages.has(lastName.name) && lastName.invalid">{{errorMessages.get(lastName.name)}}</div>
         </div>
@@ -37,7 +37,7 @@
                  [(ngModel)]="regForm.username"
                  [class.is-invalid]="username.touched && username.invalid"
                  [class.is-valid]="username.touched && username.valid"
-                 #username="ngModel" [minlength]="getMinUsernameLength()" [maxlength]="getMaxUsernameLength()">
+                 #username="ngModel" required [minlength]="getMinUsernameLength()" [maxlength]="getMaxUsernameLength()">
           <div class="invalid-feedback px-2"
                [class.d-block]="errorMessages.has(username.name) && username.invalid">{{errorMessages.get(username.name)}}</div>
         </div>
