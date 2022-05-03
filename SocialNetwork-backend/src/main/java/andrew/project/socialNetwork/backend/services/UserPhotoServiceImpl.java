@@ -36,11 +36,6 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     }
 
     @Override
-    public List<UserPhoto> findByUserIdInOrderByLoadTimeDesc(List<Long> userIdList) {
-        return userPhotoRepository.findByUserIdInOrderByLoadTimeDesc(userIdList);
-    }
-
-    @Override
     public UserPhoto save(UserPhoto userPhoto) {
         return userPhotoRepository.save(userPhoto);
     }

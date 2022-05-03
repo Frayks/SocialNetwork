@@ -11,8 +11,6 @@ public interface UserPhotoRepository extends JpaRepository<UserPhoto, Long> {
 
     List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId);
 
-    List<UserPhoto> findByUserIdInOrderByLoadTimeDesc(List<Long> userIdList);
-
     int deleteByIdAndUserId(Long id, Long userId);
 
 }

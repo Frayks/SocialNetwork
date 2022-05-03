@@ -12,8 +12,6 @@ public interface UserPhotoService {
 
     List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId);
 
-    List<UserPhoto> findByUserIdInOrderByLoadTimeDesc(List<Long> userIdList);
-
     UserPhoto save(UserPhoto userPhoto);
 
     void delete(UserPhoto userPhoto);

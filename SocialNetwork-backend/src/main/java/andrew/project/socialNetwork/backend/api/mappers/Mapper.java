@@ -123,9 +123,13 @@ public class Mapper {
     }
 
     public static List<UserPhotoDto> mapToUserPhotoDtoList(List<UserPhoto> userPhotoList, List<PhotoLike> photoLikeList, ImageStorageProperties properties) {
-        Map<Long, UserPhotoDto> userPhotoDtoMap = new HashMap<>();
+        List<UserPhotoDto> userPhotoDtoList = new ArrayList<>();
         for (UserPhoto userPhoto : userPhotoList) {
-            userPhotoDtoMap.put(userPhoto.getId(), mapToPhotoDto(userPhoto, properties));
+            userPhotoDtoList.add(mapToPhotoDto(userPhoto, properties));
+        }
+        Map<Long, UserPhotoDto> userPhotoDtoMap = new HashMap<>();
+        for (UserPhotoDto userPhotoDto : userPhotoDtoList) {
+            userPhotoDtoMap.put(userPhotoDto.getId(), userPhotoDto);
         }
         for (PhotoLike photoLike : photoLikeList) {
             UserPhotoDto userPhotoDto = userPhotoDtoMap.get(photoLike.getPhotoId());
@@ -133,7 +137,7 @@ public class Mapper {
                 userPhotoDto.setLike(true);
             }
         }
-        return new ArrayList<>(userPhotoDtoMap.values());
+        return userPhotoDtoList;
     }
 
     public static UserPhotoDto mapToPhotoDto(UserPhoto userPhoto, ImageStorageProperties properties) {
