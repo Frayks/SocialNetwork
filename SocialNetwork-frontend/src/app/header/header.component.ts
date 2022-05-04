@@ -28,7 +28,6 @@ export class HeaderComponent implements OnInit {
   logout() {
     this.webSocketService.closeSession()
     this.authService.logout()
-    this.router.navigate(["/"])
   }
 
   search(inputSearch: any) {

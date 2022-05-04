@@ -138,11 +138,17 @@ export class UserComponent implements OnInit, OnDestroy {
 
   addPhoto(input: any) {
     let photo = input.files[0];
+    console.log("photo")
+    console.dir(photo)
     if (CommonUtilCst.mapToMb(photo.size) < environment.maxImageSize) {
       let payload = new FormData()
       payload.append("photo", photo, photo.name)
+      console.log("payload")
+      console.dir(payload)
       this.userService.addPhoto(payload).subscribe({
         next: data => {
+          console.log("data")
+          console.dir(data)
           this.userProfileInfo.userPhotoList.unshift(data)
         },
         error: () => {
@@ -229,6 +235,12 @@ export class UserComponent implements OnInit, OnDestroy {
 
       }
     })
+  }
+
+  hasAdditionalInfo() {
+    return this.userProfileInfo.dateOfBirth ||
+      this.userProfileInfo.school ||
+      this.userProfileInfo.university;
   }
 
   goToChatWithUser() {

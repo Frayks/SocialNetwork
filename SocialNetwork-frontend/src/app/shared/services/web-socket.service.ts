@@ -58,7 +58,6 @@ export class WebSocketService {
   private logout() {
     this.closeSession()
     this.authService.logout()
-    this.router.navigate(["/"])
   }
 
 }

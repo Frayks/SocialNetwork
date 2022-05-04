@@ -13,12 +13,14 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findByUsername(String username);
 
+    User findByUsernameAndDeletedFalse(String username);
+
     User findByEmail(String email);
 
-    @Query("FROM User u WHERE (LOWER(u.firstName) LIKE LOWER(?1) OR LOWER(u.lastName) LIKE LOWER(?1) OR u.username LIKE ?1) AND u.username NOT LIKE ?2")
+    @Query("FROM User u WHERE (LOWER(u.firstName) LIKE LOWER(?1) OR LOWER(u.lastName) LIKE LOWER(?1) OR u.username LIKE ?1) AND u.username NOT LIKE ?2 AND u.deleted = false")
     List<User> findUsersByText(String text, String mainUsername, PageRequest pageRequest);
 
-    @Query("FROM User u WHERE (LOWER(u.firstName) LIKE LOWER(?1) AND LOWER(u.lastName) LIKE LOWER(?2)) AND u.username NOT LIKE ?2")
+    @Query("FROM User u WHERE (LOWER(u.firstName) LIKE LOWER(?1) AND LOWER(u.lastName) LIKE LOWER(?2)) AND u.username NOT LIKE ?2 AND u.deleted = false")
     List<User> findUsersByFirstNameAndLastName(String firstName, String lastName, String mainUsername, PageRequest pageRequest);
 
     List<User> findByIdIn(List<Long> idList);

@@ -54,6 +54,11 @@ public class PhotoLikeServiceImpl implements PhotoLikeService {
         return photoLikeRepository.deleteByPhotoIdAndUserId(photoId, userId);
     }
 
+    @Override
+    public int deleteByPhotoIdIn(List<Long> photoIdList) {
+        return photoLikeRepository.deleteByPhotoIdIn(photoIdList);
+    }
+
     @Autowired
     public void setPhotoLikeRepository(PhotoLikeRepository photoLikeRepository) {
         this.photoLikeRepository = photoLikeRepository;

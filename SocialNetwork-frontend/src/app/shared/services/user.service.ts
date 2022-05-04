@@ -94,4 +94,7 @@ export class UserService {
     })
   }
 
+  deleteAccount(password: any) {
+    return this.httpClient.post<FormStatus>(environment.server_url + EndpointConstants.DELETE_ACCOUNT, password);
+  }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.xml.ws.http.HTTPException;
 import java.net.URI;
+import java.util.List;
 
 @Service
 @Transactional
@@ -54,6 +55,21 @@ public class ImageStorageServiceImpl implements ImageStorageService {
                 .fromUriString(imageStorageProperties.getUrl())
                 .path(imageStorageProperties.getDeleteImageEndpoint())
                 .queryParam("name", imageName).build().toUri();
+        ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
+        if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+            throw new HTTPException(response.getStatusCode().value());
+        }
+    }
+
+    @Override
+    public void deleteImageList(List<String> imageNameList) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(imageStorageProperties.getUsername(), imageStorageProperties.getPassword());
+        HttpEntity<?> request = new HttpEntity<>(headers);
+        URI uri = UriComponentsBuilder
+                .fromUriString(imageStorageProperties.getUrl())
+                .path(imageStorageProperties.getDeleteImageListEndpoint())
+                .queryParam("nameList", imageNameList).build().toUri();
         ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
         if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
             throw new HTTPException(response.getStatusCode().value());

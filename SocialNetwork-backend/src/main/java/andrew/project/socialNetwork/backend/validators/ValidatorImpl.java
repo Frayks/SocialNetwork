@@ -13,6 +13,7 @@ import andrew.project.socialNetwork.backend.api.validators.Validator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,7 @@ public class ValidatorImpl implements Validator {
 
     private static final long BYTES_IN_MB = 1048576;
 
+    private PasswordEncoder passwordEncoder;
     private UserService userService;
     private RegistrationRequestService registrationRequestService;
     private RestoreRequestService restoreRequestService;
@@ -106,6 +108,17 @@ public class ValidatorImpl implements Validator {
             invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getNullFieldErrorMsg());
         } else if (!password.matches(fieldsValidationProperties.getPasswordRegEx())) {
             invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getForbiddenPasswordErrorMsg());
+        }
+        return invalidFieldsMap;
+    }
+
+    @Override
+    public Map<FormField, String> checkPassword(String password, String passwordHash) {
+        Map<FormField, String> invalidFieldsMap = new HashMap<>();
+        if (password == null) {
+            invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getNullFieldErrorMsg());
+        } else if (!passwordEncoder.matches(password, passwordHash)) {
+            invalidFieldsMap.put(FormField.PASSWORD, resourcesProperties.getWrongPasswordErrorMsg());
         }
         return invalidFieldsMap;
     }
@@ -219,6 +232,11 @@ public class ValidatorImpl implements Validator {
 
     private List<String> getSplitValues(String property) {
         return Arrays.asList(property.split(fieldsValidationProperties.getSeparator()));
+    }
+
+    @Autowired
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Autowired

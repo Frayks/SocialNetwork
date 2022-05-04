@@ -19,5 +19,6 @@ export class UserProfileInfo {
   friend!: boolean
   requestToFriends!: boolean
   online!: boolean
+  deleted!: boolean
 
 }

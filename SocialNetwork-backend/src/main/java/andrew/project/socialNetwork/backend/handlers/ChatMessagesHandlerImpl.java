@@ -62,6 +62,11 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
                         User owner = userService.findById(userWsSession.getUserId());
                         Long recipientId = getAnotherMember(userChat, owner.getId());
 
+                        User user = userService.findById(recipientId);
+                        if (user.getDeleted()) {
+                            return;
+                        }
+
                         if (userChat.getFirstUserId().equals(recipientId)) {
                             userChat.setFirstUserNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages() + 1);
                         } else {

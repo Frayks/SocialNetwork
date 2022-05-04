@@ -10,6 +10,7 @@ import andrew.project.socialNetwork.backend.api.properties.ImageStoragePropertie
 import andrew.project.socialNetwork.backend.api.properties.SystemProperties;
 import andrew.project.socialNetwork.backend.api.services.*;
 import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
+import andrew.project.socialNetwork.backend.api.utils.GeneratorUtil;
 import andrew.project.socialNetwork.backend.api.validators.*;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -54,6 +55,7 @@ public class MainLibImpl implements MainLib {
     private JwtProvider jwtProvider;
     private RegFormValidator regFormValidator;
     private ResetPasswordValidator resetPasswordValidator;
+    private DeleteAccountValidator deleteAccountValidator;
     private PasswordEncoder passwordEncoder;
     private SettingsValidator settingsValidator;
     private ImageValidator imageValidator;
@@ -141,6 +143,58 @@ public class MainLibImpl implements MainLib {
     }
 
     @Override
+    public FormStatusDto deleteAccount(String password) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        FormStatusDto formStatusDto = deleteAccountValidator.validate(password, user.getPassword());
+        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
+            User userDbi = userService.findByUsername(user.getUsername());
+            if (userDbi != null) {
+
+                List<UserWsSession> userWsSessionList = userWsSessionService.findByUserId(userDbi.getId());
+                for (UserWsSession userWsSession: userWsSessionList) {
+                    webSocketSessionsStorage.remove(userWsSession.getSessionId());
+                }
+                userWsSessionService.deleteByUserId(userDbi.getId());
+
+                List<UserPhoto> userPhotoList = userPhotoService.findByUserId(userDbi.getId());
+                List<Long> photoIdList = getPhotoIdList(userPhotoList);
+                List<String> photoNameList = getPhotoNameList(userPhotoList);
+                photoLikeService.deleteByPhotoIdIn(photoIdList);
+                userPhotoService.deleteByUserId(userDbi.getId());
+                imageStorageService.deleteImageList(photoNameList);
+
+                List<UserPost> userPostList = userPostService.findByUserId(userDbi.getId());
+                List<Long> postIdList = getPostIdList(userPostList);
+                List<String> postPhotoNameList = getPostPhotoNameList(userPostList);
+                postLikeService.deleteByPostIdIn(postIdList);
+                userPostService.deleteByUserId(userDbi.getId());
+                imageStorageService.deleteImageList(postPhotoNameList);
+
+                friendsService.deleteByUserId(userDbi.getId());
+
+                userDbi.setUsername(GeneratorUtil.genRandStr(15));
+                userDbi.setPassword("Deleted");
+                userDbi.setFirstName("Deleted");
+                userDbi.setLastName("Deleted");
+                userDbi.setEmail("Deleted");
+                userDbi.setDeleted(true);
+                UserInfo userInfo = userDbi.getUserInfo();
+                userInfo.setAvatarName(systemProperties.getDefaultUserAvatarName());
+                userInfo.setDateOfBirth(null);
+                userInfo.setSex(null);
+                userInfo.setUniversity(null);
+                userInfo.setCity(null);
+                userInfo.setSchool(null);
+                userInfo.setUniversity(null);
+                userInfo.setAboutYourself(null);
+                userService.save(userDbi);
+
+            }
+        }
+        return formStatusDto;
+    }
+
+    @Override
     public UserProfileInfoDto getUserProfileInfo(String username) {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
@@ -149,13 +203,13 @@ public class MainLibImpl implements MainLib {
             if (targetUser != null) {
                 int numOfPosts = userPostService.countByUserId(targetUser.getId());
                 List<UserPhoto> userPhotoList = userPhotoService.findByUserIdOrderByLoadTimeDesc(targetUser.getId());
-                List<Long> photosIdList = getPhotosIdList(userPhotoList);
-                List<PhotoLike> photoLikeList = photoLikeService.findByPhotoIdInAndUserId(photosIdList, userDbi.getId());
+                List<Long> photoIdList = getPhotoIdList(userPhotoList);
+                List<PhotoLike> photoLikeList = photoLikeService.findByPhotoIdInAndUserId(photoIdList, userDbi.getId());
                 org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
                 List<Friends> friendsList = friendsService.findFriends(targetUser.getId(), 9);
-                List<Long> friendsIdList = getFriendsIdList(targetUser.getId(), friendsList);
-                List<User> userFriendList = userService.findByIdIn(friendsIdList);
+                List<Long> friendIdList = getFriendIdList(targetUser.getId(), friendsList);
+                List<User> userFriendList = userService.findByIdIn(friendIdList);
                 Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), targetUser.getId());
                 boolean online = targetUser.getId().equals(userDbi.getId()) || userWsSessionService.findByUserId(targetUser.getId()).size() > 0;
                 UserProfileInfoDto userProfileInfoDto = Mapper.mapToUserProfileInfoDto(targetUser, online, userPhotoList, photoLikeList, userFriendList, numOfPosts, friends, imageStorageProperties);
@@ -179,14 +233,14 @@ public class MainLibImpl implements MainLib {
         User user = userService.findByUsername(username);
         if (user != null) {
             List<Friends> friendsList = friendsService.findFriends(user.getId());
-            List<Long> friendsIdList = getFriendsIdList(user.getId(), friendsList);
+            List<Long> friendsIdList = getFriendIdList(user.getId(), friendsList);
             List<User> userFriendList = userService.findByIdIn(friendsIdList);
             List<User> userFriendRequestList = null;
             org.springframework.security.core.userdetails.User userdetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (username.equals(userdetails.getUsername())) {
                 List<Friends> friendRequestList = friendsService.findRequestsToFriends(user.getId());
-                List<Long> friendRequestsIdList = getFriendRequestsIdList(friendRequestList);
-                userFriendRequestList = userService.findByIdIn(friendRequestsIdList);
+                List<Long> friendRequestIdList = getFriendRequestIdList(friendRequestList);
+                userFriendRequestList = userService.findByIdIn(friendRequestIdList);
             }
             UserFriendsInfoDto userProfileInfoDto = Mapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList, imageStorageProperties);
             for (ShortUserInfoDto shortUserInfoDto : userProfileInfoDto.getUserFriendList()) {
@@ -442,8 +496,8 @@ public class MainLibImpl implements MainLib {
                 }
             }
             List<UserPost> userPostList = userPostService.findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(targetUser.getId(), beforeTime, 10);
-            List<Long> postsIdList = getPostsIdList(userPostList);
-            List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
+            List<Long> postIdList = getPostIdList(userPostList);
+            List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postIdList, userDbi.getId());
             return Mapper.mapToUserPostDtoList(userPostList, postLikeList, imageStorageProperties);
         }
         return null;
@@ -454,7 +508,7 @@ public class MainLibImpl implements MainLib {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
         List<Friends> friendsList = friendsService.findFriends(userDbi.getId());
-        List<Long> friendsIdList = getFriendsIdList(userDbi.getId(), friendsList);
+        List<Long> friendsIdList = getFriendIdList(userDbi.getId(), friendsList);
         friendsIdList.add(userDbi.getId());
         List<User> userList = userService.findByIdIn(friendsIdList);
         Timestamp beforeTime = null;
@@ -466,7 +520,7 @@ public class MainLibImpl implements MainLib {
             }
         }
         List<UserPost> userPostList = userPostService.findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(friendsIdList, beforeTime, 10);
-        List<Long> postsIdList = getPostsIdList(userPostList);
+        List<Long> postsIdList = getPostIdList(userPostList);
         List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
         List<PostDto> postDtoList = Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
         for (PostDto postDto : postDtoList) {
@@ -690,20 +744,12 @@ public class MainLibImpl implements MainLib {
         }
     }
 
-    private List<Long> getUsersIdList(List<UserChatMessage> userChatMessageList) {
-        List<Long> usersIdList = new ArrayList<>();
-        for (UserChatMessage userChatMessage : userChatMessageList) {
-            usersIdList.add(userChatMessage.getUserId());
-        }
-        return usersIdList;
-    }
-
-    private List<Long> getFriendsIdList(Long userId, List<Friends> friendsList) {
-        List<Long> friendsIdList = new ArrayList<>();
+    private List<Long> getFriendIdList(Long userId, List<Friends> friendsList) {
+        List<Long> friendIdList = new ArrayList<>();
         for (Friends friends : friendsList) {
-            friendsIdList.add(Objects.equals(friends.getFirstUserId(), userId) ? friends.getSecondUserId() : friends.getFirstUserId());
+            friendIdList.add(Objects.equals(friends.getFirstUserId(), userId) ? friends.getSecondUserId() : friends.getFirstUserId());
         }
-        return friendsIdList;
+        return friendIdList;
     }
 
     private List<Long> getChatMemberIdList(Long userId, List<UserChat> userChatList) {
@@ -726,15 +772,7 @@ public class MainLibImpl implements MainLib {
         return Objects.equals(userChat.getFirstUserId(), userId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
     }
 
-    private List<Long> getUserChatIdList(List<UserChat> userChatList) {
-        List<Long> userChatIdList = new ArrayList<>();
-        for (UserChat userChat : userChatList) {
-            userChatIdList.add(userChat.getId());
-        }
-        return userChatIdList;
-    }
-
-    private List<Long> getFriendRequestsIdList(List<Friends> friendsList) {
+    private List<Long> getFriendRequestIdList(List<Friends> friendsList) {
         List<Long> friendsIdList = new ArrayList<>();
         for (Friends friends : friendsList) {
             friendsIdList.add(friends.getFirstUserId());
@@ -742,7 +780,7 @@ public class MainLibImpl implements MainLib {
         return friendsIdList;
     }
 
-    private List<Long> getPhotosIdList(List<UserPhoto> userPhotoList) {
+    private List<Long> getPhotoIdList(List<UserPhoto> userPhotoList) {
         List<Long> photoIdList = new ArrayList<>();
         for (UserPhoto userPhoto : userPhotoList) {
             photoIdList.add(userPhoto.getId());
@@ -750,7 +788,24 @@ public class MainLibImpl implements MainLib {
         return photoIdList;
     }
 
-    private List<Long> getPostsIdList(List<UserPost> userPostList) {
+    private List<String> getPhotoNameList(List<UserPhoto> userPhotoList) {
+        List<String> photoNameList = new ArrayList<>();
+        for (UserPhoto userPhoto : userPhotoList) {
+            photoNameList.add(userPhoto.getName());
+        }
+        return photoNameList;
+    }
+
+    private List<String> getPostPhotoNameList(List<UserPost> userPostList) {
+        List<String> postPhotoNameList = new ArrayList<>();
+        for (UserPost userPost : userPostList) {
+            if (userPost.getPhotoName() != null)
+                postPhotoNameList.add(userPost.getPhotoName());
+        }
+        return postPhotoNameList;
+    }
+
+    private List<Long> getPostIdList(List<UserPost> userPostList) {
         List<Long> postIdList = new ArrayList<>();
         for (UserPost userPost : userPostList) {
             postIdList.add(userPost.getId());
@@ -830,6 +885,11 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setResetPasswordValidator(ResetPasswordValidator resetPasswordValidator) {
         this.resetPasswordValidator = resetPasswordValidator;
+    }
+
+    @Autowired
+    public void setDeleteAccountValidator(DeleteAccountValidator deleteAccountValidator) {
+        this.deleteAccountValidator = deleteAccountValidator;
     }
 
     @Autowired

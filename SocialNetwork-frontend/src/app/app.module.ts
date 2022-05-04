@@ -25,6 +25,7 @@ import {NewsComponent} from './news/news.component';
 import {SettingsComponent} from './settings/settings.component';
 import {ConfirmComponent} from './confirm/confirm.component';
 import {MessengerComponent} from './messenger/messenger.component';
+import { DeleteAccountDialogComponent } from './delete-account-dialog/delete-account-dialog.component';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {MessengerComponent} from './messenger/messenger.component';
     SettingsComponent,
     ConfirmComponent,
     MessengerComponent,
+    DeleteAccountDialogComponent,
   ],
   imports: [
     BrowserModule,

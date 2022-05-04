@@ -6,13 +6,19 @@
         <div class="py-2">
           <div class="menu-item-box " (click)="switchToBasicSettings()"
                [ngClass]="displaySwitch == 1 ? 'menu-item-activated' : 'menu-item-hover'">
-            <span class="material-icons menu-item-icon align-middle">manage_accounts</span>
-            <span class="menu-item-name">Основне</span>
+            <span class="material-icons menu-item-icon align-middle">person</span>
+            <span class="menu-item-name align-middle">Основне</span>
           </div>
+
           <div class="menu-item-box" (click)="switchToAdditionalSettings()"
                [ngClass]="displaySwitch == 2 ? 'menu-item-activated' : 'menu-item-hover'">
-            <span class="material-icons menu-item-icon align-middle">settings_suggest</span>
-            <span class="menu-item-name">Додаткове</span>
+            <span class="material-icons menu-item-icon align-middle">description</span>
+            <span class="menu-item-name align-middle">Додаткове</span>
+          </div>
+          <div class="menu-item-box" (click)="switchToAccountSettings()"
+               [ngClass]="displaySwitch == 3 ? 'menu-item-activated' : 'menu-item-hover'">
+            <span class="material-icons menu-item-icon align-middle">manage_accounts</span>
+            <span class="menu-item-name align-middle">Обліковий запис</span>
           </div>
         </div>
       </div>
@@ -222,6 +228,11 @@
               </div>
             </div>
           </form>
+        </div>
+        <div *ngIf="displaySwitch == 3">
+          <div class="w-100 text-center">
+            <input type="button" class="btn-red inp-def-form" value="Видалити обліковий запис" (click)="deleteAccount()">
+          </div>
         </div>
       </div>
     </div>

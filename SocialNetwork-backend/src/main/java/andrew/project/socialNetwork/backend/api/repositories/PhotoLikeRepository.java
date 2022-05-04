@@ -15,4 +15,6 @@ public interface PhotoLikeRepository extends JpaRepository<PhotoLike, Long> {
 
     int deleteByPhotoIdAndUserId(Long photoId, Long userId);
 
+    int deleteByPhotoIdIn(List<Long> photoIdList);
+
 }

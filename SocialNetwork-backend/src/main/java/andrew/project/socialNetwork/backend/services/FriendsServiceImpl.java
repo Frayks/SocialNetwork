@@ -63,6 +63,11 @@ public class FriendsServiceImpl implements FriendsService {
         friendsRepository.delete(friends);
     }
 
+    @Override
+    public int deleteByUserId(Long userId) {
+        return friendsRepository.deleteByUserId(userId);
+    }
+
     @Autowired
     public void setFriendsRepository(FriendsRepository friendsRepository) {
         this.friendsRepository = friendsRepository;

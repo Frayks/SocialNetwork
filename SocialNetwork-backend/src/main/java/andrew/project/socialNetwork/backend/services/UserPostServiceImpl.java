@@ -28,6 +28,11 @@ public class UserPostServiceImpl implements UserPostService {
     }
 
     @Override
+    public List<UserPost> findByUserId(Long userId) {
+        return userPostRepository.findByUserId(userId);
+    }
+
+    @Override
     public int countByUserId(Long userId) {
         return userPostRepository.countByUserId(userId);
     }
@@ -63,6 +68,11 @@ public class UserPostServiceImpl implements UserPostService {
     @Override
     public int deleteByIdAndUserId(Long id, Long userId) {
         return userPostRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public int deleteByUserId(Long userId) {
+        return userPostRepository.deleteByUserId(userId);
     }
 
     @Autowired

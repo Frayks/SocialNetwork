@@ -273,6 +273,13 @@ public class MainController {
         mainLib.refreshToken(request, response);
     }
 
+    @PostMapping("/deleteAccount")
+    public ResponseEntity<FormStatusDto> deleteAccount(@RequestBody String password) {
+        LOGGER.debug("Method deleteAccount called!");
+        FormStatusDto formStatusDto = mainLib.deleteAccount(password);
+        return ResponseEntity.ok().body(formStatusDto);
+    }
+
     @PostMapping("/logout")
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         LOGGER.debug("Method logout called!");

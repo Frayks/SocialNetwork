@@ -4,7 +4,7 @@
       <a [routerLink]="['/users', username]">
         <div class="menu-item-box menu-item-hover">
           <span class="material-icons menu-item-icon align-middle">account_circle</span>
-          <span class="menu-item-name">Моя сторінка</span>
+          <span class="menu-item-name align-middle">Моя сторінка</span>
         </div>
       </a>
     </li>
@@ -12,7 +12,7 @@
       <a [routerLink]="['/news']">
         <div class="menu-item-box menu-item-hover">
           <span class="material-icons menu-item-icon align-middle">article</span>
-          <span class="menu-item-name">Новини</span>
+          <span class="menu-item-name align-middle">Новини</span>
         </div>
       </a>
     </li>
@@ -20,7 +20,7 @@
       <a [routerLink]="['/messenger']">
         <div class="menu-item-box menu-item-hover">
           <span class="material-icons menu-item-icon align-middle">question_answer</span>
-          <span class="menu-item-name">Повідомлення</span>
+          <span class="menu-item-name align-middle">Повідомлення</span>
           <span class="counter" *ngIf="numOfMessages > 0">
             {{numOfMessages}}
           </span>
@@ -31,7 +31,7 @@
       <a [routerLink]="['/users', username, 'friends']">
         <div class="menu-item-box menu-item-hover">
           <span class="material-icons menu-item-icon align-middle">people_alt</span>
-          <span class="menu-item-name">Друзі</span>
+          <span class="menu-item-name align-middle">Друзі</span>
           <span class="counter" *ngIf="numOfRequestsToFriends > 0">
             {{numOfRequestsToFriends}}
           </span>
@@ -42,7 +42,7 @@
       <a [routerLink]="['/settings']">
         <div class="menu-item-box menu-item-hover">
           <span class="material-icons menu-item-icon align-middle">settings</span>
-          <span class="menu-item-name">Налаштування</span>
+          <span class="menu-item-name align-middle">Налаштування</span>
         </div>
       </a>
     </li>

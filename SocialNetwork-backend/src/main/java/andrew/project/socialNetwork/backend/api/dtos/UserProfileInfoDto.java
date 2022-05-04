@@ -32,5 +32,6 @@ public class UserProfileInfoDto {
     private List<ShortUserInfoDto> userFriendList = new ArrayList<>();
     private boolean friend;
     private boolean requestToFriends;
+    private boolean deleted;
 
 }

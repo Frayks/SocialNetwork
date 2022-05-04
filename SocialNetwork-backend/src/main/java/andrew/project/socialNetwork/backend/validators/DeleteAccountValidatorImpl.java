@@ -3,7 +3,7 @@ package andrew.project.socialNetwork.backend.validators;
 import andrew.project.socialNetwork.backend.api.constants.FormField;
 import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.FormStatusDto;
-import andrew.project.socialNetwork.backend.api.validators.RestoreValidator;
+import andrew.project.socialNetwork.backend.api.validators.DeleteAccountValidator;
 import andrew.project.socialNetwork.backend.api.validators.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Component
-public class RestoreValidatorImpl implements RestoreValidator {
+public class DeleteAccountValidatorImpl implements DeleteAccountValidator {
 
     private Validator validator;
 
     @Override
-    public FormStatusDto validate(String email) {
+    public FormStatusDto validate(String password, String passwordHash) {
         Map<FormField, String> invalidFieldsMap = new HashMap<>();
 
-        invalidFieldsMap.putAll(validator.validateEmail(email, true));
+        invalidFieldsMap.putAll(validator.checkPassword(password, passwordHash));
 
         FormStatusDto formStatusDto = new FormStatusDto();
         if (invalidFieldsMap.size() > 0) {

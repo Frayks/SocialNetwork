@@ -11,6 +11,8 @@ public interface UserPostService {
 
     UserPost findById(Long id);
 
+    List<UserPost> findByUserId(Long userId);
+
     int countByUserId(Long userId);
 
     List<UserPost> findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(Long userId, Timestamp beforeTime, int limit);
@@ -22,5 +24,7 @@ public interface UserPostService {
     void delete(UserPost userPhoto);
 
     int deleteByIdAndUserId(Long id, Long userId);
+
+    int deleteByUserId(Long userId);
 
 }

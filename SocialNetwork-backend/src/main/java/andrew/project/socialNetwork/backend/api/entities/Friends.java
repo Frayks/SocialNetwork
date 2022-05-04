@@ -21,7 +21,7 @@ public class Friends {
     private Long firstUserId;
     @Column(nullable = false)
     private Long secondUserId;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean accepted = false;
 
 }

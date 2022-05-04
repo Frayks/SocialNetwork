@@ -26,7 +26,7 @@ public class UserChatMessage {
     private String text;
     @Column(nullable = false)
     private Timestamp creationTime;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private Boolean revised = false;
 
 }

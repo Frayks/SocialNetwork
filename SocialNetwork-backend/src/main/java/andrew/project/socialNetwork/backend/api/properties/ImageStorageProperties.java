@@ -15,6 +15,7 @@ public class ImageStorageProperties {
     private String url;
     private String saveImageEndpoint;
     private String deleteImageEndpoint;
+    private String deleteImageListEndpoint;
     private String getImageEndpoint;
     private String username;
     private String password;

@@ -8,12 +8,12 @@
             <div class="menu-item-box " (click)="switchToShowFriends()"
                  [ngClass]="displaySwitch == 1 ? 'menu-item-activated' : 'menu-item-hover'">
               <span class="material-icons menu-item-icon align-middle">people_alt</span>
-              <span class="menu-item-name">Мої друзі</span>
+              <span class="menu-item-name align-middle">Мої друзі</span>
             </div>
             <div class="menu-item-box" (click)="switchToShowFriendRequests()"
                  [ngClass]="displaySwitch == 2 ? 'menu-item-activated' : userFriendsInfo.userFriendRequestList.length > 0 ? 'menu-item-hover' : ''">
               <span class="material-icons menu-item-icon align-middle">group_add</span>
-              <span class="menu-item-name">Запит в друзі</span>
+              <span class="menu-item-name align-middle">Запит в друзі</span>
               <span class="counter" *ngIf="userFriendsInfo.userFriendRequestList.length > 0">
                 {{userFriendsInfo.userFriendRequestList.length}}
               </span>
@@ -24,7 +24,7 @@
                  [routerLink]="['/users', userFriendsInfo.shortUserInfo.username]">
               <span class="material-icons menu-item-icon align-middle">group</span>
               <span
-                class="menu-item-name">{{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</span>
+                class="menu-item-name align-middle">{{userFriendsInfo.shortUserInfo.firstName}} {{userFriendsInfo.shortUserInfo.lastName}}</span>
             </div>
           </ng-template>
         </div>

@@ -20,4 +20,5 @@ public interface FriendsService {
 
     void delete(Friends friends);
 
+    int deleteByUserId(Long userId);
 }

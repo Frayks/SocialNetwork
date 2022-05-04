@@ -17,6 +17,8 @@ public interface Validator {
 
     Map<FormField, String> validatePassword(String password);
 
+    Map<FormField, String> checkPassword(String password, String passwordHash);
+
     Map<FormField, String> validateDate(int dayOfBirth, int monthOfBirth, int yearOfBirth);
 
     Map<FormField, String> validateSex(String sex);

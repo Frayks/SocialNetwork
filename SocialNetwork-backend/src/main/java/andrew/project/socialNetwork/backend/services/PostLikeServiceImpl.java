@@ -54,6 +54,11 @@ public class PostLikeServiceImpl implements PostLikeService {
         return postLikeRepository.deleteByPostIdAndUserId(postId, userId);
     }
 
+    @Override
+    public int deleteByPostIdIn(List<Long> postIdList) {
+        return postLikeRepository.deleteByPostIdIn(postIdList);
+    }
+
     @Autowired
     public void setPostLikeRepository(PostLikeRepository postLikeRepository) {
         this.postLikeRepository = postLikeRepository;

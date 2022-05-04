@@ -10,6 +10,8 @@ public interface UserPhotoService {
 
     UserPhoto findById(Long id);
 
+    List<UserPhoto> findByUserId(Long userId);
+
     List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId);
 
     UserPhoto save(UserPhoto userPhoto);
@@ -18,4 +20,5 @@ public interface UserPhotoService {
 
     int deleteByIdAndUserId(Long id, Long userId);
 
+    int deleteByUserId(Long userId);
 }

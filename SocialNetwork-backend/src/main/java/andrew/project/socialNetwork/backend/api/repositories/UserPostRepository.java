@@ -13,7 +13,11 @@ public interface UserPostRepository extends JpaRepository<UserPost, Long> {
 
     int deleteByIdAndUserId(Long id, Long userId);
 
+    int deleteByUserId(Long userId);
+
     int countByUserId(Long userId);
+
+    List<UserPost> findByUserId(Long userId);
 
     List<UserPost> findByUserIdOrderByCreationTimeDesc(Long userId, Pageable pageable);
 

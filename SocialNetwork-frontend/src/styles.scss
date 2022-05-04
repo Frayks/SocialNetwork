@@ -27,6 +27,7 @@ $color-def-5: #203049;
 $color-def-6: #eaeff6;
 $color-green-0: #198754;
 $color-red-0: #dc3545;
+$color-red-1: #56000a;
 
 
 /* --- Global --- */
@@ -48,6 +49,7 @@ body {
   background: white;
   box-shadow: 0 0 0.5rem rgba($color-gray-2, 0.5);
   border-radius: 0.25rem;
+  color: black;
 }
 
 .container-chat-list {
@@ -606,6 +608,16 @@ body {
   color: $color-def-4;
 }
 
+.btn-red {
+  background-color: $color-red-0;
+  border-color: $color-red-0;
+  color: white;
+}
+
+.btn-red:hover {
+  color: $color-red-1;
+}
+
 .btn-not-active {
   background-color: $color-def-0;
   border-color: $color-def-0;
@@ -732,7 +744,7 @@ body {
 /* --- Texts --- */
 
 .text-gray {
-  color: $color-gray-2;
+  color: $color-gray-3;
 }
 
 .text-red {

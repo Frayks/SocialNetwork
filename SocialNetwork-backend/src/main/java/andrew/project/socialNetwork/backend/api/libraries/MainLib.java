@@ -18,6 +18,8 @@ public interface MainLib {
 
     FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto);
 
+    FormStatusDto deleteAccount(String password);
+
     void refreshToken(HttpServletRequest request, HttpServletResponse response);
 
     UserProfileInfoDto getUserProfileInfo(String username);

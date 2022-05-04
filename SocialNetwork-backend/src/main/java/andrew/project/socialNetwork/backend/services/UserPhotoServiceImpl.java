@@ -31,6 +31,11 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     }
 
     @Override
+    public List<UserPhoto> findByUserId(Long userId) {
+        return userPhotoRepository.findByUserId(userId);
+    }
+
+    @Override
     public List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId) {
         return userPhotoRepository.findByUserIdOrderByLoadTimeDesc(userId);
     }
@@ -48,6 +53,11 @@ public class UserPhotoServiceImpl implements UserPhotoService {
     @Override
     public int deleteByIdAndUserId(Long id, Long userId) {
         return userPhotoRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Override
+    public int deleteByUserId(Long userId) {
+        return userPhotoRepository.deleteByUserId(userId);
     }
 
     @Autowired

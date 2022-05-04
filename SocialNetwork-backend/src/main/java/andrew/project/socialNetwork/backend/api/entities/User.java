@@ -38,5 +38,7 @@ public class User {
     private UserInfo userInfo;
     @Column(nullable = false)
     private Timestamp registrationTime;
+    @Column(nullable = false, columnDefinition = "boolean default false")
+    private Boolean deleted = false;
 
 }

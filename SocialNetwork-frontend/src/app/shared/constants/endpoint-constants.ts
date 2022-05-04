@@ -7,6 +7,7 @@ export class EndpointConstants {
   public static readonly RESTORE_ENDPOINT = '/api/restore'
   public static readonly RESET_PASSWORD_ENDPOINTS = '/api/resetPassword'
   public static readonly REFRESH_TOKEN_ENDPOINT = '/api/refreshToken'
+  public static readonly DELETE_ACCOUNT = '/api/deleteAccount'
   public static readonly GET_USER_PROFILE_INFO_ENDPOINT = '/api/getUserProfileInfo'
   public static readonly GET_USER_FRIENDS_INFO_ENDPOINT = '/api/getUserFriendsInfo'
   public static readonly GET_MENU_DATA_ENDPOINT = '/api/getMenuData'

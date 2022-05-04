@@ -9,13 +9,18 @@ import {RegForm} from "../models/reg-form";
 import {FormStatus} from "../models/form-status";
 import {ResetPasswordRequest} from "../models/reset-password-request";
 import {WebSocketSessionKey} from "../models/web-socket-session-key";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private httpClient: HttpClient, private jwtHelperService: JwtHelperService) {
+  constructor(
+    private httpClient: HttpClient,
+    private jwtHelperService: JwtHelperService,
+    private router: Router
+  ) {
   }
 
   login(username: string, password: string) {
@@ -57,6 +62,7 @@ export class AuthService {
     let authCredentials = this.authCredentials
     this.httpClient.post<any>(environment.server_url + EndpointConstants.LOGOUT_ENDPOINT, authCredentials).subscribe()
     localStorage.removeItem(JwtConstants.AUTH_CREDENTIALS_KEY)
+    this.router.navigate(["/"])
   }
 
   refreshToken() {

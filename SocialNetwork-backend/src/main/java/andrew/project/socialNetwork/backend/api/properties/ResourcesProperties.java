@@ -21,6 +21,7 @@ public class ResourcesProperties {
     private String reservedUsernameErrorMsg;
     private String busyUsernameErrorMsg;
     private String forbiddenPasswordErrorMsg;
+    private String wrongPasswordErrorMsg;
     private String wrongDateOfBirthErrorMsg;
     private String sexUnknownErrorMsg;
     private String invalidRestoreKeyErrorMsg;

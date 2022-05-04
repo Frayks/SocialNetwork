@@ -20,4 +20,5 @@ public interface PhotoLikeService {
 
     int deleteByPhotoIdAndUserId(Long photoId, Long userId);
 
+    int deleteByPhotoIdIn(List<Long> photoIdList);
 }

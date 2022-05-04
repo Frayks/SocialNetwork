@@ -14,8 +14,8 @@
                 <span *ngIf="userChatInfo.online"
                       class="online-symbol-chat-info-icon material-icons">noise_control_off</span>
               </div>
-              <span>{{userChatInfo.firstName}} {{userChatInfo.lastName}}</span>
-              <span class="counter" *ngIf="userChatInfo.numOfUnreadMessages > 0">
+              <span class="align-middle">{{userChatInfo.firstName}} {{userChatInfo.lastName}}</span>
+              <span class="counter align-middle" *ngIf="userChatInfo.numOfUnreadMessages > 0">
                 {{userChatInfo.numOfUnreadMessages}}
               </span>
             </div>

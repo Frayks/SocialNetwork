@@ -9,8 +9,12 @@ import java.util.List;
 @Transactional
 public interface UserPhotoRepository extends JpaRepository<UserPhoto, Long> {
 
+    List<UserPhoto> findByUserId(Long userId);
+
     List<UserPhoto> findByUserIdOrderByLoadTimeDesc(Long userId);
 
     int deleteByIdAndUserId(Long id, Long userId);
+
+    int deleteByUserId(Long userId);
 
 }

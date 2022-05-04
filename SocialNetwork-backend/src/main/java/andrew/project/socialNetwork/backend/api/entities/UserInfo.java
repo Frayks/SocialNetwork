@@ -22,9 +22,7 @@ public class UserInfo {
     private User user;
     @Column(nullable = false)
     private String avatarName;
-    @Column(nullable = false)
     private Timestamp dateOfBirth;
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Sex sex;
     private String city;

@@ -13,6 +13,9 @@ import {WebSocketService} from "../shared/services/web-socket.service";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 import {environment} from "../../environments/environment";
 import {NotifyService} from "../shared/services/notify.service";
+import {CreatePostDialogComponent} from "../create-post-dialog/create-post-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
+import {DeleteAccountDialogComponent} from "../delete-account-dialog/delete-account-dialog.component";
 
 @Component({
   selector: 'app-settings',
@@ -44,7 +47,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private settingsService: SettingsService,
     private webSocketService: WebSocketService,
-    private notifyService: NotifyService
+    private notifyService: NotifyService,
+    private dialog: MatDialog
   ) {
   }
 
@@ -181,6 +185,18 @@ export class SettingsComponent implements OnInit, OnDestroy {
     this.basicSettingsFormStatus = 1;
   }
 
+  deleteAccount() {
+    let dialogRef = this.dialog.open(DeleteAccountDialogComponent, {
+      panelClass: 'dialog-container-cst',
+      data: null
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.authService.logout()
+      }
+    })
+  }
+
   additionalSettingsChanged() {
     this.additionalSettingsFormStatus = 0;
   }
@@ -195,6 +211,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
   switchToAdditionalSettings() {
     this.displaySwitch = 2
+  }
+
+  switchToAccountSettings() {
+    this.displaySwitch = 3
   }
 
   getMinFirstNameLength() {
@@ -236,5 +256,6 @@ export class SettingsComponent implements OnInit, OnDestroy {
   getMaxUniversityTextLength() {
     return environment.maxUniversityTextLength
   }
+
 
 }

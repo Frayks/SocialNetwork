@@ -32,7 +32,7 @@ export class AuthInterceptor implements HttpInterceptor {
                 return next.handle(request)
               }),
               catchError(() => {
-                this.logout()
+                this.authService.logout()
                 throw error
               })
             )
@@ -46,8 +46,4 @@ export class AuthInterceptor implements HttpInterceptor {
     }
   }
 
-  logout() {
-    this.authService.logout()
-    this.router.navigate(["/"])
-  }
 }

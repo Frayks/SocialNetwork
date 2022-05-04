@@ -27,6 +27,7 @@ public class Mapper {
         userProfileInfoDto.setUsername(user.getUsername());
         userProfileInfoDto.setFirstName(user.getFirstName());
         userProfileInfoDto.setLastName(user.getLastName());
+        userProfileInfoDto.setDeleted(user.getDeleted());
         userProfileInfoDto.setAvatarUri(mapToImageUri(userInfo.getAvatarName(), properties));
         userProfileInfoDto.setDateOfBirth(userInfo.getDateOfBirth());
         userProfileInfoDto.setSex(userInfo.getSex());
