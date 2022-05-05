@@ -9,8 +9,7 @@ import {Router} from "@angular/router";
 export class AuthInterceptor implements HttpInterceptor {
 
   constructor(
-    private authService: AuthService,
-    private router: Router
+    private authService: AuthService
   ) {
   }
 
