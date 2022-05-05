@@ -35,7 +35,6 @@ public class MessagesWebSocketHandlerImpl extends TextWebSocketHandler {
 
     private Gson gson = new Gson();
 
-    private JwtProvider jwtProvider;
     private WebSocketSessionsStorage webSocketSessionsStorage;
     private ChatMessagesHandler chatMessagesHandler;
     private UserWsSessionService userWsSessionService;
@@ -97,17 +96,6 @@ public class MessagesWebSocketHandlerImpl extends TextWebSocketHandler {
     public void handleTransportError(WebSocketSession session, Throwable exception) {
         userWsSessionService.deleteBySessionId(session.getId());
         webSocketSessionsStorage.remove(session.getId());
-    }
-
-    private User verifyAuth(String token) {
-        DecodedJWT decodedJWT = jwtProvider.verifyToken(token, TokenType.ACCESS_TOKEN);
-        Authentication authentication = jwtProvider.getAuthentication(decodedJWT);
-        return (User) authentication.getPrincipal();
-    }
-
-    @Autowired
-    public void setJwtProvider(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
     }
 
     @Autowired

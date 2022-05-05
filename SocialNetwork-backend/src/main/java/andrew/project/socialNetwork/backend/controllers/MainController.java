@@ -2,6 +2,7 @@ package andrew.project.socialNetwork.backend.controllers;
 
 import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.*;
+import andrew.project.socialNetwork.backend.api.libraries.AuthLib;
 import andrew.project.socialNetwork.backend.api.libraries.MainLib;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,10 +23,11 @@ public class MainController {
     private static final Logger LOGGER = LogManager.getLogger(MainController.class);
 
     private MainLib mainLib;
+    private AuthLib authLib;
 
     @GetMapping("/getUserProfileInfo")
-    public ResponseEntity<UserProfileInfoDto> getUserProfileInfo(@RequestParam String username) {
-        LOGGER.debug("Method getUserProfileInfo called!");
+    public ResponseEntity<UserProfileInfoDto> getUserProfileInfo(HttpServletRequest request, @RequestParam String username) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getUserProfileInfo");
         UserProfileInfoDto userProfileInfoDto = mainLib.getUserProfileInfo(username);
         if (userProfileInfoDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -34,8 +36,8 @@ public class MainController {
     }
 
     @GetMapping("/getUserFriendsInfo")
-    public ResponseEntity<UserFriendsInfoDto> getUserFriendsInfo(@RequestParam String username) {
-        LOGGER.debug("Method getUserFriendsInfo called!");
+    public ResponseEntity<UserFriendsInfoDto> getUserFriendsInfo(HttpServletRequest request, @RequestParam String username) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getUserFriendsInfo");
         UserFriendsInfoDto userFriendsInfoDto = mainLib.getUserFriendsInfo(username);
         if (userFriendsInfoDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -44,8 +46,8 @@ public class MainController {
     }
 
     @GetMapping("/getMenuData")
-    public ResponseEntity<MenuDataDto> getMenuData() {
-        LOGGER.debug("Method getMenuData called!");
+    public ResponseEntity<MenuDataDto> getMenuData(HttpServletRequest request) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getMenuData");
         MenuDataDto menuDataDto = mainLib.getMenuData();
         if (menuDataDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -54,8 +56,8 @@ public class MainController {
     }
 
     @PostMapping("/addPhoto")
-    public ResponseEntity<UserPhotoDto> addPhoto(@RequestParam(value = "photo") MultipartFile file) {
-        LOGGER.debug("Method addPhoto called!");
+    public ResponseEntity<UserPhotoDto> addPhoto(HttpServletRequest request, @RequestParam(value = "photo") MultipartFile file) {
+        LOGGER.debug(request.getRemoteAddr() + " -> addPhoto");
         UserPhotoDto userPhotoDto = mainLib.addPhoto(file);
         if (userPhotoDto == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -64,8 +66,8 @@ public class MainController {
     }
 
     @GetMapping("/deletePhoto")
-    public ResponseEntity<Void> deletePhoto(@RequestParam Long photoId) {
-        LOGGER.debug("Method deletePhoto called!");
+    public ResponseEntity<Void> deletePhoto(HttpServletRequest request, @RequestParam Long photoId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> deletePhoto");
         int count = mainLib.deletePhoto(photoId);
         if (count > 0) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -74,8 +76,8 @@ public class MainController {
     }
 
     @GetMapping("/changePhotoLike")
-    public ResponseEntity<Void> changePhotoLike(@RequestParam Long photoId) {
-        LOGGER.debug("Method changePhotoLike called!");
+    public ResponseEntity<Void> changePhotoLike(HttpServletRequest request, @RequestParam Long photoId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> changePhotoLike");
         boolean success = mainLib.changePhotoLike(photoId);
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -84,15 +86,15 @@ public class MainController {
     }
 
     @PostMapping("/createPost")
-    public ResponseEntity<FormStatusDto> createPost(@RequestParam(value = "postPhoto", required = false) MultipartFile postPhoto, @RequestParam(value = "postText", required = false) String postText) {
-        LOGGER.debug("Method createPost called!");
+    public ResponseEntity<FormStatusDto> createPost(HttpServletRequest request, @RequestParam(value = "postPhoto", required = false) MultipartFile postPhoto, @RequestParam(value = "postText", required = false) String postText) {
+        LOGGER.debug(request.getRemoteAddr() + " -> createPost");
         FormStatusDto formStatusDto = mainLib.createPost(postPhoto, postText);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @GetMapping("/deletePost")
-    public ResponseEntity<Void> deletePost(@RequestParam Long postId) {
-        LOGGER.debug("Method deletePost called!");
+    public ResponseEntity<Void> deletePost(HttpServletRequest request, @RequestParam Long postId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> deletePost");
         int count = mainLib.deletePost(postId);
         if (count > 0) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -101,8 +103,8 @@ public class MainController {
     }
 
     @GetMapping("/getUserPostList")
-    public ResponseEntity<List<UserPostDto>> getUserPostList(@RequestParam String username, @RequestParam(required = false) String beforeTime) {
-        LOGGER.debug("Method getUserPostList called!");
+    public ResponseEntity<List<UserPostDto>> getUserPostList(HttpServletRequest request, @RequestParam String username, @RequestParam(required = false) String beforeTime) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getUserPostList");
         List<UserPostDto> userPostDtoList = mainLib.getUserPostList(username, beforeTime);
         if (userPostDtoList == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -111,8 +113,8 @@ public class MainController {
     }
 
     @GetMapping("/getPostListBlock")
-    public ResponseEntity<List<PostDto>> getPostListBlock(@RequestParam(required = false) String beforeTime) {
-        LOGGER.debug("Method getPostListBlock called!");
+    public ResponseEntity<List<PostDto>> getPostListBlock(HttpServletRequest request, @RequestParam(required = false) String beforeTime) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getPostListBlock");
         List<PostDto> postDtoList = mainLib.getPostListBlock(beforeTime);
         if (postDtoList == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -121,8 +123,8 @@ public class MainController {
     }
 
     @GetMapping("/changePostLike")
-    public ResponseEntity<Void> changePostLike(@RequestParam Long postId) {
-        LOGGER.debug("Method changePostLike called!");
+    public ResponseEntity<Void> changePostLike(HttpServletRequest request, @RequestParam Long postId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> changePostLike");
         boolean success = mainLib.changePostLike(postId);
         if (success) {
             return new ResponseEntity<>(HttpStatus.OK);
@@ -132,8 +134,8 @@ public class MainController {
 
 
     @GetMapping("/createFriendRequest")
-    public ResponseEntity<ResponseStatusDto> createFriendRequest(@RequestParam Long userId) {
-        LOGGER.debug("Method createFriendRequest called!");
+    public ResponseEntity<ResponseStatusDto> createFriendRequest(HttpServletRequest request, @RequestParam Long userId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> createFriendRequest");
         AddToFriendsStatusCode status = mainLib.createFriendRequest(userId);
         if (AddToFriendsStatusCode.ADDED.equals(status) || AddToFriendsStatusCode.REQUEST_CREATED.equals(status)) {
             ResponseStatusDto responseStatusDto = new ResponseStatusDto();
@@ -144,8 +146,8 @@ public class MainController {
     }
 
     @GetMapping("/cancelFriendRequest")
-    public ResponseEntity<Void> cancelFriendRequest(@RequestParam Long userId) {
-        LOGGER.debug("Method cancelFriendRequest called!");
+    public ResponseEntity<Void> cancelFriendRequest(HttpServletRequest request, @RequestParam Long userId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> cancelFriendRequest");
         if (mainLib.cancelFriendRequest(userId)) {
             return new ResponseEntity<>(HttpStatus.OK);
         }
@@ -153,29 +155,29 @@ public class MainController {
     }
 
     @GetMapping("/deleteFriend")
-    public ResponseEntity<Void> deleteFriend(@RequestParam Long userId) {
-        LOGGER.debug("Method deleteFriend called!");
+    public ResponseEntity<Void> deleteFriend(HttpServletRequest request, @RequestParam Long userId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> deleteFriend");
         mainLib.deleteFriend(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/agreeFriendRequest")
-    public ResponseEntity<Void> agreeFriendRequest(@RequestParam Long userId) {
-        LOGGER.debug("Method agreeFriendRequest called!");
+    public ResponseEntity<Void> agreeFriendRequest(HttpServletRequest request, @RequestParam Long userId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> agreeFriendRequest");
         mainLib.agreeFriendRequest(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/rejectFriendRequest")
-    public ResponseEntity<Void> rejectFriendRequest(@RequestParam Long userId) {
-        LOGGER.debug("Method rejectFriendRequest called!");
+    public ResponseEntity<Void> rejectFriendRequest(HttpServletRequest request, @RequestParam Long userId) {
+        LOGGER.debug(request.getRemoteAddr() + " -> rejectFriendRequest");
         mainLib.rejectFriendRequest(userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/getSettings")
-    public ResponseEntity<SettingsDto> getSettings() {
-        LOGGER.debug("Method getSettings called!");
+    public ResponseEntity<SettingsDto> getSettings(HttpServletRequest request) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getSettings");
         SettingsDto settingsDto = mainLib.getSettings();
         if (settingsDto == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -184,22 +186,22 @@ public class MainController {
     }
 
     @PostMapping("/changeBasicSettings")
-    public ResponseEntity<FormStatusDto> changeBasicSettings(@RequestParam(value = "photo", required = false) MultipartFile image, @RequestParam(value = "basicSettings") String basicSettingsJson) {
-        LOGGER.debug("Method changeBasicSettings called!");
+    public ResponseEntity<FormStatusDto> changeBasicSettings(HttpServletRequest request, @RequestParam(value = "photo", required = false) MultipartFile image, @RequestParam(value = "basicSettings") String basicSettingsJson) {
+        LOGGER.debug(request.getRemoteAddr() + " -> changeBasicSettings");
         FormStatusDto formStatusDto = mainLib.changeBasicSettings(image, basicSettingsJson);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @PostMapping("/changeAdditionalSettings")
-    public ResponseEntity<FormStatusDto> changeAdditionalSettings(@RequestBody AdditionalSettingsDto additionalSettingsDto) {
-        LOGGER.debug("Method changeAdditionalSettings called!");
+    public ResponseEntity<FormStatusDto> changeAdditionalSettings(HttpServletRequest request, @RequestBody AdditionalSettingsDto additionalSettingsDto) {
+        LOGGER.debug(request.getRemoteAddr() + " -> changeAdditionalSettings");
         FormStatusDto formStatusDto = mainLib.changeAdditionalSettings(additionalSettingsDto);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @GetMapping("/searchUsers")
-    public ResponseEntity<SearchResultDto> searchUsers(@RequestParam String searchRequest) {
-        LOGGER.debug("Method searchUsers called!");
+    public ResponseEntity<SearchResultDto> searchUsers(HttpServletRequest request, @RequestParam String searchRequest) {
+        LOGGER.debug(request.getRemoteAddr() + " -> searchUsers");
         SearchResultDto searchResultDto = mainLib.searchUsers(searchRequest);
         if (searchResultDto == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -208,8 +210,8 @@ public class MainController {
     }
 
     @GetMapping("/getChatInfoData")
-    public ResponseEntity<ChatInfoDataDto> getChatInfoData(@RequestParam(required = false) String chatWith) {
-        LOGGER.debug("Method getChatInfoData called!");
+    public ResponseEntity<ChatInfoDataDto> getChatInfoData(HttpServletRequest request, @RequestParam(required = false) String chatWith) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getChatInfoData");
         ChatInfoDataDto chatInfoData = mainLib.getChatInfoData(chatWith);
         if (chatInfoData == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -218,8 +220,8 @@ public class MainController {
     }
 
     @GetMapping("/getChatMessageListBlock")
-    public ResponseEntity<List<ChatMessageDto>> getChatMessageListBlock(@RequestParam() Long chatId, @RequestParam(required = false) String beforeTime) {
-        LOGGER.debug("Method getChatMessageListBlock called!");
+    public ResponseEntity<List<ChatMessageDto>> getChatMessageListBlock(HttpServletRequest request, @RequestParam() Long chatId, @RequestParam(required = false) String beforeTime) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getChatMessageListBlock");
         List<ChatMessageDto> chatMessageDtoList = mainLib.getChatMessageListBlock(chatId, beforeTime);
         if (chatMessageDtoList == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -228,9 +230,9 @@ public class MainController {
     }
 
     @GetMapping("/getWebSocketSessionKey")
-    public ResponseEntity<WebSocketSessionKeyDto> getWebSocketSessionKey() {
-        LOGGER.debug("Method getWebSocketSessionKey called!");
-        WebSocketSessionKeyDto webSocketSessionKey = mainLib.getWebSocketSessionKey();
+    public ResponseEntity<WebSocketSessionKeyDto> getWebSocketSessionKey(HttpServletRequest request) {
+        LOGGER.debug(request.getRemoteAddr() + " -> getWebSocketSessionKey");
+        WebSocketSessionKeyDto webSocketSessionKey = authLib.getWebSocketSessionKey();
         if (webSocketSessionKey == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -238,56 +240,56 @@ public class MainController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<FormStatusDto> registration(@RequestBody RegFormDto regFormDto) {
-        LOGGER.debug("Method registration called!");
-        FormStatusDto formStatusDto = mainLib.registration(regFormDto);
+    public ResponseEntity<FormStatusDto> registration(HttpServletRequest request, @RequestBody RegFormDto regFormDto) {
+        LOGGER.debug(request.getRemoteAddr() + " -> registration");
+        FormStatusDto formStatusDto = authLib.registration(regFormDto);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @GetMapping("/confirm")
-    public ResponseEntity<Void> confirm(@RequestParam String key) {
-        LOGGER.debug("Method confirm called!");
-        if (mainLib.confirm(key)) {
+    public ResponseEntity<Void> confirm(HttpServletRequest request, @RequestParam String key) {
+        LOGGER.debug(request.getRemoteAddr() + " -> confirm");
+        if (authLib.confirm(key)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @GetMapping("/restore")
-    public ResponseEntity<FormStatusDto> restore(@RequestParam String email) {
-        LOGGER.debug("Method restore called!");
-        FormStatusDto formStatusDto = mainLib.restore(email);
+    public ResponseEntity<FormStatusDto> restore(HttpServletRequest request, @RequestParam String email) {
+        LOGGER.debug(request.getRemoteAddr() + " -> restore");
+        FormStatusDto formStatusDto = authLib.restore(email);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @PostMapping("/resetPassword")
-    public ResponseEntity<FormStatusDto> resetPassword(@RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
-        LOGGER.debug("Method resetPassword called!");
-        FormStatusDto formStatusDto = mainLib.resetPassword(resetPasswordRequestDto);
+    public ResponseEntity<FormStatusDto> resetPassword(HttpServletRequest request, @RequestBody ResetPasswordRequestDto resetPasswordRequestDto) {
+        LOGGER.debug(request.getRemoteAddr() + " -> resetPassword");
+        FormStatusDto formStatusDto = authLib.resetPassword(resetPasswordRequestDto);
         return ResponseEntity.ok().body(formStatusDto);
     }
 
     @GetMapping("/refreshToken")
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
-        LOGGER.debug("Method refreshToken called!");
-        mainLib.refreshToken(request, response);
+        LOGGER.debug(request.getRemoteAddr() + " -> refreshToken");
+        authLib.refreshToken(request, response);
     }
 
     @PostMapping("/deleteAccount")
-    public ResponseEntity<FormStatusDto> deleteAccount(@RequestBody String password) {
-        LOGGER.debug("Method deleteAccount called!");
-        FormStatusDto formStatusDto = mainLib.deleteAccount(password);
+    public ResponseEntity<FormStatusDto> deleteAccount(HttpServletRequest request, @RequestBody String password) {
+        LOGGER.debug(request.getRemoteAddr() + " -> deleteAccount");
+        FormStatusDto formStatusDto = authLib.deleteAccount(password);
         return ResponseEntity.ok().body(formStatusDto);
-    }
-
-    @PostMapping("/logout")
-    public void logout(HttpServletRequest request, HttpServletResponse response) {
-        LOGGER.debug("Method logout called!");
     }
 
     @Autowired
     public void setMainLib(MainLib mainLib) {
         this.mainLib = mainLib;
+    }
+
+    @Autowired
+    public void setAuthLib(AuthLib authLib) {
+        this.authLib = authLib;
     }
 
 }

@@ -1,6 +1,8 @@
 package andrew.project.socialNetwork.backend.libraries;
 
-import andrew.project.socialNetwork.backend.api.constants.*;
+import andrew.project.socialNetwork.backend.api.constants.AddToFriendsStatusCode;
+import andrew.project.socialNetwork.backend.api.constants.Sex;
+import andrew.project.socialNetwork.backend.api.constants.StatusCode;
 import andrew.project.socialNetwork.backend.api.dtos.*;
 import andrew.project.socialNetwork.backend.api.entities.*;
 import andrew.project.socialNetwork.backend.api.handlers.ChatMessagesHandler;
@@ -10,24 +12,18 @@ import andrew.project.socialNetwork.backend.api.properties.ImageStoragePropertie
 import andrew.project.socialNetwork.backend.api.properties.SystemProperties;
 import andrew.project.socialNetwork.backend.api.services.*;
 import andrew.project.socialNetwork.backend.api.storages.WebSocketSessionsStorage;
-import andrew.project.socialNetwork.backend.api.utils.GeneratorUtil;
+import andrew.project.socialNetwork.backend.api.utils.CommonUtil;
 import andrew.project.socialNetwork.backend.api.validators.*;
 import andrew.project.socialNetwork.backend.security.JwtProvider;
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
@@ -38,161 +34,24 @@ public class MainLibImpl implements MainLib {
     private static final Logger LOGGER = LogManager.getLogger(MainLibImpl.class);
 
     private UserService userService;
-    private UserPhotoService userPhotoService;
-    private UserPostService userPostService;
     private FriendsService friendsService;
-    private ImageStorageService imageStorageService;
-    private RegistrationRequestService registrationRequestService;
-    private RegistrationService registrationService;
-    private RestoreRequestService restoreRequestService;
-    private RestoreService restoreService;
-    private PhotoLikeService photoLikeService;
+    private UserPostService userPostService;
     private PostLikeService postLikeService;
     private UserChatService userChatService;
-    private UserChatMessageService userChatMessageService;
+    private UserPhotoService userPhotoService;
+    private PhotoLikeService photoLikeService;
+    private ImageStorageService imageStorageService;
     private UserWsSessionService userWsSessionService;
+    private UserChatMessageService userChatMessageService;
 
-    private JwtProvider jwtProvider;
-    private RegFormValidator regFormValidator;
-    private ResetPasswordValidator resetPasswordValidator;
-    private DeleteAccountValidator deleteAccountValidator;
-    private PasswordEncoder passwordEncoder;
-    private SettingsValidator settingsValidator;
-    private ImageValidator imageValidator;
     private PostValidator postValidator;
-    private RestoreValidator restoreValidator;
-    private WebSocketSessionsStorage webSocketSessionsStorage;
+    private ImageValidator imageValidator;
+    private SettingsValidator settingsValidator;
+
+    private SystemProperties systemProperties;
+    private ImageStorageProperties imageStorageProperties;
     private ChatMessagesHandler chatMessagesHandler;
 
-    private ImageStorageProperties imageStorageProperties;
-    private SystemProperties systemProperties;
-
-
-    @Override
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            String refreshToken = jwtProvider.resolveToken(request);
-            if (refreshToken == null) {
-                throw new Exception("Refresh token is missing!");
-            }
-            DecodedJWT decodedJWT = jwtProvider.verifyToken(refreshToken, TokenType.REFRESH_TOKEN);
-            String username = decodedJWT.getSubject();
-            User user = userService.findByUsername(username);
-            List<String> roles = new ArrayList<>();
-            user.getRoles().forEach(role -> roles.add(role.getRoleName().name()));
-            String accessToken = jwtProvider.createAccessToken(user.getUsername(), roles);
-
-            Map<String, String> tokens = new HashMap<>();
-            tokens.put("access_token", accessToken);
-            tokens.put("refresh_token", refreshToken);
-
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(), tokens);
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-            addErrorToResponse(response, HttpStatus.FORBIDDEN.value(), e.getMessage());
-        }
-    }
-
-    @Override
-    public FormStatusDto registration(RegFormDto regFormDto) {
-        FormStatusDto formStatusDto = regFormValidator.validate(regFormDto);
-        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
-            registrationService.register(regFormDto);
-        }
-        return formStatusDto;
-    }
-
-    @Override
-    public boolean confirm(String key) {
-        RegistrationRequest registrationRequest = registrationRequestService.findByConfirmKey(key);
-        if (registrationRequest == null) {
-            return false;
-        }
-        registrationRequestService.delete(registrationRequest);
-        User user = Mapper.mapToUser(registrationRequest);
-        user.getUserInfo().setAvatarName(systemProperties.getDefaultUserAvatarName());
-        userService.save(user);
-        userService.addRoleToUser(user.getUsername(), RoleName.USER);
-        return true;
-    }
-
-    @Override
-    public FormStatusDto restore(String email) {
-        FormStatusDto formStatusDto = restoreValidator.validate(email);
-        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
-            User user = userService.findByEmail(email);
-            restoreService.restore(user);
-        }
-        return formStatusDto;
-    }
-
-    @Override
-    public FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto) {
-        FormStatusDto formStatusDto = resetPasswordValidator.validate(resetPasswordRequestDto);
-        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
-            RestoreRequest restoreRequest = restoreRequestService.findByRestoreKey(resetPasswordRequestDto.getRestoreKey());
-            restoreRequestService.deleteByUserId(restoreRequest.getUserId());
-            User user = userService.findById(restoreRequest.getUserId());
-            if (user != null) {
-                user.setPassword(passwordEncoder.encode(resetPasswordRequestDto.getNewPassword()));
-                userService.save(user);
-            }
-        }
-        return formStatusDto;
-    }
-
-    @Override
-    public FormStatusDto deleteAccount(String password) {
-        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        FormStatusDto formStatusDto = deleteAccountValidator.validate(password, user.getPassword());
-        if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
-            User userDbi = userService.findByUsername(user.getUsername());
-            if (userDbi != null) {
-
-                List<UserWsSession> userWsSessionList = userWsSessionService.findByUserId(userDbi.getId());
-                for (UserWsSession userWsSession: userWsSessionList) {
-                    webSocketSessionsStorage.remove(userWsSession.getSessionId());
-                }
-                userWsSessionService.deleteByUserId(userDbi.getId());
-
-                List<UserPhoto> userPhotoList = userPhotoService.findByUserId(userDbi.getId());
-                List<Long> photoIdList = getPhotoIdList(userPhotoList);
-                List<String> photoNameList = getPhotoNameList(userPhotoList);
-                photoLikeService.deleteByPhotoIdIn(photoIdList);
-                userPhotoService.deleteByUserId(userDbi.getId());
-                imageStorageService.deleteImageList(photoNameList);
-
-                List<UserPost> userPostList = userPostService.findByUserId(userDbi.getId());
-                List<Long> postIdList = getPostIdList(userPostList);
-                List<String> postPhotoNameList = getPostPhotoNameList(userPostList);
-                postLikeService.deleteByPostIdIn(postIdList);
-                userPostService.deleteByUserId(userDbi.getId());
-                imageStorageService.deleteImageList(postPhotoNameList);
-
-                friendsService.deleteByUserId(userDbi.getId());
-
-                userDbi.setUsername(GeneratorUtil.genRandStr(15));
-                userDbi.setPassword("Deleted");
-                userDbi.setFirstName("Deleted");
-                userDbi.setLastName("Deleted");
-                userDbi.setEmail("Deleted");
-                userDbi.setDeleted(true);
-                UserInfo userInfo = userDbi.getUserInfo();
-                userInfo.setAvatarName(systemProperties.getDefaultUserAvatarName());
-                userInfo.setDateOfBirth(null);
-                userInfo.setSex(null);
-                userInfo.setUniversity(null);
-                userInfo.setCity(null);
-                userInfo.setSchool(null);
-                userInfo.setUniversity(null);
-                userInfo.setAboutYourself(null);
-                userService.save(userDbi);
-
-            }
-        }
-        return formStatusDto;
-    }
 
     @Override
     public UserProfileInfoDto getUserProfileInfo(String username) {
@@ -203,12 +62,12 @@ public class MainLibImpl implements MainLib {
             if (targetUser != null) {
                 int numOfPosts = userPostService.countByUserId(targetUser.getId());
                 List<UserPhoto> userPhotoList = userPhotoService.findByUserIdOrderByLoadTimeDesc(targetUser.getId());
-                List<Long> photoIdList = getPhotoIdList(userPhotoList);
+                List<Long> photoIdList = CommonUtil.getPhotoIdList(userPhotoList);
                 List<PhotoLike> photoLikeList = photoLikeService.findByPhotoIdInAndUserId(photoIdList, userDbi.getId());
                 org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
                 User userRequesterDbi = userService.findByUsername(userRequester.getUsername());
                 List<Friends> friendsList = friendsService.findFriends(targetUser.getId(), 9);
-                List<Long> friendIdList = getFriendIdList(targetUser.getId(), friendsList);
+                List<Long> friendIdList = CommonUtil.getFriendIdList(targetUser.getId(), friendsList);
                 List<User> userFriendList = userService.findByIdIn(friendIdList);
                 Friends friends = friendsService.checkIfFriends(userRequesterDbi.getId(), targetUser.getId());
                 boolean online = targetUser.getId().equals(userDbi.getId()) || userWsSessionService.findByUserId(targetUser.getId()).size() > 0;
@@ -233,13 +92,13 @@ public class MainLibImpl implements MainLib {
         User user = userService.findByUsername(username);
         if (user != null) {
             List<Friends> friendsList = friendsService.findFriends(user.getId());
-            List<Long> friendsIdList = getFriendIdList(user.getId(), friendsList);
+            List<Long> friendsIdList = CommonUtil.getFriendIdList(user.getId(), friendsList);
             List<User> userFriendList = userService.findByIdIn(friendsIdList);
             List<User> userFriendRequestList = null;
             org.springframework.security.core.userdetails.User userdetails = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             if (username.equals(userdetails.getUsername())) {
                 List<Friends> friendRequestList = friendsService.findRequestsToFriends(user.getId());
-                List<Long> friendRequestIdList = getFriendRequestIdList(friendRequestList);
+                List<Long> friendRequestIdList = CommonUtil.getFriendRequestIdList(friendRequestList);
                 userFriendRequestList = userService.findByIdIn(friendRequestIdList);
             }
             UserFriendsInfoDto userProfileInfoDto = Mapper.mapToUserFriendsInfoDto(user, userFriendList, userFriendRequestList, imageStorageProperties);
@@ -496,7 +355,7 @@ public class MainLibImpl implements MainLib {
                 }
             }
             List<UserPost> userPostList = userPostService.findByUserIdAndCreationTimeBeforeOrderByCreationTimeDesc(targetUser.getId(), beforeTime, 10);
-            List<Long> postIdList = getPostIdList(userPostList);
+            List<Long> postIdList = CommonUtil.getPostIdList(userPostList);
             List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postIdList, userDbi.getId());
             return Mapper.mapToUserPostDtoList(userPostList, postLikeList, imageStorageProperties);
         }
@@ -508,7 +367,7 @@ public class MainLibImpl implements MainLib {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
         List<Friends> friendsList = friendsService.findFriends(userDbi.getId());
-        List<Long> friendsIdList = getFriendIdList(userDbi.getId(), friendsList);
+        List<Long> friendsIdList = CommonUtil.getFriendIdList(userDbi.getId(), friendsList);
         friendsIdList.add(userDbi.getId());
         List<User> userList = userService.findByIdIn(friendsIdList);
         Timestamp beforeTime = null;
@@ -520,7 +379,7 @@ public class MainLibImpl implements MainLib {
             }
         }
         List<UserPost> userPostList = userPostService.findByUserIdInAndCreationTimeBeforeOrderByCreationTimeDesc(friendsIdList, beforeTime, 10);
-        List<Long> postsIdList = getPostIdList(userPostList);
+        List<Long> postsIdList = CommonUtil.getPostIdList(userPostList);
         List<PostLike> postLikeList = postLikeService.findByPostIdInAndUserId(postsIdList, userDbi.getId());
         List<PostDto> postDtoList = Mapper.mapToPostDtoList(userList, userPostList, postLikeList, imageStorageProperties);
         for (PostDto postDto : postDtoList) {
@@ -665,7 +524,7 @@ public class MainLibImpl implements MainLib {
             createNewChatAndNotify(chatWith, userDbi);
         }
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
-        List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChatList);
+        List<Long> chatMemberIdList = CommonUtil.getChatMemberIdList(userDbi.getId(), userChatList);
         List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
         ChatInfoDataDto chatInfoDataDto = Mapper.mapToChatInfoDataDto(userDbi.getId(), userChatList, chatMemberList, imageStorageProperties);
         for (UserChatInfoDto userChatInfoDto : chatInfoDataDto.getUserChatInfoList()) {
@@ -679,7 +538,7 @@ public class MainLibImpl implements MainLib {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
         UserChat userChat = userChatService.findById(chatId);
-        if (userChat != null && isChatMember(userChat, userDbi.getId())) {
+        if (userChat != null && CommonUtil.isChatMember(userChat, userDbi.getId())) {
             int count = 50;
             Timestamp beforeTime = null;
             if (beforeTimeStr != null) {
@@ -698,7 +557,7 @@ public class MainLibImpl implements MainLib {
                 count = Math.max(numOfUnreadMessages, count);
             }
             List<UserChatMessage> userChatMessageList = userChatMessageService.findByChatIdAndCreationTimeBeforeOrderByCreationTimeDesc(chatId, beforeTime, count);
-            List<Long> chatMemberIdList = getChatMemberIdList(userDbi.getId(), userChat);
+            List<Long> chatMemberIdList = CommonUtil.getChatMemberIdList(userDbi.getId(), userChat);
             List<User> chatMemberList = userService.findByIdIn(chatMemberIdList);
             Map<Long, User> chatMemberMap = new HashMap<>();
             for (User chatMember : chatMemberList) {
@@ -708,25 +567,6 @@ public class MainLibImpl implements MainLib {
             return Mapper.mapToChatMessageDtoList(chatMemberMap, userChatMessageList, imageStorageProperties);
         }
         return null;
-    }
-
-    @Override
-    public WebSocketSessionKeyDto getWebSocketSessionKey() {
-        org.springframework.security.core.userdetails.User userRequester = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User userDbi = userService.findByUsername(userRequester.getUsername());
-        return new WebSocketSessionKeyDto(webSocketSessionsStorage.generateWebSocketRequestKey(userDbi.getId()));
-    }
-
-    public void addErrorToResponse(HttpServletResponse response, int status, String errorMessage) {
-        response.setStatus(status);
-        Map<String, String> error = new HashMap<>();
-        error.put("error_message", errorMessage);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        try {
-            new ObjectMapper().writeValue(response.getOutputStream(), error);
-        } catch (Exception e) {
-            LOGGER.error(e);
-        }
     }
 
     private void createNewChatAndNotify(String chatWith, User ownerUser) {
@@ -742,79 +582,6 @@ public class MainLibImpl implements MainLib {
                 chatMessagesHandler.sendInfoAboutNewChat(targetUser.getId(), userChatInfoDto);
             }
         }
-    }
-
-    private List<Long> getFriendIdList(Long userId, List<Friends> friendsList) {
-        List<Long> friendIdList = new ArrayList<>();
-        for (Friends friends : friendsList) {
-            friendIdList.add(Objects.equals(friends.getFirstUserId(), userId) ? friends.getSecondUserId() : friends.getFirstUserId());
-        }
-        return friendIdList;
-    }
-
-    private List<Long> getChatMemberIdList(Long userId, List<UserChat> userChatList) {
-        List<Long> chatMemberIdList = new ArrayList<>();
-        for (UserChat userChat : userChatList) {
-            chatMemberIdList.add(getChatMemberId(userId, userChat));
-        }
-        chatMemberIdList.add(userId);
-        return chatMemberIdList;
-    }
-
-    private List<Long> getChatMemberIdList(Long userId, UserChat userChat) {
-        List<Long> chatMemberIdList = new ArrayList<>();
-        chatMemberIdList.add(getChatMemberId(userId, userChat));
-        chatMemberIdList.add(userId);
-        return chatMemberIdList;
-    }
-
-    private Long getChatMemberId(Long userId, UserChat userChat) {
-        return Objects.equals(userChat.getFirstUserId(), userId) ? userChat.getSecondUserId() : userChat.getFirstUserId();
-    }
-
-    private List<Long> getFriendRequestIdList(List<Friends> friendsList) {
-        List<Long> friendsIdList = new ArrayList<>();
-        for (Friends friends : friendsList) {
-            friendsIdList.add(friends.getFirstUserId());
-        }
-        return friendsIdList;
-    }
-
-    private List<Long> getPhotoIdList(List<UserPhoto> userPhotoList) {
-        List<Long> photoIdList = new ArrayList<>();
-        for (UserPhoto userPhoto : userPhotoList) {
-            photoIdList.add(userPhoto.getId());
-        }
-        return photoIdList;
-    }
-
-    private List<String> getPhotoNameList(List<UserPhoto> userPhotoList) {
-        List<String> photoNameList = new ArrayList<>();
-        for (UserPhoto userPhoto : userPhotoList) {
-            photoNameList.add(userPhoto.getName());
-        }
-        return photoNameList;
-    }
-
-    private List<String> getPostPhotoNameList(List<UserPost> userPostList) {
-        List<String> postPhotoNameList = new ArrayList<>();
-        for (UserPost userPost : userPostList) {
-            if (userPost.getPhotoName() != null)
-                postPhotoNameList.add(userPost.getPhotoName());
-        }
-        return postPhotoNameList;
-    }
-
-    private List<Long> getPostIdList(List<UserPost> userPostList) {
-        List<Long> postIdList = new ArrayList<>();
-        for (UserPost userPost : userPostList) {
-            postIdList.add(userPost.getId());
-        }
-        return postIdList;
-    }
-
-    private boolean isChatMember(UserChat userChat, Long userId) {
-        return userChat.getFirstUserId().equals(userId) || userChat.getSecondUserId().equals(userId);
     }
 
     @Autowired
@@ -848,16 +615,6 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
-    public void setJwtProvider(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
-    }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
-
-    @Autowired
     public void setImageStorageService(ImageStorageService imageStorageService) {
         this.imageStorageService = imageStorageService;
     }
@@ -875,21 +632,6 @@ public class MainLibImpl implements MainLib {
     @Autowired
     public void setSystemProperties(SystemProperties systemProperties) {
         this.systemProperties = systemProperties;
-    }
-
-    @Autowired
-    public void setRegFormValidator(RegFormValidator regFormValidator) {
-        this.regFormValidator = regFormValidator;
-    }
-
-    @Autowired
-    public void setResetPasswordValidator(ResetPasswordValidator resetPasswordValidator) {
-        this.resetPasswordValidator = resetPasswordValidator;
-    }
-
-    @Autowired
-    public void setDeleteAccountValidator(DeleteAccountValidator deleteAccountValidator) {
-        this.deleteAccountValidator = deleteAccountValidator;
     }
 
     @Autowired
@@ -913,40 +655,10 @@ public class MainLibImpl implements MainLib {
     }
 
     @Autowired
-    public void setRestoreValidator(RestoreValidator restoreValidator) {
-        this.restoreValidator = restoreValidator;
-    }
-
-    @Autowired
-    public void setRegistrationRequestService(RegistrationRequestService registrationRequestService) {
-        this.registrationRequestService = registrationRequestService;
-    }
-
-    @Autowired
-    public void setRegistrationService(RegistrationService registrationService) {
-        this.registrationService = registrationService;
-    }
-
-    @Autowired
-    public void setRestoreRequestService(RestoreRequestService restoreRequestService) {
-        this.restoreRequestService = restoreRequestService;
-    }
-
-    @Autowired
     public void setUserWsSessionService(UserWsSessionService userWsSessionService) {
         this.userWsSessionService = userWsSessionService;
     }
-
-    @Autowired
-    public void setWebSocketSessionsStorage(WebSocketSessionsStorage webSocketSessionsStorage) {
-        this.webSocketSessionsStorage = webSocketSessionsStorage;
-    }
-
-    @Autowired
-    public void setRestoreService(RestoreService restoreService) {
-        this.restoreService = restoreService;
-    }
-
+    
     @Autowired
     public void setUserChatService(UserChatService userChatService) {
         this.userChatService = userChatService;

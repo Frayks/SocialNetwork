@@ -10,18 +10,6 @@ import java.util.List;
 
 public interface MainLib {
 
-    FormStatusDto registration(RegFormDto regFormDto);
-
-    boolean confirm(String key);
-
-    FormStatusDto restore(String email);
-
-    FormStatusDto resetPassword(ResetPasswordRequestDto resetPasswordRequestDto);
-
-    FormStatusDto deleteAccount(String password);
-
-    void refreshToken(HttpServletRequest request, HttpServletResponse response);
-
     UserProfileInfoDto getUserProfileInfo(String username);
 
     UserFriendsInfoDto getUserFriendsInfo(String username);
@@ -65,7 +53,5 @@ public interface MainLib {
     ChatInfoDataDto getChatInfoData(String chatWith);
 
     List<ChatMessageDto> getChatMessageListBlock(Long chatId, String beforeTime);
-
-    WebSocketSessionKeyDto getWebSocketSessionKey();
 
 }

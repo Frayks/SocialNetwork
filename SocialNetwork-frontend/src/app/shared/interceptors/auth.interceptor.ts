@@ -19,7 +19,6 @@ export class AuthInterceptor implements HttpInterceptor {
     if (!pathname.endsWith(EndpointConstants.LOGIN_ENDPOINT) &&
       !pathname.endsWith(EndpointConstants.REGISTRATION_ENDPOINT) &&
       !pathname.endsWith(EndpointConstants.REFRESH_TOKEN_ENDPOINT) &&
-      !pathname.endsWith(EndpointConstants.LOGOUT_ENDPOINT) &&
       !pathname.endsWith(EndpointConstants.RESTORE_ENDPOINT)
     ) {
       request = this.authService.addAuthHeader(request)

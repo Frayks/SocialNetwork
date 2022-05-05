@@ -57,33 +57,36 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
                 FormStatusDto formStatusDto = chatMessageValidator.validate(newChatMessage);
                 if (formStatusDto.getStatus().equals(StatusCode.SUCCESS)) {
                     UserWsSession userWsSession = userWsSessionService.findBySessionId(sessionId);
-                    UserChat userChat = userChatService.findById(newChatMessage.getChatId());
-                    if (userChat != null && isChatMember(userChat, userWsSession.getUserId())) {
-                        User owner = userService.findById(userWsSession.getUserId());
-                        Long recipientId = getAnotherMember(userChat, owner.getId());
+                    if (userWsSession != null) {
+                        UserChat userChat = userChatService.findById(newChatMessage.getChatId());
+                        if (userChat != null && isChatMember(userChat, userWsSession.getUserId())) {
+                            User owner = userService.findById(userWsSession.getUserId());
+                            Long recipientId = getAnotherMember(userChat, owner.getId());
 
-                        User user = userService.findById(recipientId);
-                        if (user.getDeleted()) {
-                            return;
+                            User user = userService.findById(recipientId);
+                            if (user.getDeleted()) {
+                                return;
+                            }
+
+                            if (userChat.getFirstUserId().equals(recipientId)) {
+                                userChat.setFirstUserNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages() + 1);
+                            } else {
+                                userChat.setSecondUserNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages() + 1);
+                            }
+                            userChatService.save(userChat);
+
+                            UserChatMessage userChatMessage = Mapper.mapToUserChatMessage(userChat, owner, newChatMessage);
+                            userChatMessage = userChatMessageService.setCreationTimeAndSave(userChatMessage);
+
+                            ChatMessageDto chatMessage = Mapper.mapToChatMessageDto(userChatMessage, owner, imageStorageProperties);
+                            sendMessage(owner.getId(), chatMessage);
+                            sendMessage(recipientId, chatMessage);
                         }
-
-                        if (userChat.getFirstUserId().equals(recipientId)) {
-                            userChat.setFirstUserNumOfUnreadMessages(userChat.getFirstUserNumOfUnreadMessages() + 1);
-                        } else {
-                            userChat.setSecondUserNumOfUnreadMessages(userChat.getSecondUserNumOfUnreadMessages() + 1);
-                        }
-                        userChatService.save(userChat);
-
-                        UserChatMessage userChatMessage = Mapper.mapToUserChatMessage(userChat, owner, newChatMessage);
-                        userChatMessage = userChatMessageService.setCreationTimeAndSave(userChatMessage);
-
-                        ChatMessageDto chatMessage = Mapper.mapToChatMessageDto(userChatMessage, owner, imageStorageProperties);
-                        sendMessage(owner.getId(), chatMessage);
-                        sendMessage(recipientId, chatMessage);
                     }
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error(e);
         }
     }
@@ -126,6 +129,7 @@ public class ChatMessagesHandlerImpl implements ChatMessagesHandler {
                 }
             }
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error(e);
         }
     }

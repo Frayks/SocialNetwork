@@ -59,8 +59,6 @@ export class AuthService {
   }
 
   logout() {
-    let authCredentials = this.authCredentials
-    this.httpClient.post<any>(environment.server_url + EndpointConstants.LOGOUT_ENDPOINT, authCredentials).subscribe()
     localStorage.removeItem(JwtConstants.AUTH_CREDENTIALS_KEY)
     this.router.navigate(["/"])
   }

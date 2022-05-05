@@ -1,7 +1,6 @@
 export class EndpointConstants {
 
   public static readonly LOGIN_ENDPOINT = '/api/login'
-  public static readonly LOGOUT_ENDPOINT = '/api/logout'
   public static readonly REGISTRATION_ENDPOINT = '/api/registration'
   public static readonly CONFIRM_ENDPOINT = '/api/confirm'
   public static readonly RESTORE_ENDPOINT = '/api/restore'
