@@ -119,7 +119,7 @@ public class MainLibImpl implements MainLib {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User userDbi = userService.findByUsername(user.getUsername());
         MenuDataDto menuDataDto = new MenuDataDto();
-        menuDataDto.setNumOfMessages(0);
+        menuDataDto.setUserId(userDbi.getId());
         List<UserChat> userChatList = userChatService.findByFirstUserIdOrSecondUserId(userDbi.getId());
         int numOfUnreadMessages = 0;
         for (UserChat userChat : userChatList) {

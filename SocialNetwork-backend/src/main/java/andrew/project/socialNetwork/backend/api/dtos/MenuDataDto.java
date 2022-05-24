@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class MenuDataDto {
+    private Long userId;
     private int numOfMessages;
     private int numOfRequestsToFriends;
 

@@ -16,6 +16,7 @@ import {NotifyService} from "../shared/services/notify.service";
 import {CreatePostDialogComponent} from "../create-post-dialog/create-post-dialog.component";
 import {MatDialog} from "@angular/material/dialog";
 import {DeleteAccountDialogComponent} from "../delete-account-dialog/delete-account-dialog.component";
+import {ChatMessage} from "../shared/models/chat-message";
 
 @Component({
   selector: 'app-settings',
@@ -78,8 +79,11 @@ export class SettingsComponent implements OnInit, OnDestroy {
       let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
-          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
-          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1)
+          let chatMessage: ChatMessage = webSocketMessage.body
+          if (chatMessage.userId != this.menuData.userId) {
+            this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+            this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1)
+          }
           break
         }
       }

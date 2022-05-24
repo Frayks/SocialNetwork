@@ -13,6 +13,7 @@ import {WebSocketMessageType} from "../shared/constants/web-socket-message-type"
 import {WebSocketService} from "../shared/services/web-socket.service";
 import CommonUtilCst from "../shared/utils/common-util-cst";
 import {NotifyService} from "../shared/services/notify.service";
+import {ChatMessage} from "../shared/models/chat-message";
 
 @Component({
   selector: 'app-news',
@@ -58,8 +59,11 @@ export class NewsComponent implements OnInit, OnDestroy {
       let webSocketMessage: WebSocketMessage = JSON.parse(event.data)
       switch (webSocketMessage.type) {
         case WebSocketMessageType.MESSAGE: {
-          this.menuData.numOfMessages = this.menuData.numOfMessages + 1
-          this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1)
+          let chatMessage: ChatMessage = webSocketMessage.body
+          if (chatMessage.userId != this.menuData.userId) {
+            this.menuData.numOfMessages = this.menuData.numOfMessages + 1
+            this.notifyService.notifySoundAndTitle(this.menuData.numOfMessages, NotifyService.SOUND_TYPE_1)
+          }
           break
         }
       }
