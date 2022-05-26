@@ -48,31 +48,39 @@ public class ImageStorageServiceImpl implements ImageStorageService {
 
     @Override
     public void deleteImage(String imageName) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(imageStorageProperties.getUsername(), imageStorageProperties.getPassword());
-        HttpEntity<?> request = new HttpEntity<>(headers);
-        URI uri = UriComponentsBuilder
-                .fromUriString(imageStorageProperties.getUrl())
-                .path(imageStorageProperties.getDeleteImageEndpoint())
-                .queryParam("name", imageName).build().toUri();
-        ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
-        if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
-            throw new HTTPException(response.getStatusCode().value());
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBasicAuth(imageStorageProperties.getUsername(), imageStorageProperties.getPassword());
+            HttpEntity<?> request = new HttpEntity<>(headers);
+            URI uri = UriComponentsBuilder
+                    .fromUriString(imageStorageProperties.getUrl())
+                    .path(imageStorageProperties.getDeleteImageEndpoint())
+                    .queryParam("name", imageName).build().toUri();
+            ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
+            if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+                throw new HTTPException(response.getStatusCode().value());
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
     }
 
     @Override
     public void deleteImageList(List<String> imageNameList) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBasicAuth(imageStorageProperties.getUsername(), imageStorageProperties.getPassword());
-        HttpEntity<?> request = new HttpEntity<>(headers);
-        URI uri = UriComponentsBuilder
-                .fromUriString(imageStorageProperties.getUrl())
-                .path(imageStorageProperties.getDeleteImageListEndpoint())
-                .queryParam("nameList", imageNameList).build().toUri();
-        ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
-        if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
-            throw new HTTPException(response.getStatusCode().value());
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBasicAuth(imageStorageProperties.getUsername(), imageStorageProperties.getPassword());
+            HttpEntity<?> request = new HttpEntity<>(headers);
+            URI uri = UriComponentsBuilder
+                    .fromUriString(imageStorageProperties.getUrl())
+                    .path(imageStorageProperties.getDeleteImageListEndpoint())
+                    .queryParam("nameList", imageNameList).build().toUri();
+            ResponseEntity<Void> response = restTemplate.exchange(uri, HttpMethod.GET, request, Void.class);
+            if (!response.getStatusCode().equals(HttpStatus.OK) && !response.getStatusCode().equals(HttpStatus.NO_CONTENT)) {
+                throw new HTTPException(response.getStatusCode().value());
+            }
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
     }
 

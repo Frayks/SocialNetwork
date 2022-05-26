@@ -231,17 +231,13 @@ public class MainLibImpl implements MainLib {
 
     @Override
     public int deletePhoto(Long photoId) {
-        try {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User userDbi = userService.findByUsername(user.getUsername());
-            UserPhoto userPhoto = userPhotoService.findById(photoId);
-            if (userPhoto != null && userPhoto.getUserId().equals(userDbi.getId())) {
-                String photoName = userPhoto.getName();
-                imageStorageService.deleteImage(photoName);
-                return userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        UserPhoto userPhoto = userPhotoService.findById(photoId);
+        if (userPhoto != null && userPhoto.getUserId().equals(userDbi.getId())) {
+            String photoName = userPhoto.getName();
+            imageStorageService.deleteImage(photoName);
+            return userPhotoService.deleteByIdAndUserId(photoId, userDbi.getId());
         }
         return 0;
     }
@@ -299,17 +295,13 @@ public class MainLibImpl implements MainLib {
 
     @Override
     public int deletePost(Long postId) {
-        try {
-            org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            User userDbi = userService.findByUsername(user.getUsername());
-            UserPost userPost = userPostService.findById(postId);
-            if (userPost != null && userPost.getUserId().equals(userDbi.getId())) {
-                String photoName = userPost.getPhotoName();
-                imageStorageService.deleteImage(photoName);
-                return userPostService.deleteByIdAndUserId(postId, userDbi.getId());
-            }
-        } catch (Exception e) {
-            LOGGER.error(e);
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User userDbi = userService.findByUsername(user.getUsername());
+        UserPost userPost = userPostService.findById(postId);
+        if (userPost != null && userPost.getUserId().equals(userDbi.getId())) {
+            String photoName = userPost.getPhotoName();
+            imageStorageService.deleteImage(photoName);
+            return userPostService.deleteByIdAndUserId(postId, userDbi.getId());
         }
         return 0;
     }
@@ -658,7 +650,7 @@ public class MainLibImpl implements MainLib {
     public void setUserWsSessionService(UserWsSessionService userWsSessionService) {
         this.userWsSessionService = userWsSessionService;
     }
-    
+
     @Autowired
     public void setUserChatService(UserChatService userChatService) {
         this.userChatService = userChatService;

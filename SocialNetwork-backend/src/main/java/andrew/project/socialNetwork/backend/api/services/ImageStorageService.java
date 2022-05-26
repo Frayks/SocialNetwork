@@ -9,7 +9,7 @@ public interface ImageStorageService {
 
     SaveImageResponseDto saveImage(MultipartFile file) throws Exception;
 
-    void deleteImage(String imageName) throws Exception;
+    void deleteImage(String imageName);
 
     void deleteImageList(List<String> imageNameList);
 }
