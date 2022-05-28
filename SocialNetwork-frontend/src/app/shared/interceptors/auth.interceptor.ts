@@ -3,7 +3,6 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpStatusCode} fr
 import {catchError, Observable, switchMap} from 'rxjs';
 import {AuthService} from "../services/auth.service";
 import {EndpointConstants} from "../constants/endpoint-constants";
-import {Router} from "@angular/router";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

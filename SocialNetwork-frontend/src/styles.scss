@@ -4,7 +4,7 @@
 
 /* --- Constants --- */
 
-$color-background: #f0f9ff;
+$color-background: #f6f6f6;
 $color-gray-ng: #ced4da;
 $color-gray-0: #eaeff1;
 $color-gray-1: #d9d9d9;
@@ -19,12 +19,15 @@ $color-gray-9: #4f4f4f;
 $color-transparent-black-0: rgba(0, 0, 0, 0.3);
 $color-transparent-black-1: rgba(0, 0, 0, 0.1);
 $color-def-0: #85a2cc;
-$color-def-1: #5081c4;
+$color-def-1: #0069ad;
 $color-def-2: #2a5885;
 $color-def-3: #314872;
 $color-def-4: #283b5d;
 $color-def-5: #203049;
 $color-def-6: #eaeff6;
+$color-def-7: #6280ad;
+$color-def-8: #0a66c2;
+$color-def-9: #005c98;
 $color-green-0: #198754;
 $color-red-0: #dc3545;
 $color-red-1: #56000a;
@@ -181,7 +184,7 @@ body {
 }
 
 .menu-item-icon {
-  color: #5181b8;
+  color: $color-def-8;
 }
 
 .menu-item-name {
@@ -459,6 +462,31 @@ body {
 }
 
 /* --- Images --- */
+
+.logo-box {
+  height: 100%;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: black;
+}
+
+.logo-link:hover {
+  cursor: pointer;
+}
+
+.logo {
+  width: 2.2rem;
+}
+
+.logo-text {
+  margin-left: 0.5rem;
+  font-size: 20px;
+  color: $color-def-9;
+  font-family: Roboto, sans-serif;
+  font-weight: bold;
+}
 
 .icon {
   overflow: hidden;

@@ -2,9 +2,16 @@
   <div class="block-header">
     <div class="row h-100">
       <div class="col-22pr px-def">
-        <div>
-          <span>Social Network</span>
-        </div>
+        <a [routerLink]="['']" class="logo-link">
+          <div class="logo-box d-flex justify-content-center">
+            <div class="align-self-center">
+              <img class="logo" src="assets/images/logo.svg">
+            </div>
+            <div class="align-self-center">
+              <span class="logo-text">Social</span>
+            </div>
+          </div>
+        </a>
       </div>
       <div class="col-56pr px-def">
         <input #inputSearch type="text" class="inp-def-form inp-search" maxlength="100" placeholder="Пошук"
