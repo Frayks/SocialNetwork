@@ -36,7 +36,7 @@ export class RestoreComponent implements OnInit {
             this.errorMessages = CommonUtilCst.updateForm(form, data)
           } else if (data.status == StatusCode.SUCCESS) {
             this.messageDataService.title = "Зміна паролю"
-            this.messageDataService.text = "Для зміни паролю, перейдіть за посиланням відправленим на вказану вами адресу електронної пошти та вкажіть новий пароль"
+            this.messageDataService.text = "Для зміни паролю, перейдіть за посиланням відправленим на вказану вами адресу електронної пошти та вкажіть новий пароль."
             this.router.navigate(['/message'])
           } else {
             this.router.navigate([''])
